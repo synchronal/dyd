@@ -37,10 +37,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn parse_manifest() -> Result<Manifest, Box<dyn std::error::Error> {
+fn parse_manifest() -> Result<Manifest, Box<dyn std::error::Error>> {
 let args = Cli::parse();
     let manifest_contents = std::fs::read_to_string(&args.manifest)
         .with_context(|| format!("Error reading file: `{}`", &args.manifest.to_str().unwrap()))?;
 
-    toml::from_str(&manifest_contents)?
+    let manifest: Manifest = toml::from_str(&manifest_contents)?;
+    Ok(manifest)
 }
