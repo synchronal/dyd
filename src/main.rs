@@ -16,7 +16,7 @@ struct Cli {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let _manifest = parse_manifest();
+    let _manifest = parse_manifest()?;
 
     enable_raw_mode()?;
 
