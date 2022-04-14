@@ -11,8 +11,7 @@ use tui::Terminal;
 fn main() -> AppResult<()> {
     let args = CLI::new();
     let manifest = Manifest::new(args)?;
-
-    let mut app = App::new(manifest);
+    let mut app: App = manifest.into();
 
     let backend = CrosstermBackend::new(std::io::stderr());
     let terminal = Terminal::new(backend)?;

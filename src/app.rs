@@ -7,6 +7,7 @@ use tui::text;
 use tui::widgets::{Block, Borders};
 
 use crate::manifest::Manifest;
+use crate::repo::Repo;
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
@@ -16,6 +17,12 @@ pub enum SelectedPane {
     Diff,
     Repos,
     Stale,
+}
+
+impl Default for SelectedPane {
+    fn default() -> Self {
+        SelectedPane::Repos
+    }
 }
 
 // impl From<SelectedPane> for usize {
@@ -28,22 +35,32 @@ pub enum SelectedPane {
 //     }
 // }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct App {
+    pub repos: Vec<Repo>,
     pub running: bool,
-    pub manifest: Manifest,
     pub selected_pane: SelectedPane,
+    pub since: String,
+}
+
+impl From<Manifest> for App {
+    fn from(manifest: Manifest) -> Self {
+        let repos = manifest
+            .remotes
+            .into_iter()
+            .map(|(_, remote)| remote.into())
+            .collect();
+
+        Self {
+            repos,
+            since: manifest.since,
+            running: true,
+            ..Default::default()
+        }
+    }
 }
 
 impl App {
-    pub fn new(manifest: Manifest) -> Self {
-        Self {
-            manifest,
-            running: true,
-            selected_pane: SelectedPane::Repos,
-        }
-    }
-
     pub fn tick(&self) {}
 
     pub fn render<B: Backend>(&mut self, frame: &mut Frame<'_, B>) {

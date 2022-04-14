@@ -5,8 +5,8 @@ use std::collections::HashMap;
 
 #[derive(Debug, Deserialize)]
 pub struct Manifest {
-    since: String,
-    remotes: HashMap<String, Remote>,
+    pub(crate) since: String,
+    pub(crate) remotes: HashMap<String, Remote>,
 }
 
 impl Default for Manifest {
@@ -29,8 +29,8 @@ impl Manifest {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Remote {
-    name: String,
-    origin: String,
+    pub(crate) name: String,
+    pub(crate) origin: String,
 }
