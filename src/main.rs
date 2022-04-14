@@ -1,47 +1,57 @@
+use dyd::app::{App, AppResult};
+use dyd::cli::CLI;
+use dyd::event::{Event, EventHandler};
+use dyd::handler::handle_key_events;
 use dyd::manifest::Manifest;
+use dyd::tui::Tui;
 
-use anyhow::{Context, Result};
-use clap::Parser;
-use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
-use std::thread;
-use std::time::Duration;
 use tui::backend::CrosstermBackend;
-use tui::widgets::{Block, Borders};
 use tui::Terminal;
 
-#[derive(Parser)]
-struct Cli {
-    #[clap(short, long, default_value = "dyd.toml")]
-    manifest: std::path::PathBuf,
-}
+// enum Event<I> {
+//     Input(I),
+//     Tick,
+// }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let _manifest = parse_manifest()?;
+// enum MenuItem {
+//     Diff,
+//     Repos,
+//     Stale,
+// }
 
-    enable_raw_mode()?;
+// impl From<MenuItem> for usize {
+//     fn from(input: MenuItem) -> usize {
+//         match input {
+//             MenuItem::Diff => 0,
+//             MenuItem::Repos => 1,
+//             MenuItem::Stale => 2,
+//         }
+//     }
+// }
 
-    let stdout = std::io::stdout();
-    let backend = CrosstermBackend::new(stdout);
-    let mut terminal = Terminal::new(backend)?;
+fn main() -> AppResult<()> {
+    let args = CLI::new();
+    let manifest = Manifest::new(args)?;
 
-    terminal.draw(|f| {
-        let size = f.size();
-        let block = Block::default().title("Diff").borders(Borders::ALL);
-        f.render_widget(block, size);
-    })?;
+    let mut app = App::new(manifest);
 
-    thread::sleep(Duration::from_millis(5000));
+    let backend = CrosstermBackend::new(std::io::stderr());
+    let terminal = Terminal::new(backend)?;
+    let events = EventHandler::new(250);
+    let mut tui = Tui::new(terminal, events);
+    tui.init()?;
 
-    disable_raw_mode()?;
+    while app.running {
+        tui.draw(&mut app)?;
 
+        match tui.events.next()? {
+            Event::Tick => app.tick(),
+            Event::Key(key_event) => handle_key_events(key_event, &mut app)?,
+            Event::Mouse(_) => {}
+            Event::Resize(_, _) => {}
+        }
+    }
+
+    tui.exit()?;
     Ok(())
-}
-
-fn parse_manifest() -> Result<Manifest, Box<dyn std::error::Error>> {
-let args = Cli::parse();
-    let manifest_contents = std::fs::read_to_string(&args.manifest)
-        .with_context(|| format!("Error reading file: `{}`", &args.manifest.to_str().unwrap()))?;
-
-    let manifest: Manifest = toml::from_str(&manifest_contents)?;
-    Ok(manifest)
 }
