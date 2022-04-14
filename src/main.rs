@@ -8,27 +8,6 @@ use dyd::tui::Tui;
 use tui::backend::CrosstermBackend;
 use tui::Terminal;
 
-// enum Event<I> {
-//     Input(I),
-//     Tick,
-// }
-
-// enum MenuItem {
-//     Diff,
-//     Repos,
-//     Stale,
-// }
-
-// impl From<MenuItem> for usize {
-//     fn from(input: MenuItem) -> usize {
-//         match input {
-//             MenuItem::Diff => 0,
-//             MenuItem::Repos => 1,
-//             MenuItem::Stale => 2,
-//         }
-//     }
-// }
-
 fn main() -> AppResult<()> {
     let args = CLI::new();
     let manifest = Manifest::new(args)?;
