@@ -18,9 +18,9 @@ impl Default for RepoStatus {
 
 #[derive(Debug, Default)]
 pub struct Repo {
-    name: String,
-    origin: String,
-    status: RepoStatus,
+    pub(crate) name: String,
+    pub(crate) origin: String,
+    pub(crate) status: RepoStatus,
 }
 
 impl From<Remote> for Repo {

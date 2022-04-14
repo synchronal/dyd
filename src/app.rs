@@ -1,13 +1,14 @@
+use crate::manifest::Manifest;
+use crate::repo::Repo;
+use crate::ui;
+
 use std::error;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout};
 use tui::style::{Color, Style};
 use tui::terminal::Frame;
 use tui::text;
-use tui::widgets::{Block, Borders};
-
-use crate::manifest::Manifest;
-use crate::repo::Repo;
+use tui::widgets::{Block, Borders, TableState};
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
@@ -25,19 +26,10 @@ impl Default for SelectedPane {
     }
 }
 
-// impl From<SelectedPane> for usize {
-//     fn from(input: SelectedPane) -> usize {
-//         match input {
-//             SelectedPane::Diff => 0,
-//             SelectedPane::Repos => 1,
-//             SelectedPane::Stale => 2,
-//         }
-//     }
-// }
-
 #[derive(Debug, Default)]
 pub struct App {
     pub repos: Vec<Repo>,
+    pub repo_state: TableState,
     pub running: bool,
     pub selected_pane: SelectedPane,
     pub since: String,
@@ -45,14 +37,20 @@ pub struct App {
 
 impl From<Manifest> for App {
     fn from(manifest: Manifest) -> Self {
-        let repos = manifest
+        let repos: Vec<Repo> = manifest
             .remotes
             .into_iter()
             .map(|(_, remote)| remote.into())
             .collect();
 
+        let mut repo_state = TableState::default();
+        if repos.len() > 0 {
+            repo_state.select(Some(0))
+        }
+
         Self {
             repos,
+            repo_state,
             since: manifest.since,
             running: true,
             ..Default::default()
@@ -85,25 +83,19 @@ impl App {
             .split(layout[1]);
 
         frame.render_widget(self.diff(), layout[0]);
-        frame.render_widget(self.repos(), sidebar[0]);
         frame.render_widget(self.stale(), sidebar[1]);
         frame.render_widget(self.help(), sidebar[2]);
+        frame.render_stateful_widget(
+            ui::repos::render(self),
+            sidebar[0],
+            &mut self.repo_state.clone(),
+        );
     }
     fn diff(&self) -> Block {
         Block::default()
             .title(text::Span::styled(
                 " Diff ",
-                Style::default().fg(self.selected_color(SelectedPane::Diff)),
-            ))
-            .borders(Borders::ALL)
-            .style(Style::default().fg(Color::LightCyan))
-    }
-
-    fn repos(&self) -> Block {
-        Block::default()
-            .title(text::Span::styled(
-                " Repos ",
-                Style::default().fg(self.selected_color(SelectedPane::Repos)),
+                Style::default().fg(ui::selected_color(self, SelectedPane::Diff)),
             ))
             .borders(Borders::ALL)
             .style(Style::default().fg(Color::LightCyan))
@@ -113,7 +105,7 @@ impl App {
         Block::default()
             .title(text::Span::styled(
                 " Stale ",
-                Style::default().fg(self.selected_color(SelectedPane::Stale)),
+                Style::default().fg(ui::selected_color(self, SelectedPane::Stale)),
             ))
             .borders(Borders::ALL)
             .style(Style::default().fg(Color::LightCyan))
@@ -127,13 +119,5 @@ impl App {
             ))
             .borders(Borders::ALL)
             .style(Style::default().fg(Color::LightCyan))
-    }
-
-    fn selected_color(&self, pane: SelectedPane) -> Color {
-        if pane == self.selected_pane {
-            Color::Red
-        } else {
-            Color::White
-        }
     }
 }
