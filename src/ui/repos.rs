@@ -1,4 +1,5 @@
 use crate::app::{App, SelectedPane};
+use crate::repo::{Repo, RepoStatus};
 
 use tui::layout::Constraint;
 use tui::style::{Color, Modifier, Style};
@@ -12,7 +13,7 @@ pub fn render(app: &App) -> Table {
         .style(Style::default().fg(Color::LightCyan));
 
     let rows = app.repos.iter().map(|repo| {
-        let cells = [Cell::from(repo.name.clone()), Cell::from("✓")];
+        let cells = [Cell::from(repo.name.clone()), status_icon(repo)];
         Row::new(cells)
     });
 
@@ -27,4 +28,16 @@ pub fn render(app: &App) -> Table {
 fn title(app: &App) -> text::Span {
     let text_style = Style::default().fg(super::selected_color(app, SelectedPane::Repos));
     text::Span::styled(" Repos ", text_style)
+}
+
+fn status_icon(repo: &Repo) -> Cell {
+    let icon = match repo.status {
+        RepoStatus::Checking => "⁇",
+        RepoStatus::Cloning => "🐝",
+        RepoStatus::Failed => "𝗫",
+        RepoStatus::Finished => "✓",
+        RepoStatus::Log => "🪵",
+        RepoStatus::Pulling => "⤵",
+    };
+    Cell::from(icon)
 }
