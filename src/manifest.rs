@@ -20,9 +20,8 @@ impl Default for Manifest {
 
 impl Manifest {
     pub fn new(args: CLI) -> Result<Manifest, Box<dyn std::error::Error>> {
-        let manifest_contents = std::fs::read_to_string(&args.manifest).with_context(|| {
-            format!("Error reading file: `{}`", &args.manifest.to_str().unwrap())
-        })?;
+        let manifest_contents = std::fs::read_to_string(&args.manifest)
+            .with_context(|| format!("Error reading file: `{}`", &args.manifest.to_str().unwrap()))?;
 
         let manifest: Manifest = toml::from_str(&manifest_contents)?;
         Ok(manifest)

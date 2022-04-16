@@ -85,11 +85,7 @@ impl App {
         frame.render_widget(self.diff(), layout[0]);
         frame.render_widget(self.stale(), sidebar[1]);
         frame.render_widget(self.help(), sidebar[2]);
-        frame.render_stateful_widget(
-            ui::repos::render(self),
-            sidebar[0],
-            &mut self.repo_state.clone(),
-        );
+        frame.render_stateful_widget(ui::repos::render(self), sidebar[0], &mut self.repo_state.clone());
     }
     fn diff(&self) -> Block {
         Block::default()
@@ -113,10 +109,7 @@ impl App {
 
     fn help(&self) -> Block {
         Block::default()
-            .title(text::Span::styled(
-                " Help ",
-                Style::default().fg(Color::White),
-            ))
+            .title(text::Span::styled(" Help ", Style::default().fg(Color::White)))
             .borders(Borders::ALL)
             .style(Style::default().fg(Color::LightCyan))
     }
