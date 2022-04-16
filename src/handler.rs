@@ -4,6 +4,8 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 /// Handles the key events and updates the state of [`App`].
 pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
     match (&app.selected_pane, key_event.code) {
+        (SelectedPane::Repos, KeyCode::Up | KeyCode::Char('k')) => decrement_repos(app),
+        (SelectedPane::Repos, KeyCode::Down | KeyCode::Char('j')) => increment_repos(app),
         // navigate pane
         (SelectedPane::Diff, KeyCode::Left | KeyCode::Char('h')) => (),
         (SelectedPane::Repos, KeyCode::Left | KeyCode::Char('h')) => app.selected_pane = SelectedPane::Diff,
@@ -25,4 +27,21 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
         _ => {}
     }
     Ok(())
+}
+
+fn decrement_repos(app: &mut App) {
+    if let Some(current) = app.repo_state.selected() {
+        if current > 0 {
+            app.repo_state.select(Some(current - 1))
+        };
+    }
+}
+
+fn increment_repos(app: &mut App) {
+    let max_repos: usize = app.repos.len() - 1;
+    if let Some(current) = app.repo_state.selected() {
+        if current < max_repos {
+            app.repo_state.select(Some(current + 1))
+        };
+    }
 }
