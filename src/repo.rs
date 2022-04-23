@@ -46,11 +46,11 @@ impl Repo {
         // std::thread::spawn(move || {
         if path.is_dir() {
             Command::new("git")
-                .args(["clone", &origin, path_str.to_str().unwrap()])
+                .args(["pull", &origin, path_str.to_str().unwrap()])
                 .output()?;
         } else {
             Command::new("git")
-                .args(["pull", &origin, path_str.to_str().unwrap()])
+                .args(["clone", &origin, path_str.to_str().unwrap()])
                 .output()?;
         }
         // ()
