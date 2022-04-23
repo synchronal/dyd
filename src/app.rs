@@ -2,7 +2,9 @@ use crate::manifest::Manifest;
 use crate::repo::Repo;
 use crate::ui;
 
+use std::collections::HashMap;
 use std::error;
+use std::path::PathBuf;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout};
 use tui::terminal::Frame;
@@ -26,19 +28,20 @@ impl Default for SelectedPane {
 
 #[derive(Debug, Default)]
 pub struct App {
-    pub repos: Vec<Repo>,
+    pub repos: HashMap<String, Repo>,
     pub repo_state: TableState,
     pub running: bool,
+    pub root_path: PathBuf,
     pub selected_pane: SelectedPane,
     pub since: String,
 }
 
 impl From<Manifest> for App {
     fn from(manifest: Manifest) -> Self {
-        let repos: Vec<Repo> = manifest
+        let repos: HashMap<String, Repo> = manifest
             .remotes
             .into_iter()
-            .map(|(_, remote)| remote.into())
+            .map(|(id, remote)| (id, remote.into()))
             .collect();
 
         let mut repo_state = TableState::default();
@@ -49,6 +52,7 @@ impl From<Manifest> for App {
         Self {
             repos,
             repo_state,
+            root_path: manifest.root.unwrap(),
             since: manifest.since,
             running: true,
             ..Default::default()
@@ -84,5 +88,12 @@ impl App {
         frame.render_widget(ui::stale::render(self), sidebar[1]);
         frame.render_widget(ui::help::render(self), sidebar[2]);
         frame.render_stateful_widget(ui::repos::render(self), sidebar[0], &mut self.repo_state.clone());
+    }
+
+    pub fn update(&self) -> AppResult<()> {
+        for (id, repo) in &self.repos {
+            repo.update(id, &self.root_path)?;
+        }
+        Ok(())
     }
 }

@@ -5,18 +5,23 @@ use dyd::handler::handle_key_events;
 use dyd::manifest::Manifest;
 use dyd::tui::Tui;
 
+use anyhow::Context;
+use std::path::{Path, PathBuf};
 use tui::backend::CrosstermBackend;
 use tui::Terminal;
 
 fn main() -> AppResult<()> {
     let args = CLI::new();
-    let manifest = Manifest::new(args)?;
+    let path = setup_dyd_path()?;
+    let manifest = Manifest::new(args, path)?;
     let mut app: App = manifest.into();
 
     let backend = CrosstermBackend::new(std::io::stderr());
     let terminal = Terminal::new(backend)?;
     let events = EventHandler::new(250);
     let mut tui = Tui::new(terminal, events);
+
+    app.update()?;
     tui.init()?;
 
     while app.running {
@@ -32,4 +37,11 @@ fn main() -> AppResult<()> {
 
     tui.exit()?;
     Ok(())
+}
+
+fn setup_dyd_path() -> AppResult<PathBuf> {
+    let home = std::env::var("HOME").context("Unable to access HOME")?;
+    let path = Path::new(&home).join(".local/share/dyd");
+    std::fs::create_dir_all(&path)?;
+    Ok(path)
 }

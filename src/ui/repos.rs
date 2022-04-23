@@ -12,7 +12,7 @@ pub fn render(app: &App) -> Table {
         .borders(Borders::ALL)
         .style(Style::default().fg(Color::LightCyan));
 
-    let rows = app.repos.iter().map(|repo| {
+    let rows = app.repos.iter().map(|(_id, repo)| {
         let cells = [Cell::from(repo.name.clone()), status_icon(repo)];
         Row::new(cells)
     });
