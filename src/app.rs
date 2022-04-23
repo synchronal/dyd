@@ -5,10 +5,8 @@ use crate::ui;
 use std::error;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout};
-use tui::style::{Color, Style};
 use tui::terminal::Frame;
-use tui::text;
-use tui::widgets::{Block, Borders, TableState};
+use tui::widgets::TableState;
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
