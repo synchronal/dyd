@@ -82,35 +82,9 @@ impl App {
             )
             .split(layout[1]);
 
-        frame.render_widget(self.diff(), layout[0]);
-        frame.render_widget(self.stale(), sidebar[1]);
-        frame.render_widget(self.help(), sidebar[2]);
+        frame.render_widget(ui::diff::render(self), layout[0]);
+        frame.render_widget(ui::stale::render(self), sidebar[1]);
+        frame.render_widget(ui::help::render(self), sidebar[2]);
         frame.render_stateful_widget(ui::repos::render(self), sidebar[0], &mut self.repo_state.clone());
-    }
-    fn diff(&self) -> Block {
-        Block::default()
-            .title(text::Span::styled(
-                " Diff ",
-                Style::default().fg(ui::selected_color(self, SelectedPane::Diff)),
-            ))
-            .borders(Borders::ALL)
-            .style(Style::default().fg(Color::LightCyan))
-    }
-
-    fn stale(&self) -> Block {
-        Block::default()
-            .title(text::Span::styled(
-                " Stale ",
-                Style::default().fg(ui::selected_color(self, SelectedPane::Stale)),
-            ))
-            .borders(Borders::ALL)
-            .style(Style::default().fg(Color::LightCyan))
-    }
-
-    fn help(&self) -> Block {
-        Block::default()
-            .title(text::Span::styled(" Help ", Style::default().fg(Color::White)))
-            .borders(Borders::ALL)
-            .style(Style::default().fg(Color::LightCyan))
     }
 }

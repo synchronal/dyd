@@ -26,7 +26,9 @@ pub fn render(app: &App) -> Table {
 }
 
 fn title(app: &App) -> text::Span {
-    let text_style = Style::default().fg(super::selected_color(app, SelectedPane::Repos));
+    let text_style = Style::default()
+        .fg(super::selected_color(app, SelectedPane::Repos))
+        .add_modifier(Modifier::BOLD);
     text::Span::styled(" Repos ", text_style)
 }
 
