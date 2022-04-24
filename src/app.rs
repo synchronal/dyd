@@ -1,16 +1,30 @@
+use crate::event::Event;
 use crate::manifest::Manifest;
-use crate::repo::Repo;
+use crate::repo::{Repo, RepoStatus};
 use crate::ui;
 
 use std::collections::HashMap;
 use std::error;
 use std::path::PathBuf;
+use std::sync::mpsc;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout};
 use tui::terminal::Frame;
 use tui::widgets::TableState;
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
+
+#[derive(Debug, PartialEq)]
+pub enum AppState {
+    Init,
+    Checking,
+}
+
+impl Default for AppState {
+    fn default() -> Self {
+        AppState::Init
+    }
+}
 
 /// Selected pane
 #[derive(Debug, PartialEq)]
@@ -34,6 +48,7 @@ pub struct App {
     pub root_path: PathBuf,
     pub selected_pane: SelectedPane,
     pub since: String,
+    pub state: AppState,
 }
 
 impl From<Manifest> for App {
@@ -61,7 +76,16 @@ impl From<Manifest> for App {
 }
 
 impl App {
-    pub fn tick(&self) {}
+    pub fn tick(&mut self, sender: mpsc::Sender<Event>) -> AppResult<()> {
+        match self.state {
+            AppState::Init => {
+                self.update(sender)?;
+                self.state = AppState::Checking;
+            }
+            _ => {}
+        }
+        Ok(())
+    }
 
     pub fn render<B: Backend>(&mut self, frame: &mut Frame<'_, B>) {
         let size = frame.size();
@@ -90,9 +114,16 @@ impl App {
         frame.render_stateful_widget(ui::repos::render(self), sidebar[0], &mut self.repo_state.clone());
     }
 
-    pub fn update(&self) -> AppResult<()> {
+    pub fn update(&self, sender: mpsc::Sender<Event>) -> AppResult<()> {
         for (id, repo) in &self.repos {
-            repo.update(id, &self.root_path)?;
+            repo.update(id.clone(), &self.root_path, sender.clone())?;
+        }
+        Ok(())
+    }
+
+    pub fn update_repo_status(&mut self, id: String, status: RepoStatus) -> AppResult<()> {
+        if let Some(repo) = self.repos.get_mut(&id) {
+            repo.status = status;
         }
         Ok(())
     }

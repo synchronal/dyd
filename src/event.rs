@@ -1,27 +1,30 @@
 use crate::app::AppResult;
+use crate::repo::RepoStatus;
 use crossterm::event::{self, Event as CrosstermEvent, KeyEvent, MouseEvent};
 use std::sync::mpsc;
 use std::thread;
 use std::time::{Duration, Instant};
 
 /// Terminal events.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub enum Event {
     /// Terminal tick.
-    Tick,
+    Tick(mpsc::Sender<Event>),
     /// Key press.
     Key(KeyEvent),
     /// Mouse click/scroll.
     Mouse(MouseEvent),
     /// Terminal resize.
     Resize(u16, u16),
+    /// The current state of a Repo has changed.
+    RepoStatusChange(String, RepoStatus)
 }
 
 /// Terminal event handler.
 #[derive(Debug)]
 pub struct EventHandler {
     /// Event sender channel.
-    sender: mpsc::Sender<Event>,
+    pub sender: mpsc::Sender<Event>,
     /// Event receiver channel.
     receiver: mpsc::Receiver<Event>,
     /// Event handler thread.
@@ -52,7 +55,7 @@ impl EventHandler {
                     }
 
                     if last_tick.elapsed() >= tick_rate {
-                        sender.send(Event::Tick).expect("failed to send tick event");
+                        sender.send(Event::Tick(sender.clone())).expect("failed to send tick event");
                         last_tick = Instant::now();
                     }
                 }

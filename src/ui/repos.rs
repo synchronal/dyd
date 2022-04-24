@@ -35,10 +35,10 @@ fn title(app: &App) -> text::Span {
 fn status_icon(repo: &Repo) -> Cell {
     let icon = match repo.status {
         RepoStatus::Checking => "⁇",
-        RepoStatus::Cloning => "🐝",
+        RepoStatus::Cloning => "⚭",
         RepoStatus::Failed => "𝗫",
         RepoStatus::Finished => "✓",
-        RepoStatus::Log => "🪵",
+        RepoStatus::Log => "☈",
         RepoStatus::Pulling => "⤵",
     };
     Cell::from(icon)
