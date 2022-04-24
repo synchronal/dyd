@@ -1,5 +1,5 @@
 use crate::app::AppResult;
-use crate::repo::RepoStatus;
+use crate::repo::{RepoStatus, Log};
 use crossterm::event::{self, Event as CrosstermEvent, KeyEvent, MouseEvent};
 use std::sync::mpsc;
 use std::thread;
@@ -17,7 +17,9 @@ pub enum Event {
     /// Terminal resize.
     Resize(u16, u16),
     /// The current state of a Repo has changed.
-    RepoStatusChange(String, RepoStatus)
+    RepoStatusChange(String, RepoStatus),
+    /// The Repo git actions are complete
+    RepoStatusComplete(String, Vec<Log>)
 }
 
 /// Terminal event handler.

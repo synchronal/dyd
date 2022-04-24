@@ -1,6 +1,6 @@
 use crate::event::Event;
 use crate::manifest::Manifest;
-use crate::repo::{Repo, RepoStatus};
+use crate::repo::{Log, Repo, RepoStatus};
 use crate::ui;
 
 use std::collections::HashMap;
@@ -124,6 +124,14 @@ impl App {
     pub fn update_repo_status(&mut self, id: String, status: RepoStatus) -> AppResult<()> {
         if let Some(repo) = self.repos.get_mut(&id) {
             repo.status = status;
+        }
+        Ok(())
+    }
+
+    pub fn update_repo_logs(&mut self, id: String, logs: Vec<Log>) -> AppResult<()> {
+        if let Some(repo) = self.repos.get_mut(&id) {
+            repo.logs = logs;
+            repo.status = RepoStatus::Finished;
         }
         Ok(())
     }

@@ -32,6 +32,7 @@ fn main() -> AppResult<()> {
             Event::Mouse(_) => {}
             Event::Resize(_, _) => {}
             Event::RepoStatusChange(id, state) => app.update_repo_status(id, state)?,
+            Event::RepoStatusComplete(id, logs) => app.update_repo_logs(id, logs)?,
         }
     }
 

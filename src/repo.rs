@@ -6,6 +6,8 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::mpsc;
 
+static GIT_FORMAT: &str = "%h\x0B%cI\x0B%ch\x0B%an\x0B%s";
+
 #[derive(Clone, Debug)]
 pub enum RepoStatus {
     Checking,
@@ -24,6 +26,7 @@ impl Default for RepoStatus {
 
 #[derive(Debug, Default)]
 pub struct Repo {
+    pub(crate) logs: Vec<Log>,
     pub(crate) name: String,
     pub(crate) origin: String,
     pub(crate) status: RepoStatus,
@@ -35,6 +38,33 @@ impl From<Remote> for Repo {
             name: remote.name,
             origin: remote.origin,
             ..Default::default()
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct Log {
+    age: String,
+    author: String,
+    commit_datetime: String,
+    message: String,
+    sha: String,
+}
+
+impl From<&str> for Log {
+    fn from(log_str: &str) -> Self {
+        let values: Vec<&str> = log_str.split("\x0B").collect();
+        let sha = values[0].to_owned();
+        let commit_datetime = values[1].to_owned();
+        let age = values[2].to_owned();
+        let author = values[3].to_owned();
+        let message = values[4].to_owned();
+        Self {
+            age,
+            author,
+            commit_datetime,
+            message,
+            sha,
         }
     }
 }
@@ -54,7 +84,6 @@ impl Repo {
                     .args(["pull", &origin, path_str.to_str().unwrap()])
                     .output()
                     .unwrap();
-                std::thread::sleep(std::time::Duration::from_secs(1));
             } else {
                 sender
                     .send(Event::RepoStatusChange(id.clone(), RepoStatus::Cloning))
@@ -68,11 +97,11 @@ impl Repo {
                 .send(Event::RepoStatusChange(id.clone(), RepoStatus::Log))
                 .unwrap();
 
-            std::thread::sleep(std::time::Duration::from_secs(1));
-
+            let logs = Repo::logs(&path);
             sender
-                .send(Event::RepoStatusChange(id.clone(), RepoStatus::Finished))
+                .send(Event::RepoStatusComplete(id.clone(), logs))
                 .unwrap();
+
             ()
         });
         Ok(())
@@ -84,5 +113,30 @@ impl Repo {
         } else {
             Err(format!("Unable to determine local path for {}", self.name).into())
         }
+    }
+
+    fn logs(path: &PathBuf) -> Vec<Log> {
+        let logs = Command::new("git")
+            .args([
+                "log",
+                "--date=local",
+                "-n",
+                "100",
+                "--abbrev-commit",
+                "--color=always",
+                &format!("--pretty=tformat:{}", GIT_FORMAT),
+            ])
+            .current_dir(path)
+            .output()
+            .expect("failed to retrieve git log")
+            .stdout;
+
+        std::str::from_utf8(&logs)
+            .unwrap()
+            .trim()
+            .split("\n")
+            .into_iter()
+            .map(|l| l.into())
+            .collect()
     }
 }
