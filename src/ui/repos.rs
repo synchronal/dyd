@@ -13,7 +13,7 @@ pub fn render(app: &App) -> Table {
         .style(Style::default().fg(Color::LightCyan));
 
     let rows = app.repos.iter().map(|(_id, repo)| {
-        let cells = [Cell::from(repo.name.clone()), status_icon(repo)];
+        let cells = [status_icon(repo), Cell::from(repo.name.clone())];
         Row::new(cells)
     });
 
@@ -22,7 +22,7 @@ pub fn render(app: &App) -> Table {
         .highlight_style(Style::default().add_modifier(Modifier::BOLD))
         .highlight_symbol("·")
         .column_spacing(2)
-        .widths(&[Constraint::Percentage(93), Constraint::Length(1)])
+        .widths(&[Constraint::Length(2), Constraint::Percentage(100)])
 }
 
 fn title(app: &App) -> text::Span {
@@ -34,12 +34,12 @@ fn title(app: &App) -> text::Span {
 
 fn status_icon(repo: &Repo) -> Cell {
     let icon = match repo.status {
-        RepoStatus::Checking => "⁇",
-        RepoStatus::Cloning => "⚭",
-        RepoStatus::Failed => "𝗫",
-        RepoStatus::Finished => "✓",
-        RepoStatus::Log => "☈",
-        RepoStatus::Pulling => "⤵",
+        RepoStatus::Checking => " ⁇",
+        RepoStatus::Cloning => " ⚭",
+        RepoStatus::Failed => " 𝗫",
+        RepoStatus::Finished => " ✓",
+        RepoStatus::Log => " ☈",
+        RepoStatus::Pulling => " ⤵",
     };
     Cell::from(icon)
 }
