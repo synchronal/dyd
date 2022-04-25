@@ -15,15 +15,19 @@ pub fn render(app: &App) -> Table {
 
     if let Some(index) = app.repo_state.selected() {
         let (_id, selected_repo) = app.repos.get_index(index).unwrap();
-        rows = selected_repo.logs.iter().map(|log| {
-            let cells = [
-                Cell::from(log.sha.clone()),
-                Cell::from(log.age.clone()),
-                Cell::from(log.author.clone()),
-                Cell::from(log.message.clone()),
-            ];
-            Row::new(cells)
-        }).collect()
+        rows = selected_repo
+            .logs
+            .iter()
+            .map(|log| {
+                let cells = [
+                    Cell::from(log.sha.clone()),
+                    Cell::from(log.age.clone()),
+                    Cell::from(log.author.clone()),
+                    Cell::from(log.message.clone()),
+                ];
+                Row::new(cells)
+            })
+            .collect()
     }
 
     Table::new(rows)

@@ -1,5 +1,5 @@
 use crate::app::AppResult;
-use crate::repo::{RepoStatus, Log};
+use crate::repo::{Log, RepoStatus};
 use crossterm::event::{self, Event as CrosstermEvent, KeyEvent, MouseEvent};
 use std::sync::mpsc;
 use std::thread;
@@ -19,7 +19,7 @@ pub enum Event {
     /// The current state of a Repo has changed.
     RepoStatusChange(String, RepoStatus),
     /// The Repo git actions are complete
-    RepoStatusComplete(String, Vec<Log>)
+    RepoStatusComplete(String, Vec<Log>),
 }
 
 /// Terminal event handler.
@@ -57,7 +57,9 @@ impl EventHandler {
                     }
 
                     if last_tick.elapsed() >= tick_rate {
-                        sender.send(Event::Tick(sender.clone())).expect("failed to send tick event");
+                        sender
+                            .send(Event::Tick(sender.clone()))
+                            .expect("failed to send tick event");
                         last_tick = Instant::now();
                     }
                 }
