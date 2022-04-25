@@ -44,11 +44,11 @@ impl From<Remote> for Repo {
 
 #[derive(Clone, Debug)]
 pub struct Log {
-    age: String,
-    author: String,
-    commit_datetime: String,
-    message: String,
-    sha: String,
+    pub(crate) age: String,
+    pub(crate) author: String,
+    pub(crate) commit_datetime: String,
+    pub(crate) message: String,
+    pub(crate) sha: String,
 }
 
 impl From<&str> for Log {
@@ -72,7 +72,6 @@ impl From<&str> for Log {
 impl Repo {
     pub fn update(&self, id: String, root_path: &PathBuf, sender: mpsc::Sender<Event>) -> AppResult<()> {
         let path = self.path(root_path)?;
-        let path_str = path.clone();
         let origin = self.origin.clone();
 
         std::thread::spawn(move || {
@@ -80,18 +79,13 @@ impl Repo {
                 sender
                     .send(Event::RepoStatusChange(id.clone(), RepoStatus::Pulling))
                     .unwrap();
-                Command::new("git")
-                    .args(["pull", &origin, path_str.to_str().unwrap()])
-                    .output()
-                    .unwrap();
+
+                Repo::pull(&origin, &path);
             } else {
                 sender
                     .send(Event::RepoStatusChange(id.clone(), RepoStatus::Cloning))
                     .unwrap();
-                Command::new("git")
-                    .args(["clone", &origin, path_str.to_str().unwrap()])
-                    .output()
-                    .unwrap();
+                Repo::clone(&origin, &path);
             }
             sender
                 .send(Event::RepoStatusChange(id.clone(), RepoStatus::Log))
@@ -113,6 +107,23 @@ impl Repo {
         } else {
             Err(format!("Unable to determine local path for {}", self.name).into())
         }
+    }
+
+    fn clone(origin: &String, path: &PathBuf) {
+        let path_str = path.clone();
+
+        Command::new("git")
+            .args(["clone", origin, path_str.to_str().unwrap()])
+            .output()
+            .unwrap();
+    }
+
+    fn pull(_origin: &String, path: &PathBuf) {
+        Command::new("git")
+            .args(["pull"])
+            .current_dir(path)
+            .output()
+            .unwrap();
     }
 
     fn logs(path: &PathBuf) -> Vec<Log> {
