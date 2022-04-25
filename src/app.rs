@@ -65,9 +65,13 @@ impl From<Manifest> for App {
             repo_state.select(Some(0))
         }
 
+        let mut selected_repo_state = TableState::default();
+        selected_repo_state.select(Some(0));
+
         Self {
             repos,
             repo_state,
+            selected_repo_state,
             root_path: manifest.root.unwrap(),
             since: manifest.since,
             running: true,

@@ -30,6 +30,7 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
 }
 
 fn decrement_repos(app: &mut App) {
+    app.selected_repo_state.select(Some(0));
     if let Some(current) = app.repo_state.selected() {
         if current > 0 {
             app.repo_state.select(Some(current - 1))
@@ -38,6 +39,7 @@ fn decrement_repos(app: &mut App) {
 }
 
 fn increment_repos(app: &mut App) {
+    app.selected_repo_state.select(Some(0));
     let max_repos: usize = app.repos.len() - 1;
     if let Some(current) = app.repo_state.selected() {
         if current < max_repos {
