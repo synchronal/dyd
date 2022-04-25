@@ -3,7 +3,7 @@ use crate::manifest::Manifest;
 use crate::repo::{Log, Repo, RepoStatus};
 use crate::ui;
 
-use std::collections::HashMap;
+use indexmap::map::IndexMap;
 use std::error;
 use std::path::PathBuf;
 use std::sync::mpsc;
@@ -42,18 +42,19 @@ impl Default for SelectedPane {
 
 #[derive(Debug, Default)]
 pub struct App {
-    pub repos: HashMap<String, Repo>,
+    pub repos: IndexMap<String, Repo>,
     pub repo_state: TableState,
     pub running: bool,
     pub root_path: PathBuf,
     pub selected_pane: SelectedPane,
+    pub selected_repo_state: TableState,
     pub since: String,
     pub state: AppState,
 }
 
 impl From<Manifest> for App {
     fn from(manifest: Manifest) -> Self {
-        let repos: HashMap<String, Repo> = manifest
+        let repos: IndexMap<String, Repo> = manifest
             .remotes
             .into_iter()
             .map(|(id, remote)| (id, remote.into()))
