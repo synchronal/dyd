@@ -113,7 +113,7 @@ impl App {
             )
             .split(layout[1]);
 
-        frame.render_widget(ui::diff::render(self), layout[0]);
+        frame.render_stateful_widget(ui::diff::render(self), layout[0], &mut self.selected_repo_state.clone());
         frame.render_widget(ui::stale::render(self), sidebar[1]);
         frame.render_widget(ui::help::render(self), sidebar[2]);
         frame.render_stateful_widget(ui::repos::render(self), sidebar[0], &mut self.repo_state.clone());
