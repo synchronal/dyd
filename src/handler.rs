@@ -1,4 +1,5 @@
 use crate::app::{App, AppResult, SelectedPane};
+use crate::git;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 /// Handles the key events and updates the state of [`App`].
@@ -18,6 +19,8 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
         (SelectedPane::Diff, KeyCode::Tab) => app.selected_pane = SelectedPane::Repos,
         (SelectedPane::Repos, KeyCode::Tab) => app.selected_pane = SelectedPane::Stale,
         (SelectedPane::Stale, KeyCode::Tab) => app.selected_pane = SelectedPane::Diff,
+        // open diff
+        (SelectedPane::Diff, KeyCode::Char('d')) => open_git_difftool(app),
         // exit application on ESC or q
         (_, KeyCode::Esc | KeyCode::Char('q') | KeyCode::Char('Q')) => app.running = false,
         // exit application on Ctrl-D
@@ -69,4 +72,13 @@ fn increment_repos(app: &mut App) {
             app.repo_state.select(Some(current + 1))
         };
     }
+}
+
+fn open_git_difftool(app: &App) {
+    let selected_repo_index = app.repo_state.selected().unwrap();
+    let (_id, selected_repo) = app.repos.get_index(selected_repo_index).unwrap();
+    let selected_log = app.selected_repo_state.selected().unwrap();
+    let log = &selected_repo.logs[selected_log];
+
+    git::open_difftool(&app.root_path, selected_repo, log);
 }

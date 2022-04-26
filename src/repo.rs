@@ -1,12 +1,11 @@
 use crate::app::AppResult;
 use crate::event::Event;
+use crate::git;
 use crate::manifest::Remote;
 
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::mpsc;
-
-static GIT_FORMAT: &str = "%h\x0B%cI\x0B%ch\x0B%an\x0B%s";
 
 #[derive(Clone, Debug)]
 pub enum RepoStatus {
@@ -80,12 +79,12 @@ impl Repo {
                     .send(Event::RepoStatusChange(id.clone(), RepoStatus::Pulling))
                     .unwrap();
 
-                Repo::pull(&origin, &path);
+                git::pull(&path);
             } else {
                 sender
                     .send(Event::RepoStatusChange(id.clone(), RepoStatus::Cloning))
                     .unwrap();
-                Repo::clone(&origin, &path);
+                git::clone(&origin, &path);
             }
             sender
                 .send(Event::RepoStatusChange(id.clone(), RepoStatus::Log))
@@ -101,7 +100,7 @@ impl Repo {
         Ok(())
     }
 
-    fn path(&self, root: &PathBuf) -> AppResult<PathBuf> {
+    pub fn path(&self, root: &PathBuf) -> AppResult<PathBuf> {
         if let Some(path) = Path::new(&self.origin).file_name() {
             Ok(root.join(path))
         } else {
@@ -109,38 +108,8 @@ impl Repo {
         }
     }
 
-    fn clone(origin: &String, path: &PathBuf) {
-        let path_str = path.clone();
-
-        Command::new("git")
-            .args(["clone", origin, path_str.to_str().unwrap()])
-            .output()
-            .unwrap();
-    }
-
-    fn pull(_origin: &String, path: &PathBuf) {
-        Command::new("git")
-            .args(["pull"])
-            .current_dir(path)
-            .output()
-            .unwrap();
-    }
-
     fn logs(path: &PathBuf) -> Vec<Log> {
-        let logs = Command::new("git")
-            .args([
-                "log",
-                "--date=local",
-                "-n",
-                "100",
-                "--abbrev-commit",
-                "--color=always",
-                &format!("--pretty=tformat:{}", GIT_FORMAT),
-            ])
-            .current_dir(path)
-            .output()
-            .expect("failed to retrieve git log")
-            .stdout;
+        let logs = git::logs(path);
 
         std::str::from_utf8(&logs)
             .unwrap()
