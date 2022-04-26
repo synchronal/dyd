@@ -4,7 +4,6 @@ use crate::git;
 use crate::manifest::Remote;
 
 use std::path::{Path, PathBuf};
-use std::process::Command;
 use std::sync::mpsc;
 
 #[derive(Clone, Debug)]
@@ -45,7 +44,7 @@ impl From<Remote> for Repo {
 pub struct Log {
     pub(crate) age: String,
     pub(crate) author: String,
-    pub(crate) commit_datetime: String,
+    pub commit_datetime: String,
     pub(crate) message: String,
     pub(crate) sha: String,
 }
