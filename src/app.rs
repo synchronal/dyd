@@ -31,7 +31,6 @@ impl Default for AppState {
 pub enum SelectedPane {
     Diff,
     Repos,
-    Stale,
 }
 
 impl Default for SelectedPane {
@@ -105,18 +104,16 @@ impl App {
             .margin(0)
             .constraints(
                 [
-                    Constraint::Ratio(1, 3),
-                    Constraint::Ratio(1, 3),
-                    Constraint::Ratio(1, 3),
+                    Constraint::Ratio(7, 10),
+                    Constraint::Ratio(3, 10),
                 ]
                 .as_ref(),
             )
             .split(layout[1]);
 
         frame.render_stateful_widget(ui::diff::render(self), layout[0], &mut self.selected_repo_state.clone());
-        frame.render_widget(ui::stale::render(self), sidebar[1]);
-        frame.render_widget(ui::help::render(self), sidebar[2]);
         frame.render_stateful_widget(ui::repos::render(self), sidebar[0], &mut self.repo_state.clone());
+        frame.render_widget(ui::help::render(self), sidebar[1]);
     }
 
     pub fn update(&self, sender: mpsc::Sender<Event>) -> AppResult<()> {

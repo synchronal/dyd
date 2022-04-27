@@ -12,13 +12,9 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
         // navigate pane
         (SelectedPane::Diff, KeyCode::Left | KeyCode::Char('h')) => (),
         (SelectedPane::Repos, KeyCode::Left | KeyCode::Char('h')) => app.selected_pane = SelectedPane::Diff,
-        (SelectedPane::Stale, KeyCode::Left | KeyCode::Char('h')) => app.selected_pane = SelectedPane::Repos,
         (SelectedPane::Diff, KeyCode::Right | KeyCode::Char('l')) => app.selected_pane = SelectedPane::Repos,
-        (SelectedPane::Repos, KeyCode::Right | KeyCode::Char('l')) => app.selected_pane = SelectedPane::Stale,
-        (SelectedPane::Stale, KeyCode::Right | KeyCode::Char('l')) => (),
         (SelectedPane::Diff, KeyCode::Tab) => app.selected_pane = SelectedPane::Repos,
-        (SelectedPane::Repos, KeyCode::Tab) => app.selected_pane = SelectedPane::Stale,
-        (SelectedPane::Stale, KeyCode::Tab) => app.selected_pane = SelectedPane::Diff,
+        (SelectedPane::Repos, KeyCode::Tab) => app.selected_pane = SelectedPane::Diff,
         // open diff
         (SelectedPane::Diff, KeyCode::Char('d')) => open_git_difftool(app),
         // exit application on ESC or q
