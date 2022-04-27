@@ -20,10 +20,10 @@ pub fn render(app: &App) -> Table {
             .iter()
             .map(|log| {
                 let cells = [
-                    Cell::from(log.sha.clone()),
-                    Cell::from(log.age.clone()),
-                    Cell::from(log.author.clone()),
-                    Cell::from(log.message.clone()),
+                    Cell::from(sha(&log.sha)),
+                    Cell::from(age(&log.age)),
+                    Cell::from(author(&log.author)),
+                    Cell::from(message(&log.message)),
                 ];
                 Row::new(cells)
             })
@@ -38,7 +38,7 @@ pub fn render(app: &App) -> Table {
         .widths(&[
             Constraint::Length(9),
             Constraint::Length(17),
-            Constraint::Percentage(25),
+            Constraint::Percentage(20),
             Constraint::Percentage(100),
         ])
 }
@@ -48,4 +48,24 @@ fn title(app: &App) -> text::Span {
         .fg(super::selected_color(app, SelectedPane::Diff))
         .add_modifier(Modifier::BOLD);
     text::Span::styled(" Diff ", text_style)
+}
+
+fn age(text: &String) -> text::Span {
+    let text_style = Style::default().fg(Color::Red);
+    text::Span::styled(text, text_style)
+}
+
+fn author(text: &String) -> text::Span {
+    let text_style = Style::default().fg(Color::Yellow);
+    text::Span::styled(text, text_style)
+}
+
+fn message(text: &String) -> text::Span {
+    let text_style = Style::default().fg(Color::White);
+    text::Span::styled(text, text_style)
+}
+
+fn sha(text: &String) -> text::Span {
+    let text_style = Style::default();
+    text::Span::styled(text, text_style)
 }
