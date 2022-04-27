@@ -3,7 +3,7 @@ use crate::repo::{Log, Repo};
 use std::path::PathBuf;
 use std::process::Command;
 
-static GIT_FORMAT: &str = "%h\x0B%cI\x0B%ch\x0B%an\x0B%s";
+static GIT_FORMAT: &str = "%h\x0B%ct\x0B%ch\x0B%an\x0B%s";
 
 pub fn clone(origin: &String, path: &PathBuf) {
     let path_str = path.clone();

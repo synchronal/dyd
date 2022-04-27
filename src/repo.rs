@@ -2,6 +2,7 @@ use crate::app::AppResult;
 use crate::event::Event;
 use crate::git;
 use crate::manifest::Remote;
+use crate::time;
 
 use std::path::{Path, PathBuf};
 use std::sync::mpsc;
@@ -44,7 +45,7 @@ impl From<Remote> for Repo {
 pub struct Log {
     pub(crate) age: String,
     pub(crate) author: String,
-    pub commit_datetime: String,
+    pub commit_datetime: chrono::DateTime<chrono::Utc>,
     pub(crate) message: String,
     pub(crate) sha: String,
 }
@@ -53,7 +54,7 @@ impl From<&str> for Log {
     fn from(log_str: &str) -> Self {
         let values: Vec<&str> = log_str.split("\x0B").collect();
         let sha = values[0].to_owned();
-        let commit_datetime = values[1].to_owned();
+        let commit_datetime = time::parse_unix(values[1].to_owned()).unwrap();
         let age = values[2].to_owned();
         let author = values[3].to_owned();
         let message = values[4].to_owned();
