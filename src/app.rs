@@ -39,7 +39,7 @@ impl Default for SelectedPane {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct App {
     pub repos: IndexMap<String, Repo>,
     pub repo_state: TableState,
@@ -47,7 +47,7 @@ pub struct App {
     pub root_path: PathBuf,
     pub selected_pane: SelectedPane,
     pub selected_repo_state: TableState,
-    pub since: String,
+    pub since: chrono::DateTime<chrono::Utc>,
     pub state: AppState,
 }
 
@@ -72,9 +72,10 @@ impl From<Manifest> for App {
             repo_state,
             selected_repo_state,
             root_path: manifest.root.unwrap(),
-            since: manifest.since,
+            selected_pane: SelectedPane::default(),
+            since: manifest.since_datetime.unwrap(),
             running: true,
-            ..Default::default()
+            state: AppState::default(),
         }
     }
 }

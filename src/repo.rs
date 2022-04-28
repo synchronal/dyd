@@ -54,7 +54,7 @@ impl From<&str> for Log {
     fn from(log_str: &str) -> Self {
         let values: Vec<&str> = log_str.split("\x0B").collect();
         let sha = values[0].to_owned();
-        let commit_datetime = time::parse_unix(values[1].to_owned()).unwrap();
+        let commit_datetime = time::parse_unix(&values[1].to_owned()).unwrap();
         let age = values[2].to_owned();
         let author = values[3].to_owned();
         let message = values[4].to_owned();
