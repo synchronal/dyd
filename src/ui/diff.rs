@@ -19,13 +19,16 @@ pub fn render(app: &App) -> Table {
             .logs
             .iter()
             .map(|log| {
+                let stale = app.since >= log.commit_datetime;
+
                 let cells = [
                     Cell::from(sha(&log.sha)),
                     Cell::from(age(&log.age)),
                     Cell::from(author(&log.author)),
                     Cell::from(message(&log.message)),
                 ];
-                Row::new(cells)
+
+                Row::new(cells).style(stale_style(stale))
             })
             .collect()
     }
@@ -68,4 +71,12 @@ fn message(text: &String) -> text::Span {
 fn sha(text: &String) -> text::Span {
     let text_style = Style::default();
     text::Span::styled(text, text_style)
+}
+
+fn stale_style(stale: bool) -> Style {
+    if stale {
+        Style::default().add_modifier(Modifier::DIM)
+    } else {
+        Style::default()
+    }
 }
