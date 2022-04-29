@@ -3,6 +3,9 @@ name = "dyd"
 authors = ["Eric Saxby", "synchronal.dev"]
 description = "CLI for daily diffing of git repos"
 edition = "2021"
+exclude = [
+  "fixtures/*"
+]
 homepath = "https://github.com/synchronal/dyd"
 license = "MIT"
 readme = "README.md"
