@@ -83,11 +83,13 @@ fn relative_months(base: &DateTime<Utc>, amount: i64) -> AppResult<DateTime<Utc>
                 let year = base.year();
                 let last_day = get_days_from_month(year, (new_month + 1) as u32);
 
-                Ok(base.with_day(1)
+                Ok(base
+                    .with_day(1)
                     .unwrap()
                     .with_month0(new_month as u32)
                     .unwrap()
-                    .with_day(last_day as u32).unwrap())
+                    .with_day(last_day as u32)
+                    .unwrap())
             }
         }
     }

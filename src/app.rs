@@ -103,13 +103,7 @@ impl App {
         let sidebar = Layout::default()
             .direction(Direction::Vertical)
             .margin(0)
-            .constraints(
-                [
-                    Constraint::Ratio(7, 10),
-                    Constraint::Ratio(3, 10),
-                ]
-                .as_ref(),
-            )
+            .constraints([Constraint::Ratio(7, 10), Constraint::Ratio(3, 10)].as_ref())
             .split(layout[1]);
 
         frame.render_stateful_widget(ui::diff::render(self), layout[0], &mut self.selected_repo_state.clone());
