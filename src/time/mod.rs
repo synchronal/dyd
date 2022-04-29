@@ -1,3 +1,4 @@
+//! Functions for parsing time in different formats.
 use crate::app::AppResult;
 
 use chrono::prelude::*;
@@ -14,6 +15,7 @@ impl std::fmt::Display for ParseError {
 }
 impl std::error::Error for ParseError {}
 
+/// Transforms a UNIX timestamp to a DateTime in UTC.
 pub fn parse_unix(time: &String) -> AppResult<DateTime<Utc>> {
     let timestamp = time.parse::<i64>()?;
     let naive = NaiveDateTime::from_timestamp(timestamp, 0);
@@ -22,6 +24,14 @@ pub fn parse_unix(time: &String) -> AppResult<DateTime<Utc>> {
     Ok(datetime)
 }
 
+/// Transforms a description of relative time to a DateTime in UTC.
+///
+/// Relative times can be described in the following formats:
+///
+/// - `1 day ago`
+/// - `3 days ago`
+/// - `1 week ago`
+///
 pub fn parse_relative(string: &String, base: &DateTime<Utc>) -> AppResult<DateTime<Utc>> {
     lazy_static! {
         static ref PATTERN: Regex = Regex::new(r"^(?P<amount>\d+) (?P<unit>\w+) ago$").unwrap();
