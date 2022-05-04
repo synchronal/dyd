@@ -6,7 +6,6 @@ edition = "2021"
 exclude = [
   "fixtures/*"
 ]
-homepath = "https://github.com/synchronal/dyd"
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/synchronal/dyd"
