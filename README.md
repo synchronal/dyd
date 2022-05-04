@@ -1,5 +1,9 @@
 # DYD
 
+[![CI](https://github.com/synchronal/dyd/actions/workflows/tests.yml/badge.svg)](https://github.com/synchronal/dyd/actions)
+[![Hex pm](http://img.shields.io/crates/v/dyd.svg?style=flat)](https://crates.io/crates/dyd)
+[![License](http://img.shields.io/github/license/synchronal/dyd.svg?style=flat)](https://github.com/synchronal/dyd/blob/main/LICENSE.md)
+
 Daily diff.
 
 This command line tool facilitates the viewing of git diffs across multiple projects, across
