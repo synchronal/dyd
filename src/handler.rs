@@ -76,5 +76,5 @@ fn open_git_difftool(app: &App) {
     let selected_log = app.selected_repo_state.selected().unwrap();
     let log = &selected_repo.logs[selected_log];
 
-    git::open_difftool(&app.root_path, selected_repo, log);
+    git::open_difftool(&app.root_path, &app.difftool, selected_repo, log);
 }

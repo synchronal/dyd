@@ -41,6 +41,7 @@ impl Default for SelectedPane {
 
 #[derive(Debug)]
 pub struct App {
+    pub difftool: String,
     pub repos: IndexMap<String, Repo>,
     pub repo_state: TableState,
     pub running: bool,
@@ -71,6 +72,7 @@ impl From<Manifest> for App {
             repos,
             repo_state,
             selected_repo_state,
+            difftool: manifest.difftool,
             root_path: manifest.root.unwrap(),
             selected_pane: SelectedPane::default(),
             since: manifest.since_datetime.unwrap(),

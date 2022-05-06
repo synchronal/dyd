@@ -31,15 +31,30 @@ pub fn logs(path: &PathBuf) -> Vec<u8> {
         .stdout
 }
 
-pub fn open_difftool(root_path: &PathBuf, repo: &Repo, log: &Log) {
+pub fn open_difftool(root_path: &PathBuf, difftool: &String, repo: &Repo, log: &Log) {
+    let mut cmd: String = "".to_string();
+    let mut args: Vec<String> = vec![];
     let diff = format!("{}..head", log.sha);
     let repo_path = repo.path(root_path).unwrap();
 
-    Command::new("git")
-        .args(["difftool", "-g", &diff])
-        .current_dir(repo_path)
-        .output()
-        .unwrap();
+    let difftool_parts: Vec<&str> = difftool.split(" ").collect();
+    difftool_parts
+        .iter()
+        .enumerate()
+        .for_each(|(index, value)| {
+            if index == 0 {
+                cmd = value.to_string();
+            } else {
+                args.push(value.to_string());
+            }
+        });
+
+    args.push(diff);
+
+    match Command::new(cmd).args(args).current_dir(repo_path).output() {
+        Ok(_) => (),
+        Err(err) => eprintln!("\rError opening difftool:\r\n{:?}\r\ndifftool: {}", err, difftool),
+    };
 }
 
 pub fn pull(path: &PathBuf) {

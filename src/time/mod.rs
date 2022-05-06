@@ -6,14 +6,14 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 #[derive(Debug)]
-struct ParseError(String);
+struct TimeParseError(String);
 
-impl std::fmt::Display for ParseError {
+impl std::fmt::Display for TimeParseError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "There is an error: {}", self.0)
     }
 }
-impl std::error::Error for ParseError {}
+impl std::error::Error for TimeParseError {}
 
 /// Transforms a UNIX timestamp to a DateTime in UTC.
 pub fn parse_unix(time: &String) -> AppResult<DateTime<Utc>> {
@@ -39,7 +39,7 @@ pub fn parse_relative(string: &String, base: &DateTime<Utc>) -> AppResult<DateTi
 
     match PATTERN.captures(string) {
         Some(captures) => compute_relative(captures, base),
-        None => Err(Box::new(ParseError("Pattern should match 'N <units> ago".into()))),
+        None => Err(Box::new(TimeParseError("Pattern should match 'N <units> ago".into()))),
     }
 }
 
@@ -51,13 +51,13 @@ fn compute_relative(captures: regex::Captures, base: &DateTime<Utc>) -> AppResul
             "day" | "days" => chrono::Duration::days(amount),
             "month" | "months" => return relative_months(base, amount),
             "week" | "weeks" => chrono::Duration::weeks(amount),
-            other => return Err(Box::new(ParseError(format!("Unknown unit {}", other)))),
+            other => return Err(Box::new(TimeParseError(format!("Unknown unit {}", other)))),
         }
     };
 
     match base.checked_sub_signed(duration) {
         Some(time) => Ok(time),
-        None => Err(Box::new(ParseError("Unable to parse relative time".into()))),
+        None => Err(Box::new(TimeParseError("Unable to parse relative time".into()))),
     }
 }
 
@@ -220,9 +220,9 @@ mod tests {
     #[test]
     fn parse_relative_error() {
         let error = super::parse_relative(&"hello".to_owned(), &Utc::now()).unwrap_err();
-        assert!(error.is::<super::ParseError>());
+        assert!(error.is::<super::TimeParseError>());
 
         let error = super::parse_relative(&"2 moons ago".to_owned(), &Utc::now()).unwrap_err();
-        assert!(error.is::<super::ParseError>());
+        assert!(error.is::<super::TimeParseError>());
     }
 }
