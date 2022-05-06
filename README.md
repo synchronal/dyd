@@ -19,14 +19,18 @@ cargo install dyd
 
 Configure git with a GUI difftool:
 
+```toml
+[diff]
+  tool = Kaleidoscope
+  guitool = Kaleidoscope
+[difftool]
+  prompt = false
+[difftool "Kaleidoscope"]
+  cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[mergetool "Kaleidoscope"]
+  cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+  trustExitCode = true
 ```
-# Kaleidoscope is a paid tool, with a CLI installable with `brew install --cask ksdiff`
-difftool.Kaleidoscope.cmd=ksdiff --partial-changeset --relative-path "$MERGED" -- "$LOCAL" "$REMOTE"
-diff.guitool=Kaleidoscope
-```
-
-- TODO: gitx
-- TODO: kdiff3
 
 
 ## Usage
@@ -36,6 +40,8 @@ Create a manifest file at `dyd.toml` with the following format:
 ```toml
 since = "3 days ago"
 #       "  ^^^^ days | weeks | months
+
+## difftool = "my diff tool"
 
 [remotes]
 
@@ -69,6 +75,29 @@ j k <up> <down> - change current selection
 d - open git gui difftool
 q <esc> - quit
 ```
+
+
+## Other difftools
+
+IntelliJ IDEA:
+
+```toml
+[diff]
+  guitool = intellij
+[difftool "intellij"]
+  cmd = /Applications/IntelliJ\\ IDEA\\ CE.app/Contents/MacOS/idea diff $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE")
+```
+
+Manifest:
+
+```toml
+difftool = "git difftool --dir-diff -g -y"
+```
+
+TODO:
+- gitx
+- kdiff3
+- ???
 
 
 ## References
