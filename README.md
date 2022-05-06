@@ -103,7 +103,7 @@ IntelliJ IDEA:
 Manifest:
 
 ```toml
-difftool = "git difftool --dir-diff -g -y ${DIFF}"
+difftool = "git difftool --dir-diff --tool=intellij -y ${DIFF}"
 ```
 
 TODO:
