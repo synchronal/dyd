@@ -34,10 +34,18 @@ pub fn logs(path: &PathBuf) -> Vec<u8> {
 pub fn open_difftool(root_path: &PathBuf, difftool: &String, repo: &Repo, log: &Log) {
     let mut cmd: String = "".to_string();
     let mut args: Vec<String> = vec![];
-    let diff = format!("{}..head", log.sha);
+    let diff = format!("{}..HEAD", log.sha);
     let repo_path = repo.path(root_path).unwrap();
 
-    let difftool_parts: Vec<&str> = difftool.split(" ").collect();
+    let mut context = std::collections::HashMap::new();
+    context.insert("DIFF".to_string(), diff.clone());
+    context.insert("ORIGIN".to_string(), repo.origin.clone());
+    context.insert("REF_FROM".to_string(), log.sha.clone());
+    context.insert("REF_TO".to_string(), "HEAD".to_string());
+    assert!(envsubst::validate_vars(&context).is_ok());
+    let difftool_expansion = envsubst::substitute(difftool, &context).unwrap();
+
+    let difftool_parts: Vec<&str> = difftool_expansion.split(" ").collect();
     difftool_parts
         .iter()
         .enumerate()
@@ -49,9 +57,15 @@ pub fn open_difftool(root_path: &PathBuf, difftool: &String, repo: &Repo, log: &
             }
         });
 
-    args.push(diff);
-
-    match Command::new(cmd).args(args).current_dir(repo_path).output() {
+    match Command::new(cmd)
+        .args(args)
+        .env("DIFF", diff)
+        .env("REF_FROM", &log.sha)
+        .env("REF_TO", "HEAD")
+        .env("ORIGIN", &repo.origin)
+        .current_dir(repo_path)
+        .output()
+    {
         Ok(_) => (),
         Err(err) => eprintln!("\rError opening difftool:\r\n{:?}\r\ndifftool: {}", err, difftool),
     };

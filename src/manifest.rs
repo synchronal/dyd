@@ -29,7 +29,7 @@ pub struct Manifest {
 impl Default for Manifest {
     fn default() -> Self {
         Self {
-            difftool: "git difftool -g -y".to_string(),
+            difftool: "git difftool -g -y ${DIFF}".to_string(),
             since: "1 week ago".to_string(),
             since_datetime: None,
             remotes: HashMap::new(),
@@ -63,5 +63,5 @@ pub struct Remote {
 }
 
 fn default_difftool() -> String {
-    "git difftool -g -y".to_string()
+    "git difftool -g -y ${DIFF}".to_string()
 }

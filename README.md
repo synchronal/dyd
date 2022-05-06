@@ -54,6 +54,18 @@ name = "TUI"
 origin = "git@github.com:fdehau/tui-rs"
 ```
 
+- `since` - Must be in the format `<N>` `<units>` `ago`. Defaults to `1 week ago`.
+- `difftool` - Optional command to run in order to open a diff. Defaults to `git difftool -g -y ${DIFF}`.
+  - Variables that will be interpolated into the command, and also made available in the difftool
+    ENV. **IMPORTANT**: variables will **only** be replaced if they are in the format `${VAR}`,
+    including braces.
+    - `DIFF` - in the format `@{u}..HEAD`.
+    - `ORIGIN` - the origin used to check out the repository, ie
+      `git@github.com:<org>/<repo>(.git)?`
+    - `REF_FROM` - the sha of the earlier commit of the diff.
+    - `REF_TO` - the sha of the more recent commit of the diff. `HEAD`.
+- `remotes` - a list of remote repositories to clone and pull.
+
 Ensure that your shell is authorized with the origin. DYD will *not* route input to the SSH agent.
 
 ```shell
@@ -91,7 +103,7 @@ IntelliJ IDEA:
 Manifest:
 
 ```toml
-difftool = "git difftool --dir-diff -g -y"
+difftool = "git difftool --dir-diff -g -y ${DIFF}"
 ```
 
 TODO:
