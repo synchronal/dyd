@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+trap "exit" INT
+
+source ".medic/_support/cecho.sh"
+source ".medic/_support/step.sh"
+
+step_header "Build: Darwin aarch64" "cargo build --target aarch64-apple-darwin -r"
+echo
+cargo build --target aarch64-apple-darwin -r
+
+step_header "Build: Darwin x86_64" "cargo build --target x86_64-apple-darwin -r"
+echo
+cargo build --target x86_64-apple-darwin -r

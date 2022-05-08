@@ -3,6 +3,8 @@
 bin/dev/audit
 bin/dev/update
 bin/dev/test
+bin/dev/release
+
 git push origin HEAD
 
 source ".medic/_support/cecho.sh"
