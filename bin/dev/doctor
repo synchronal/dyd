@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+trap "exit" INT
+
+source ".medic/_support/cecho.sh"
+source ".medic/_support/check.sh"
+
+check "Cargo audit installed" \
+  "cargo --list | grep -E ' audit( |$)'" \
+  "cargo install cargo-audit"
+
+check "Rustup MacOS target installed: aarch64" \
+  "rustup target list | grep 'aarch64-apple-darwin (installed)'" \
+  "rustup target install aarch64-apple-darwin"
+
+check "Rustup MacOS target installed: x86_64" \
+  "rustup target list | grep 'x86_64-apple-darwin (installed)'" \
+  "rustup target install x86_64-apple-darwin"
+

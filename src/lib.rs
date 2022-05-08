@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "strict", deny(warnings))]
+
 //! DYD is a CLI for diffing multiple git repositories.
 //!
 //! It relies on the shell for authentication to remote origins, and uses

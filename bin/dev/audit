@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -exo pipefail
+
+set +e           ## chrono and time have known potential segfaults
+cargo audit
+set -e
+
+cargo fmt --check
+
