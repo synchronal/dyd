@@ -7,4 +7,4 @@ cargo audit
 set -e
 
 cargo fmt --check
-
+cargo clippy
