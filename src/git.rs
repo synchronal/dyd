@@ -1,12 +1,12 @@
 use crate::repo::{Log, Repo};
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 static GIT_FORMAT: &str = "%h\x0B%ct\x0B%ch\x0B%an\x0B%s";
 
-pub fn clone(origin: &String, path: &PathBuf) {
-    let path_str = path.clone();
+pub fn clone(origin: &String, path: &Path) {
+    let path_str = path.to_path_buf();
 
     Command::new("git")
         .args(["clone", origin, path_str.to_str().unwrap()])
@@ -31,7 +31,7 @@ pub fn logs(path: &PathBuf) -> Vec<u8> {
         .stdout
 }
 
-pub fn open_difftool(root_path: &PathBuf, difftool: &String, repo: &Repo, log: &Log) {
+pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log) {
     let mut cmd: String = "".to_string();
     let mut args: Vec<String> = vec![];
     let diff = format!("{}..HEAD", log.sha);
@@ -45,7 +45,7 @@ pub fn open_difftool(root_path: &PathBuf, difftool: &String, repo: &Repo, log: &
     assert!(envsubst::validate_vars(&context).is_ok());
     let difftool_expansion = envsubst::substitute(difftool, &context).unwrap();
 
-    let difftool_parts: Vec<&str> = difftool_expansion.split(" ").collect();
+    let difftool_parts: Vec<&str> = difftool_expansion.split(' ').collect();
     difftool_parts
         .iter()
         .enumerate()

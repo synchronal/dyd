@@ -52,9 +52,9 @@ pub struct Log {
 
 impl From<&str> for Log {
     fn from(log_str: &str) -> Self {
-        let values: Vec<&str> = log_str.split("\x0B").collect();
+        let values: Vec<&str> = log_str.split('\x0B').collect();
         let sha = values[0].to_owned();
-        let commit_datetime = time::parse_unix(&values[1].to_owned()).unwrap();
+        let commit_datetime = time::parse_unix(values[1]).unwrap();
         let age = values[2].to_owned();
         let author = values[3].to_owned();
         let message = values[4].to_owned();
@@ -69,7 +69,7 @@ impl From<&str> for Log {
 }
 
 impl Repo {
-    pub fn update(&self, id: String, root_path: &PathBuf, sender: mpsc::Sender<Event>) -> AppResult<()> {
+    pub fn update(&self, id: String, root_path: &Path, sender: mpsc::Sender<Event>) -> AppResult<()> {
         let path = self.path(root_path)?;
         let origin = self.origin.clone();
 
@@ -94,13 +94,11 @@ impl Repo {
             sender
                 .send(Event::RepoStatusComplete(id.clone(), logs))
                 .unwrap();
-
-            ()
         });
         Ok(())
     }
 
-    pub fn path(&self, root: &PathBuf) -> AppResult<PathBuf> {
+    pub fn path(&self, root: &Path) -> AppResult<PathBuf> {
         if let Some(path) = Path::new(&self.origin).file_name() {
             Ok(root.join(path))
         } else {
@@ -114,7 +112,7 @@ impl Repo {
         std::str::from_utf8(&logs)
             .unwrap()
             .trim()
-            .split("\n")
+            .split('\n')
             .into_iter()
             .map(|l| l.into())
             .collect()

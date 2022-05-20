@@ -16,7 +16,7 @@ impl std::fmt::Display for TimeParseError {
 impl std::error::Error for TimeParseError {}
 
 /// Transforms a UNIX timestamp to a DateTime in UTC.
-pub fn parse_unix(time: &String) -> AppResult<DateTime<Utc>> {
+pub fn parse_unix(time: &str) -> AppResult<DateTime<Utc>> {
     let timestamp = time.parse::<i64>()?;
     let naive = NaiveDateTime::from_timestamp(timestamp, 0);
     let datetime: DateTime<Utc> = DateTime::from_utc(naive, Utc);
@@ -32,7 +32,7 @@ pub fn parse_unix(time: &String) -> AppResult<DateTime<Utc>> {
 /// - `3 days ago`
 /// - `1 week ago`
 ///
-pub fn parse_relative(string: &String, base: &DateTime<Utc>) -> AppResult<DateTime<Utc>> {
+pub fn parse_relative(string: &str, base: &DateTime<Utc>) -> AppResult<DateTime<Utc>> {
     lazy_static! {
         static ref PATTERN: Regex = Regex::new(r"^(?P<amount>\d+) (?P<unit>\w+) ago$").unwrap();
     }

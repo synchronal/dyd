@@ -6,6 +6,12 @@ pub struct CLI {
     pub manifest: std::path::PathBuf,
 }
 
+impl Default for CLI {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CLI {
     pub fn new() -> Self {
         CLI::parse()

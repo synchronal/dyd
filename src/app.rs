@@ -61,7 +61,7 @@ impl From<Manifest> for App {
             .collect();
 
         let mut repo_state = TableState::default();
-        if repos.len() > 0 {
+        if !repos.is_empty() {
             repo_state.select(Some(0))
         }
 
@@ -84,12 +84,9 @@ impl From<Manifest> for App {
 
 impl App {
     pub fn tick(&mut self, sender: mpsc::Sender<Event>) -> AppResult<()> {
-        match self.state {
-            AppState::Init => {
-                self.update(sender)?;
-                self.state = AppState::Checking;
-            }
-            _ => {}
+        if self.state == AppState::Init {
+            self.update(sender)?;
+            self.state = AppState::Checking;
         }
         Ok(())
     }
