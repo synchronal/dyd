@@ -19,13 +19,22 @@ cargo build --target x86_64-apple-darwin -r
 
 echo
 step "Package: Darwin aarch64" \
-  "tar -czf tmp/release/dyd-darwin-arm64.tar.gz target/aarch64-apple-darwin/release/dyd"
-
-step "shasum: Darwin aarch64" \
-  "sha256sum tmp/release/dyd-darwin-arm64.tar.gz > tmp/release/dyd-darwin-arm64.sha256sum"
+  "(cd target/aarch64-apple-darwin/release && tar -czf ../../../tmp/release/dyd-darwin-arm64.tar.gz dyd)"
 
 step "Package: Darwin x86_64" \
-  "tar -czf tmp/release/dyd-darwin-x86_64.tar.gz target/x86_64-apple-darwin/release/dyd"
+  "(cd target/x86_64-apple-darwin/release && tar -czf ../../../tmp/release/dyd-darwin-x86_64.tar.gz dyd)"
+
+step "Package: Darwin universal" \
+  "(mkdir -p target/universal-apple-darwin/release \
+    && cd target/universal-apple-darwin/release \
+    && lipo ../../aarch64-apple-darwin/release/dyd ../../x86_64-apple-darwin/release/dyd -create -output dyd \
+    && tar -czf ../../../tmp/release/dyd-darwin-universal.tar.gz dyd)"
+
+step "shasum: Darwin aarch64" \
+  "(cd tmp/release && sha256sum dyd-darwin-arm64.tar.gz > dyd-darwin-arm64.sha256sum)"
 
 step "shasum: Darwin x84_64" \
-  "sha256sum tmp/release/dyd-darwin-x86_64.tar.gz > tmp/release/dyd-darwin-x86_64.sha256sum"
+  "(cd tmp/release && sha256sum dyd-darwin-x86_64.tar.gz > dyd-darwin-x86_64.sha256sum)"
+
+step "shasum: Darwin universal" \
+  "(cd tmp/release && sha256sum dyd-darwin-universal.tar.gz > dyd-darwin-universal.sha256sum)"
