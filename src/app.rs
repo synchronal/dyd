@@ -4,6 +4,7 @@ use crate::repo::{Log, Repo, RepoStatus};
 use crate::ui;
 
 use indexmap::map::IndexMap;
+use std::cmp::Ordering;
 use std::error;
 use std::path::PathBuf;
 use std::sync::mpsc;
@@ -129,6 +130,25 @@ impl App {
             repo.logs = logs;
             repo.status = RepoStatus::Finished;
         }
+
+        self.repos.sort_by(&Self::sort_repos);
+
         Ok(())
+    }
+
+    fn sort_repos(_key1: &String, repo1: &Repo, _key2: &String, repo2: &Repo) -> Ordering {
+        if !repo1.logs.is_empty() && !repo2.logs.is_empty() {
+            let commit1 = repo1.logs[0].commit_datetime;
+            let commit2 = repo2.logs[0].commit_datetime;
+
+            if commit1 > commit2 {
+                return Ordering::Less;
+            };
+            if commit1 < commit2 {
+                return Ordering::Greater;
+            };
+        };
+
+        Ordering::Equal
     }
 }
