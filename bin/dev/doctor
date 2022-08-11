@@ -6,7 +6,7 @@ source ".medic/_support/cecho.sh"
 source ".medic/_support/check.sh"
 
 check "Cargo audit installed" \
-  "cargo --list | grep -E ' audit( |$)'" \
+  "cargo audit --help >/dev/null 2>&1" \
   "cargo install cargo-audit"
 
 check "Rustup MacOS target installed: aarch64" \
