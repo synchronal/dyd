@@ -14,3 +14,4 @@ pub mod repo;
 pub mod time;
 pub mod tui;
 pub mod ui;
+pub mod widget;

@@ -2,6 +2,7 @@ use crate::event::Event;
 use crate::manifest::Manifest;
 use crate::repo::{Log, Repo, RepoStatus};
 use crate::ui;
+use crate::widget::calendar::CalendarState;
 
 use indexmap::map::IndexMap;
 use std::cmp::Ordering;
@@ -15,38 +16,38 @@ use tui::widgets::TableState;
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Default, PartialEq)]
 pub enum AppState {
+    #[default]
     Init,
     Checking,
 }
 
-impl Default for AppState {
-    fn default() -> Self {
-        AppState::Init
-    }
-}
-
 /// Selected pane
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Default, PartialEq)]
 pub enum SelectedPane {
     Diff,
+    #[default]
     Repos,
 }
 
-impl Default for SelectedPane {
-    fn default() -> Self {
-        SelectedPane::Repos
-    }
+/// Modal
+#[derive(Debug, Default, PartialEq)]
+pub enum SelectedModal {
+    #[default]
+    None,
+    Calendar,
 }
 
 #[derive(Debug)]
 pub struct App {
+    pub calendar_state: crate::widget::calendar::CalendarState,
     pub difftool: String,
-    pub repos: IndexMap<String, Repo>,
+    pub modal: SelectedModal,
     pub repo_state: TableState,
-    pub running: bool,
+    pub repos: IndexMap<String, Repo>,
     pub root_path: PathBuf,
+    pub running: bool,
     pub selected_pane: SelectedPane,
     pub selected_repo_state: TableState,
     pub since: chrono::DateTime<chrono::Utc>,
@@ -69,15 +70,20 @@ impl From<Manifest> for App {
         let mut selected_repo_state = TableState::default();
         selected_repo_state.select(Some(0));
 
+        let since = manifest.since_datetime.unwrap();
+        let calendar_state = CalendarState::from_datetime(&since);
+
         Self {
+            calendar_state,
             repos,
             repo_state,
             selected_repo_state,
+            since,
             difftool: manifest.difftool,
+            modal: SelectedModal::default(),
             root_path: manifest.root.unwrap(),
-            selected_pane: SelectedPane::default(),
-            since: manifest.since_datetime.unwrap(),
             running: true,
+            selected_pane: SelectedPane::default(),
             state: AppState::default(),
         }
     }
@@ -109,6 +115,8 @@ impl App {
         frame.render_stateful_widget(ui::diff::render(self), layout[0], &mut self.selected_repo_state.clone());
         frame.render_stateful_widget(ui::repos::render(self), sidebar[0], &mut self.repo_state.clone());
         frame.render_widget(ui::help::render(self), sidebar[1]);
+
+        ui::modal::render(self, frame);
     }
 
     pub fn update(&self, sender: mpsc::Sender<Event>) -> AppResult<()> {

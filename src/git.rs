@@ -20,7 +20,7 @@ pub fn logs(path: &PathBuf) -> Vec<u8> {
             "log",
             "--date=local",
             "-n",
-            "100",
+            "400",
             "--abbrev-commit",
             "--color=always",
             &format!("--pretty=tformat:{}", GIT_FORMAT),
