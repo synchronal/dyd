@@ -32,11 +32,15 @@ pub fn render(app: &App) -> Paragraph {
             Span::raw(" — "),
             Span::raw("open git difftool"),
         ]),
+        Spans::from(vec![Span::raw("   ")]),
         Spans::from(vec![
-            Span::raw(" s <esc>"),
+            Span::raw(" s      "),
             Span::raw(" — "),
             Span::raw("open / close calendar"),
         ]),
+        Spans::from(vec![Span::raw(" <enter>"), Span::raw(" — "), Span::raw("select date")]),
+        Spans::from(vec![Span::raw(" <esc>  "), Span::raw(" — "), Span::raw("close modal")]),
+        Spans::from(vec![Span::raw("   ")]),
         Spans::from(vec![Span::raw(" q <esc>"), Span::raw(" — "), Span::raw("quit")]),
     ];
 
