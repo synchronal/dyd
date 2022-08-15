@@ -21,6 +21,12 @@ pub fn render(app: &App) -> Paragraph {
             Span::raw(" — "),
             Span::raw("next / previous"),
         ]),
+        Spans::from(vec![Span::raw(" f␣     "), Span::raw(" — "), Span::raw("page forward")]),
+        Spans::from(vec![
+            Span::raw(" b      "),
+            Span::raw(" — "),
+            Span::raw("page backwards"),
+        ]),
         Spans::from(vec![
             Span::raw(" d      "),
             Span::raw(" — "),
