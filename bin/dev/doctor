@@ -5,6 +5,10 @@ trap "exit" INT
 source ".medic/_support/cecho.sh"
 source ".medic/_support/check.sh"
 
+check "Brewfile" \
+  "brew bundle check" \
+  "brew bundle"
+
 check "Cargo audit installed" \
   "cargo audit --help >/dev/null 2>&1" \
   "cargo install cargo-audit"

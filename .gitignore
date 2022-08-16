@@ -2,3 +2,4 @@
 /.local
 /target
 /tmp
+Brewfile.lock.json
