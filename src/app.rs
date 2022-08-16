@@ -16,7 +16,7 @@ use tui::widgets::TableState;
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
-#[derive(Debug, Default, PartialEq)]
+#[derive(Debug, Default, PartialEq, Eq)]
 pub enum AppState {
     #[default]
     Init,
@@ -24,7 +24,7 @@ pub enum AppState {
 }
 
 /// Selected pane
-#[derive(Debug, Default, PartialEq)]
+#[derive(Debug, Default, PartialEq, Eq)]
 pub enum SelectedPane {
     Diff,
     #[default]
@@ -32,7 +32,7 @@ pub enum SelectedPane {
 }
 
 /// Modal
-#[derive(Debug, Default, PartialEq)]
+#[derive(Debug, Default, PartialEq, Eq)]
 pub enum SelectedModal {
     #[default]
     None,

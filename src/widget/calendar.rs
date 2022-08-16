@@ -4,7 +4,7 @@ use tui::layout::Rect;
 use tui::style::{Color, Modifier, Style};
 use tui::widgets::{Block, StatefulWidget, Widget};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Calendar<'a> {
     block: Option<Block<'a>>,
     style: Style,
@@ -24,7 +24,7 @@ impl<'a> Calendar<'a> {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CalendarState {
     datetime: NaiveDate,
 }
@@ -64,11 +64,11 @@ impl CalendarState {
     }
 
     pub fn decrement(&mut self, days: i64) {
-        self.datetime = self.datetime - Duration::days(days);
+        self.datetime -= Duration::days(days);
     }
 
     pub fn increment(&mut self, days: i64) {
-        self.datetime = self.datetime + Duration::days(days);
+        self.datetime += Duration::days(days);
     }
 }
 
@@ -121,9 +121,9 @@ impl<'a> StatefulWidget for Calendar<'a> {
                 printing = false;
             } else {
                 if day_of_week == Weekday::Sat {
-                    printing_week = printing_week + 1;
+                    printing_week += 1;
                 }
-                current_date = current_date + Duration::days(1);
+                current_date += Duration::days(1);
             }
         }
     }
