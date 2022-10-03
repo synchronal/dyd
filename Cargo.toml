@@ -17,7 +17,7 @@ version = "0.5.0"
 
 anyhow = "1.0"
 chrono = "0.4"
-clap = { version = "3.1", features = ["derive"] }
+clap = { version = "4.0", features = ["derive"] }
 crossterm = "0.24"
 envsubst = "0.2"
 indexmap = "1.3"
