@@ -1,5 +1,5 @@
 use dyd::app::{App, AppResult};
-use dyd::cli::CLI;
+use dyd::cli::{CLI, Command};
 use dyd::event::{Event, EventHandler};
 use dyd::handler::handle_key_events;
 use dyd::manifest::Manifest;
@@ -12,8 +12,20 @@ use tui::Terminal;
 
 fn main() -> AppResult<()> {
     let args = CLI::new();
+
+    match args.command {
+        Some(Command::Diff{manifest}) => {
+            diff(manifest)
+        }
+        None => {
+            diff(std::path::PathBuf::from("dyd.toml"))
+        }
+    }
+}
+
+fn diff(manifest: std::path::PathBuf) -> AppResult<()> {
     let path = setup_dyd_path()?;
-    let manifest = Manifest::new(args, path)?;
+    let manifest = Manifest::new(manifest, path)?;
     let mut app: App = manifest.into();
 
     let backend = CrosstermBackend::new(std::io::stderr());
@@ -37,6 +49,7 @@ fn main() -> AppResult<()> {
     }
 
     tui.exit()?;
+
     Ok(())
 }
 
