@@ -1,11 +1,12 @@
 use dyd::app::{App, AppResult};
-use dyd::cli::{CLI, Command};
+use dyd::cli::{Command, CLI};
 use dyd::event::{Event, EventHandler};
 use dyd::handler::handle_key_events;
 use dyd::manifest::Manifest;
 use dyd::tui::Tui;
 
 use anyhow::Context;
+use std::io::Write;
 use std::path::{Path, PathBuf};
 use tui::backend::CrosstermBackend;
 use tui::Terminal;
@@ -14,12 +15,9 @@ fn main() -> AppResult<()> {
     let args = CLI::new();
 
     match args.command {
-        Some(Command::Diff{manifest}) => {
-            diff(manifest)
-        }
-        None => {
-            diff(std::path::PathBuf::from("dyd.toml"))
-        }
+        None => diff(std::path::PathBuf::from("dyd.toml")),
+        Some(Command::Diff { manifest }) => diff(manifest),
+        Some(Command::Init { manifest }) => write_default_manifest(manifest),
     }
 }
 
@@ -50,6 +48,26 @@ fn diff(manifest: std::path::PathBuf) -> AppResult<()> {
 
     tui.exit()?;
 
+    Ok(())
+}
+
+fn write_default_manifest(manifest_path: std::path::PathBuf) -> AppResult<()> {
+    println!("Creating file: {:?}", &manifest_path);
+
+    let mut file = std::fs::OpenOptions::new()
+        .create_new(true)
+        .write(true)
+        .append(true)
+        .open(manifest_path)?;
+
+    writeln!(file, "since = \"5 days ago\"")?;
+    writeln!(file)?;
+    writeln!(file, "[remotes]")?;
+    writeln!(file)?;
+    writeln!(file, "[remotes.dyd]")?;
+    writeln!(file, "name = \"Daily diff\"")?;
+    writeln!(file, "origin = \"git@github.com:sychronal/dyd\"")?;
+    writeln!(file)?;
     Ok(())
 }
 

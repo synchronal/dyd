@@ -12,7 +12,11 @@ pub enum Command {
     Diff {
         #[clap(short, long, default_value = "dyd.toml")]
         manifest: std::path::PathBuf,
-    }
+    },
+    Init {
+        #[clap(short, long, default_value = "dyd.toml")]
+        manifest: std::path::PathBuf,
+    },
 }
 
 impl Default for CLI {
