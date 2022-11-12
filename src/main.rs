@@ -12,68 +12,68 @@ use tui::backend::CrosstermBackend;
 use tui::Terminal;
 
 fn main() -> AppResult<()> {
-    let args = CLI::new();
+  let args = CLI::new();
 
-    match args.command {
-        None => diff(std::path::PathBuf::from("dyd.toml")),
-        Some(Command::Diff { manifest }) => diff(manifest),
-        Some(Command::Init { manifest }) => write_default_manifest(manifest),
-    }
+  match args.command {
+    None => diff(std::path::PathBuf::from("dyd.toml")),
+    Some(Command::Diff { manifest }) => diff(manifest),
+    Some(Command::Init { manifest }) => write_default_manifest(manifest),
+  }
 }
 
 fn diff(manifest: std::path::PathBuf) -> AppResult<()> {
-    let path = setup_dyd_path()?;
-    let manifest = Manifest::new(manifest, path)?;
-    let mut app: App = manifest.into();
+  let path = setup_dyd_path()?;
+  let manifest = Manifest::new(manifest, path)?;
+  let mut app: App = manifest.into();
 
-    let backend = CrosstermBackend::new(std::io::stderr());
-    let terminal = Terminal::new(backend)?;
-    let events = EventHandler::new(250);
-    let mut tui = Tui::new(terminal, events);
+  let backend = CrosstermBackend::new(std::io::stderr());
+  let terminal = Terminal::new(backend)?;
+  let events = EventHandler::new(250);
+  let mut tui = Tui::new(terminal, events);
 
-    tui.init()?;
+  tui.init()?;
 
-    while app.running {
-        tui.draw(&mut app)?;
+  while app.running {
+    tui.draw(&mut app)?;
 
-        match tui.events.next()? {
-            Event::Tick(sender) => app.tick(sender)?,
-            Event::Key(key_event) => handle_key_events(key_event, &mut app)?,
-            Event::Mouse(_) => {}
-            Event::Resize(_, _) => {}
-            Event::RepoStatusChange(id, state) => app.update_repo_status(id, state)?,
-            Event::RepoStatusComplete(id, logs) => app.update_repo_logs(id, logs)?,
-        }
+    match tui.events.next()? {
+      Event::Tick(sender) => app.tick(sender)?,
+      Event::Key(key_event) => handle_key_events(key_event, &mut app)?,
+      Event::Mouse(_) => {}
+      Event::Resize(_, _) => {}
+      Event::RepoStatusChange(id, state) => app.update_repo_status(id, state)?,
+      Event::RepoStatusComplete(id, logs) => app.update_repo_logs(id, logs)?,
     }
+  }
 
-    tui.exit()?;
+  tui.exit()?;
 
-    Ok(())
+  Ok(())
 }
 
 fn write_default_manifest(manifest_path: std::path::PathBuf) -> AppResult<()> {
-    println!("Creating file: {:?}", &manifest_path);
+  println!("Creating file: {:?}", &manifest_path);
 
-    let mut file = std::fs::OpenOptions::new()
-        .create_new(true)
-        .write(true)
-        .append(true)
-        .open(manifest_path)?;
+  let mut file = std::fs::OpenOptions::new()
+    .create_new(true)
+    .write(true)
+    .append(true)
+    .open(manifest_path)?;
 
-    writeln!(file, "since = \"5 days ago\"")?;
-    writeln!(file)?;
-    writeln!(file, "[remotes]")?;
-    writeln!(file)?;
-    writeln!(file, "[remotes.dyd]")?;
-    writeln!(file, "name = \"Daily diff\"")?;
-    writeln!(file, "origin = \"git@github.com:sychronal/dyd\"")?;
-    writeln!(file)?;
-    Ok(())
+  writeln!(file, "since = \"5 days ago\"")?;
+  writeln!(file)?;
+  writeln!(file, "[remotes]")?;
+  writeln!(file)?;
+  writeln!(file, "[remotes.dyd]")?;
+  writeln!(file, "name = \"Daily diff\"")?;
+  writeln!(file, "origin = \"git@github.com:sychronal/dyd\"")?;
+  writeln!(file)?;
+  Ok(())
 }
 
 fn setup_dyd_path() -> AppResult<PathBuf> {
-    let home = std::env::var("HOME").context("Unable to access HOME")?;
-    let path = Path::new(&home).join(".local/share/dyd");
-    std::fs::create_dir_all(&path)?;
-    Ok(path)
+  let home = std::env::var("HOME").context("Unable to access HOME")?;
+  let path = Path::new(&home).join(".local/share/dyd");
+  std::fs::create_dir_all(&path)?;
+  Ok(path)
 }

@@ -8,59 +8,59 @@ use std::path::PathBuf;
 struct ManifestParseError(String);
 
 impl std::fmt::Display for ManifestParseError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "There is an error: {}", self.0)
-    }
+  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    write!(f, "There is an error: {}", self.0)
+  }
 }
 impl std::error::Error for ManifestParseError {}
 
 #[derive(Debug, Deserialize)]
 pub struct Manifest {
-    #[serde(default = "default_difftool")]
-    pub(crate) difftool: String,
-    pub(crate) since: String,
-    #[serde(skip)]
-    pub(crate) since_datetime: Option<chrono::DateTime<chrono::Utc>>,
-    pub(crate) remotes: HashMap<String, Remote>,
-    pub(crate) root: Option<PathBuf>,
+  #[serde(default = "default_difftool")]
+  pub(crate) difftool: String,
+  pub(crate) since: String,
+  #[serde(skip)]
+  pub(crate) since_datetime: Option<chrono::DateTime<chrono::Utc>>,
+  pub(crate) remotes: HashMap<String, Remote>,
+  pub(crate) root: Option<PathBuf>,
 }
 
 impl Default for Manifest {
-    fn default() -> Self {
-        Self {
-            difftool: "git difftool -g -y ${DIFF}".to_string(),
-            since: "1 week ago".to_string(),
-            since_datetime: None,
-            remotes: HashMap::new(),
-            root: None,
-        }
+  fn default() -> Self {
+    Self {
+      difftool: "git difftool -g -y ${DIFF}".to_string(),
+      since: "1 week ago".to_string(),
+      since_datetime: None,
+      remotes: HashMap::new(),
+      root: None,
     }
+  }
 }
 
 impl Manifest {
-    pub fn new(path: std::path::PathBuf, root: PathBuf) -> Result<Manifest, Box<dyn std::error::Error>> {
-        let manifest_contents = std::fs::read_to_string(&path)
-            .with_context(|| format!("Error reading file: `{}`", &path.to_str().unwrap()))?;
+  pub fn new(path: std::path::PathBuf, root: PathBuf) -> Result<Manifest, Box<dyn std::error::Error>> {
+    let manifest_contents =
+      std::fs::read_to_string(&path).with_context(|| format!("Error reading file: `{}`", &path.to_str().unwrap()))?;
 
-        let mut manifest: Manifest = toml::from_str(&manifest_contents)?;
-        let since_datetime = time::parse_relative(&manifest.since, &chrono::Utc::now())?;
-        if manifest.difftool.is_empty() {
-            return Err(Box::new(ManifestParseError(
-                "When difftool is present in manifest, it must have length > 0".to_string(),
-            )));
-        }
-        manifest.root = Some(root);
-        manifest.since_datetime = Some(since_datetime);
-        Ok(manifest)
+    let mut manifest: Manifest = toml::from_str(&manifest_contents)?;
+    let since_datetime = time::parse_relative(&manifest.since, &chrono::Utc::now())?;
+    if manifest.difftool.is_empty() {
+      return Err(Box::new(ManifestParseError(
+        "When difftool is present in manifest, it must have length > 0".to_string(),
+      )));
     }
+    manifest.root = Some(root);
+    manifest.since_datetime = Some(since_datetime);
+    Ok(manifest)
+  }
 }
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Remote {
-    pub(crate) name: String,
-    pub(crate) origin: String,
+  pub(crate) name: String,
+  pub(crate) origin: String,
 }
 
 fn default_difftool() -> String {
-    "git difftool -g -y ${DIFF}".to_string()
+  "git difftool -g -y ${DIFF}".to_string()
 }

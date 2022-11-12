@@ -7,9 +7,9 @@ pub mod modal;
 pub mod repos;
 
 pub fn selected_color(app: &App, pane: SelectedPane) -> Color {
-    if pane == app.selected_pane {
-        Color::Red
-    } else {
-        Color::Reset
-    }
+  if pane == app.selected_pane {
+    Color::Red
+  } else {
+    Color::Reset
+  }
 }
