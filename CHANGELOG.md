@@ -1,5 +1,10 @@
 # Change log
 
+### 1.1.0
+
+Adds `r` binding to refresh all repos.
+
+
 ### 1.0.0
 
 Adds subcommands (`diff`, `init`) with the default subcommand being `diff`. When not
