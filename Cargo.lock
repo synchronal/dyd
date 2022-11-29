@@ -228,7 +228,7 @@ dependencies = [
 
 [[package]]
 name = "dyd"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "anyhow",
  "chrono",
