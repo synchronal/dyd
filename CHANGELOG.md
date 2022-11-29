@@ -1,5 +1,10 @@
 # Change log
 
+### 1.1.1
+
+Handle log parsing for repos with no commits.
+
+
 ### 1.1.0
 
 Adds `r` binding to refresh all repos.

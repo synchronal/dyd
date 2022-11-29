@@ -9,3 +9,7 @@ origin = "https://github.com/phoenixframework/phoenix.git"
 [remotes.phoenix_live_view]
 name = "Phoenix LiveView"
 origin = "https://github.com/phoenixframework/phoenix_live_view.git"
+
+[remotes.empty-repo]
+name = "Empty repo"
+origin = "https://github.com/sax/empty-repo.git"

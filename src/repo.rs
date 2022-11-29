@@ -53,17 +53,28 @@ pub struct Log {
 impl From<&str> for Log {
   fn from(log_str: &str) -> Self {
     let values: Vec<&str> = log_str.split('\x0B').collect();
-    let sha = values[0].to_owned();
-    let commit_datetime = time::parse_unix(values[1]).unwrap();
-    let age = values[2].to_owned();
-    let author = values[3].to_owned();
-    let message = values[4].to_owned();
-    Self {
-      age,
-      author,
-      commit_datetime,
-      message,
-      sha,
+
+    if let &[sha, cdate, age, author, message] = &*values {
+      let sha = sha.to_owned();
+      let commit_datetime = time::parse_unix(cdate).unwrap();
+      let age = age.to_owned();
+      let author = author.to_owned();
+      let message = message.to_owned();
+      Self {
+        age,
+        author,
+        commit_datetime,
+        message,
+        sha,
+      }
+    } else {
+      Self {
+        age: "".to_owned(),
+        author: "".to_owned(),
+        commit_datetime: time::parse_unix("0").unwrap(),
+        message: "".to_owned(),
+        sha: "".to_owned(),
+      }
     }
   }
 }
