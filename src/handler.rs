@@ -37,6 +37,10 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
     // open diff
     (SelectedPane::Diff, _, KeyCode::Char('d')) => open_git_difftool(app),
 
+    // update
+    (SelectedPane::Diff, _, KeyCode::Char('r')) => app.reset(),
+    (SelectedPane::Repos, _, KeyCode::Char('r')) => app.reset(),
+
     // exit application on ESC, q, or Ctrl-D
     (_, SelectedModal::None, KeyCode::Esc) => app.running = false,
     (_, _, KeyCode::Char('q') | KeyCode::Char('Q')) => app.running = false,

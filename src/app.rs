@@ -119,6 +119,10 @@ impl App {
     ui::modal::render(self, frame);
   }
 
+  pub fn reset(&mut self) {
+    self.state = AppState::Init;
+  }
+
   pub fn update(&self, sender: mpsc::Sender<Event>) -> AppResult<()> {
     for (id, repo) in &self.repos {
       repo.update(id.clone(), &self.root_path, sender.clone())?;

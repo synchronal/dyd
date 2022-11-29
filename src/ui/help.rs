@@ -32,6 +32,11 @@ pub fn render(app: &App) -> Paragraph {
       Span::raw(" — "),
       Span::raw("open git difftool"),
     ]),
+    Spans::from(vec![
+      Span::raw(" r      "),
+      Span::raw(" — "),
+      Span::raw("refresh repos"),
+    ]),
     Spans::from(vec![Span::raw("   ")]),
     Spans::from(vec![
       Span::raw(" s      "),
