@@ -2,5 +2,5 @@
 
 set -e
 
-cargo run -- -m "${DEVELOPMENT_MANIFEST}"
+cargo run -- diff -m "${DEVELOPMENT_MANIFEST}"
 
