@@ -172,7 +172,7 @@ fn day_x_offset(day: u32, weekday: Weekday) -> u16 {
 }
 
 fn total_days_in_month(year: i32, month: u32) -> Option<u32> {
-  let days = NaiveDate::from_ymd(
+  let days = NaiveDate::from_ymd_opt(
     match month {
       12 => year + 1,
       _ => year,
@@ -183,7 +183,8 @@ fn total_days_in_month(year: i32, month: u32) -> Option<u32> {
     },
     1,
   )
-  .signed_duration_since(NaiveDate::from_ymd(year, month, 1))
+  .unwrap()
+  .signed_duration_since(NaiveDate::from_ymd_opt(year, month, 1).unwrap())
   .num_days();
 
   u32::try_from(days).ok()
