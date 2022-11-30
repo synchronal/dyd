@@ -4,7 +4,7 @@ use tui::layout::Rect;
 use tui::style::{Color, Modifier, Style};
 use tui::widgets::{Block, StatefulWidget, Widget};
 
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, Eq, PartialEq)]
 pub struct Calendar<'a> {
   block: Option<Block<'a>>,
   style: Style,
