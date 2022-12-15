@@ -100,22 +100,30 @@ q <esc> - quit
 
 ## Other difftools
 
-IntelliJ IDEA:
+### IntelliJ IDEA
+
+(You can [download IntelliJ IDEA Community Edition](https://www.jetbrains.com/idea/download/#section=mac) 
+for free, which has a pretty good graphical difftool.)
+
+*Add to your `~/.gitconfig` file:*
 
 ```toml
 [diff]
-  guitool = intellij
+	tool = intellij
+	guitool = intellij
 [difftool "intellij"]
-  cmd = /Applications/IntelliJ\\ IDEA\\ CE.app/Contents/MacOS/idea diff $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE")
+	cmd = open -nWa 'IntelliJ IDEA CE.app' --args diff $(realpath "$LOCAL") $(realpath "$REMOTE")
+[difftool]
+	prompt=false
 ```
 
-Manifest:
+*Add to your `dyd.toml` manifest file:*
 
 ```toml
 difftool = "git difftool --dir-diff --tool=intellij -y ${DIFF}"
 ```
 
-TODO:
+### Others
 - gitx
 - kdiff3
 - ???
