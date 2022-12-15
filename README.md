@@ -13,6 +13,15 @@ manage.
 
 ## Installation
 
+via homebrew:
+
+```shell
+brew tap synchronal/tap
+brew install dyd
+```
+
+via cargo:
+
 ```shell
 cargo install dyd
 ```
