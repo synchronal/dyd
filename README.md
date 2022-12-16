@@ -100,6 +100,23 @@ q <esc> - quit
 
 ## Other difftools
 
+### GitHub (browser)
+
+When all repos in a manifest have their origins in GitHub, `dyd` can be configured to open diffs in a
+browser, with the help of a shell script.
+
+```shell
+curl https://raw.githubusercontent.com/synchronal/dyd/main/priv/shell/dyd-github-compare \
+  -o /usr/local/bin/dyd-github-compare
+```
+
+*Add to your `dyd.toml` manifest file:*
+
+```toml
+difftool = "/usr/local/bin/dyd-github-compare --origin ${ORIGIN} --from ${REF_FROM} --to ${REF_TO}"
+```
+
+
 ### IntelliJ IDEA
 
 (You can [download IntelliJ IDEA Community Edition](https://www.jetbrains.com/idea/download/#section=mac) 

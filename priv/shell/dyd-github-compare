@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+while [ : ]; do
+  case "$1" in
+    -o | --origin)
+        ORIGIN=$2
+        shift 2
+        ;;
+    -f | --from)
+        REF_FROM=$2
+        shift 2
+        ;;
+    -t | --to)
+        REF_TO=$2
+        shift 2
+        ;;
+    *)
+        shift;
+        break
+        ;;
+  esac
+done
+
+
+clean_github_origin() {
+  declare origin="$1"
+
+  echo "${origin}" \
+    | sed -e 's/\.git$//' \
+    | sed -e 's/git@/https:\/\//' \
+    | sed -e 's/git:\/\//https:\/\//' \
+    | sed -e 's/github.com\:/github.com\//'
+}
+
+github_compare_path() {
+  declare origin="$1" ref_from="$2" ref_to="$3"
+
+  echo "${origin}/compare/${ref_from}..${ref_to}"
+}
+
+main() {
+  declare origin="$1" ref_from="$2" ref_to="$3"
+
+  https_origin=$(clean_github_origin "${origin}")
+  github_url=$(github_compare_path "${https_origin}" "${ref_from}" "${ref_to}")
+
+  echo "$github_url" >>/tmp/dyd.log
+
+  open "${github_url}"
+}
+
+main $ORIGIN $REF_FROM $REF_TO

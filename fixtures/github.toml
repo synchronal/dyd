@@ -1,0 +1,16 @@
+since = "1 week ago"
+difftool = "${DYD_PWD}/priv/shell/dyd-github-compare --origin ${ORIGIN} --from ${REF_FROM} --to ${REF_TO}"
+
+[remotes]
+
+[remotes.phoenix]
+name = "Phoenix Framework"
+origin = "https://github.com/phoenixframework/phoenix"
+
+[remotes.phoenix_live_view]
+name = "Phoenix LiveView"
+origin = "git://github.com/phoenixframework/phoenix_live_view"
+
+[remotes.dyd]
+name = "DYD"
+origin = "git@github.com:synchronal/dyd.git"
