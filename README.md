@@ -108,7 +108,11 @@ browser, with the help of a shell script.
 ```shell
 curl https://raw.githubusercontent.com/synchronal/dyd/main/priv/shell/dyd-github-compare \
   -o /usr/local/bin/dyd-github-compare
+
+chmod +x /usr/local/bin/dyd-github-compare
 ```
+
+Note that depending on permissions, the above commands may need to be run via `sudo`.
 
 *Add to your `dyd.toml` manifest file:*
 
