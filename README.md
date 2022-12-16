@@ -69,8 +69,8 @@ origin = "git@github.com:fdehau/tui-rs"
     ENV. **IMPORTANT**: variables will **only** be replaced if they are in the format `${VAR}`,
     including braces.
     - `DIFF` - in the format `@{u}..HEAD`.
-    - `ORIGIN` - the origin used to check out the repository, ie
-      `git@github.com:<org>/<repo>(.git)?`
+    - `DYD_PWD` - the working directory that `dyd` was run from.
+    - `ORIGIN` - the origin used to check out the repository, ie `git@github.com:<org>/<repo>(.git)?`
     - `REF_FROM` - the sha of the earlier commit of the diff.
     - `REF_TO` - the sha of the more recent commit of the diff. `HEAD`.
 - `remotes` - a list of remote repositories to clone and pull.

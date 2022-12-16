@@ -37,7 +37,14 @@ pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log
   let diff = format!("{}..HEAD", log.sha);
   let repo_path = repo.path(root_path).unwrap();
 
+  let cwd = std::env::current_dir()
+    .unwrap()
+    .into_os_string()
+    .into_string()
+    .unwrap();
+
   let mut context = std::collections::HashMap::new();
+  context.insert("DYD_PWD".to_string(), cwd.clone());
   context.insert("DIFF".to_string(), diff.clone());
   context.insert("ORIGIN".to_string(), repo.origin.clone());
   context.insert("REF_FROM".to_string(), log.sha.clone());
@@ -59,6 +66,7 @@ pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log
 
   match Command::new(cmd)
     .args(args)
+    .env("DYD_PWD", cwd)
     .env("DIFF", diff)
     .env("REF_FROM", &log.sha)
     .env("REF_TO", "HEAD")
