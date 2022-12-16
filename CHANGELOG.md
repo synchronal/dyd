@@ -1,5 +1,11 @@
 # Change log
 
+### 1.2.0
+
+- Include `DYD_PWD` in env when opening difftool.
+- Updates the README to better reflect recent changes.
+
+
 ### 1.1.1
 
 Handle log parsing for repos with no commits.
