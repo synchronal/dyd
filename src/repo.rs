@@ -45,6 +45,7 @@ impl From<Remote> for Repo {
 pub struct Log {
   pub(crate) age: String,
   pub(crate) author: String,
+  pub(crate) cdate: String,
   pub commit_datetime: chrono::DateTime<chrono::Utc>,
   pub(crate) message: String,
   pub(crate) sha: String,
@@ -63,6 +64,7 @@ impl From<&str> for Log {
       Self {
         age,
         author,
+        cdate: cdate.to_owned(),
         commit_datetime,
         message,
         sha,
@@ -71,6 +73,7 @@ impl From<&str> for Log {
       Self {
         age: "".to_owned(),
         author: "".to_owned(),
+        cdate: "".to_owned(),
         commit_datetime: time::parse_unix("0").unwrap(),
         message: "".to_owned(),
         sha: "".to_owned(),

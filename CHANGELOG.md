@@ -1,5 +1,9 @@
 # Change log
 
+### Unreleased
+
+- Sort repos based on unix datetime, rather than on chrono::DateTime struct.
+
 ### 1.2.0
 
 - Include `DYD_PWD` in env when opening difftool.
