@@ -9,12 +9,16 @@ pub struct CLI {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+  /// Open the daily diff. Default to (-m ./dyd.toml)
   Diff {
-    #[clap(short, long, default_value = "dyd.toml")]
+    /// path to a toml
+    #[arg(short, long, default_value = "dyd.toml")]
     manifest: std::path::PathBuf,
   },
+  /// Generate a (toml-encoded) manifest for defining repos to diff.
   Init {
-    #[clap(short, long, default_value = "dyd.toml")]
+    /// path to a toml
+    #[arg(short, long, default_value = "dyd.toml")]
     manifest: std::path::PathBuf,
   },
 }
