@@ -1,6 +1,6 @@
 # Change log
 
-### Unreleased
+### 1.3.0
 
 - Add `clean` subcommand.
 - Add descriptions to subcommands in usage.
