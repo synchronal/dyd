@@ -1,5 +1,10 @@
 # Change log
 
+### Unreleased
+
+- Add `clean` subcommand.
+- Add descriptions to subcommands in usage.
+
 ### 1.2.1
 
 - Sort repos based on unix datetime, rather than on chrono::DateTime struct.

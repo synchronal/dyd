@@ -9,6 +9,12 @@ pub struct CLI {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+  /// Remove all repositories that have been checked out to the local cache.
+  Clean {
+    /// verbose
+    #[arg(short, long, action)]
+    verbose: bool,
+  },
   /// Open the daily diff. Default to (-m ./dyd.toml)
   Diff {
     /// path to a toml

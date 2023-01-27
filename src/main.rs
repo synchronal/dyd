@@ -16,9 +16,29 @@ fn main() -> AppResult<()> {
 
   match args.command {
     None => diff(std::path::PathBuf::from("dyd.toml")),
+    Some(Command::Clean { verbose }) => clean(verbose),
     Some(Command::Diff { manifest }) => diff(manifest),
     Some(Command::Init { manifest }) => write_default_manifest(manifest),
   }
+}
+
+fn clean(verbose: bool) -> AppResult<()> {
+  let home = std::env::var("HOME").context("Unable to access HOME")?;
+  let path = Path::new(&home).join(".local/share/dyd");
+  if path.exists() {
+    if verbose {
+      for repo in path
+        .read_dir()
+        .expect("Expected .local/share/dyd to be a directory")
+        .flatten()
+      {
+        println!("Removing {:?}", repo.path());
+        std::fs::remove_dir_all(repo.path())?;
+      }
+    }
+    std::fs::remove_dir_all(path)?;
+  }
+  Ok(())
 }
 
 fn diff(manifest: std::path::PathBuf) -> AppResult<()> {
