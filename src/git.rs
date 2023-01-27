@@ -23,7 +23,7 @@ pub fn logs(path: &PathBuf) -> Vec<u8> {
       "400",
       "--abbrev-commit",
       "--color=always",
-      &format!("--pretty=tformat:{}", GIT_FORMAT),
+      &format!("--pretty=tformat:{GIT_FORMAT}"),
     ])
     .current_dir(path)
     .output()
@@ -75,7 +75,7 @@ pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log
     .output()
   {
     Ok(_) => (),
-    Err(err) => eprintln!("\rError opening difftool:\r\n{:?}\r\ndifftool: {}", err, difftool),
+    Err(err) => eprintln!("\rError opening difftool:\r\n{err:?}\r\ndifftool: {difftool}"),
   };
 }
 

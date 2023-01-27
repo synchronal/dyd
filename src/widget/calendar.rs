@@ -115,7 +115,7 @@ impl<'a> StatefulWidget for Calendar<'a> {
         style = style.bg(Color::Red);
       };
 
-      buf.set_string(x, y, format!("{}", day), style);
+      buf.set_string(x, y, format!("{day}"), style);
 
       if day == days_in_month {
         printing = false;

@@ -41,7 +41,7 @@ fn compute_relative(captures: regex::Captures, base: &DateTime<Utc>) -> AppResul
       "day" | "days" => chrono::Duration::days(amount),
       "month" | "months" => return relative_months(base, amount),
       "week" | "weeks" => chrono::Duration::weeks(amount),
-      other => return Err(Box::new(TimeParseError(format!("Unknown unit {}", other)))),
+      other => return Err(Box::new(TimeParseError(format!("Unknown unit {other}")))),
     }
   };
 
