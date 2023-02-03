@@ -1,5 +1,5 @@
 use crate::event::Event;
-use crate::manifest::Manifest;
+use crate::manifest::{self, Manifest};
 use crate::repo::{Log, Repo, RepoStatus};
 use crate::ui;
 use crate::widget::calendar::CalendarState;
@@ -40,6 +40,23 @@ pub enum SelectedModal {
 }
 
 #[derive(Debug)]
+pub enum TimeZoneCast {
+  AsIs,
+  Local,
+  Utc,
+}
+
+impl From<manifest::TimeZoneCast> for TimeZoneCast {
+  fn from(cast: manifest::TimeZoneCast) -> Self {
+    match cast {
+      manifest::TimeZoneCast::AsIs => Self::AsIs,
+      manifest::TimeZoneCast::Local => Self::Local,
+      manifest::TimeZoneCast::Utc => Self::Utc,
+    }
+  }
+}
+
+#[derive(Debug)]
 pub struct App {
   pub calendar_state: crate::widget::calendar::CalendarState,
   pub difftool: String,
@@ -52,6 +69,7 @@ pub struct App {
   pub selected_repo_state: TableState,
   pub since: chrono::DateTime<chrono::Utc>,
   pub state: AppState,
+  pub timezones: TimeZoneCast,
 }
 
 impl From<Manifest> for App {
@@ -85,6 +103,7 @@ impl From<Manifest> for App {
       running: true,
       selected_pane: SelectedPane::default(),
       state: AppState::default(),
+      timezones: manifest.timezones.into(),
     }
   }
 }

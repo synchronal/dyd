@@ -82,6 +82,10 @@ fn write_default_manifest(manifest_path: std::path::PathBuf) -> AppResult<()> {
 
   writeln!(file, "since = \"5 days ago\"")?;
   writeln!(file)?;
+  writeln!(file, "### Time zones")?;
+  writeln!(file, "### valid values: as-is, local, utc")?;
+  writeln!(file, "# timezones = \"as-is\"")?;
+  writeln!(file)?;
   writeln!(file, "[remotes]")?;
   writeln!(file)?;
   writeln!(file, "[remotes.dyd]")?;

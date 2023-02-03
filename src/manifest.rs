@@ -15,10 +15,28 @@ impl std::fmt::Display for ManifestParseError {
 impl std::error::Error for ManifestParseError {}
 
 #[derive(Debug, Deserialize)]
+pub enum TimeZoneCast {
+  #[serde(rename = "as-is")]
+  AsIs,
+  #[serde(rename = "local")]
+  Local,
+  #[serde(rename = "utc")]
+  Utc,
+}
+
+impl Default for TimeZoneCast {
+  fn default() -> Self {
+    TimeZoneCast::AsIs
+  }
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Manifest {
   #[serde(default = "default_difftool")]
   pub(crate) difftool: String,
   pub(crate) since: String,
+  #[serde(default)]
+  pub(crate) timezones: TimeZoneCast,
   #[serde(skip)]
   pub(crate) since_datetime: Option<chrono::DateTime<chrono::Utc>>,
   pub(crate) remotes: HashMap<String, Remote>,
@@ -29,10 +47,11 @@ impl Default for Manifest {
   fn default() -> Self {
     Self {
       difftool: "git difftool -g -y ${DIFF}".to_string(),
-      since: "1 week ago".to_string(),
-      since_datetime: None,
       remotes: HashMap::new(),
       root: None,
+      since: "1 week ago".to_string(),
+      since_datetime: None,
+      timezones: TimeZoneCast::AsIs,
     }
   }
 }
