@@ -8,8 +8,8 @@ use clap::Subcommand;
 pub struct CLI {
   #[command(subcommand)]
   pub command: Option<Command>,
-  #[command(flatten)]
-  pub diff: Option<ManifestCliArgs>,
+  #[clap(flatten)]
+  pub diff: ManifestCliArgs,
 }
 
 #[derive(Debug, Subcommand)]
@@ -30,7 +30,7 @@ pub enum Command {
 pub struct ManifestCliArgs {
   /// path to a toml-formatted manifest file.
   #[clap(value_parser)]
-  #[arg(short, long, env = "DYD_MANIFEST_PATH", default_value = "dyd.toml")]
+  #[arg(short, long, env = "DYD_MANIFEST_PATH", default_value = "dyd.toml", value_hint = clap::ValueHint::FilePath)]
   pub manifest: std::path::PathBuf,
 }
 

@@ -13,9 +13,7 @@ use tui::Terminal;
 
 fn main() -> AppResult<()> {
   let cli = CLI::new();
-  let command = cli
-    .command
-    .unwrap_or_else(|| cli.diff.map(Command::Diff).unwrap());
+  let command = cli.command.unwrap_or(Command::Diff(cli.diff));
 
   match command {
     Command::Clean { verbose } => clean(verbose),

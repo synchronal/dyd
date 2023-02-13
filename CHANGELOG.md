@@ -1,5 +1,7 @@
 # Change log
 
+- Fix handling of default subcommand with default args.
+
 ### 1.4.0
 
 - When not specifying a subcommand, diff params are parsed.
