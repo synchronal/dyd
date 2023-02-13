@@ -1,5 +1,8 @@
 # Change log
 
+- When not specifying a subcommand, diff params are parsed.
+- Manifest files can be specified via `DYD_MANIFEST_PATH`.
+
 ### 1.3.0
 
 - Add `clean` subcommand.

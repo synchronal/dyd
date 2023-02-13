@@ -12,13 +12,15 @@ use tui::backend::CrosstermBackend;
 use tui::Terminal;
 
 fn main() -> AppResult<()> {
-  let args = CLI::new();
+  let cli = CLI::new();
+  let command = cli
+    .command
+    .unwrap_or_else(|| cli.diff.map(Command::Diff).unwrap());
 
-  match args.command {
-    None => diff(std::path::PathBuf::from("dyd.toml")),
-    Some(Command::Clean { verbose }) => clean(verbose),
-    Some(Command::Diff { manifest }) => diff(manifest),
-    Some(Command::Init { manifest }) => write_default_manifest(manifest),
+  match command {
+    Command::Clean { verbose } => clean(verbose),
+    Command::Diff(args) => diff(args.manifest),
+    Command::Init(args) => write_default_manifest(args.manifest),
   }
 }
 

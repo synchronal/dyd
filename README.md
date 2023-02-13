@@ -86,6 +86,7 @@ Open the diff tool:
 ```shell
 dyd -m dyd.toml
 dyd --manifest dyd.toml
+DYD_MANIFEST_PATH="dyd.toml" dyd diff
 ```
 
 Keymap:
