@@ -1,5 +1,7 @@
 # Change log
 
+### 1.4.0
+
 - When not specifying a subcommand, diff params are parsed.
 - Manifest files can be specified via `DYD_MANIFEST_PATH`.
 
