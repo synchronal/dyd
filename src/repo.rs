@@ -43,12 +43,12 @@ impl From<Remote> for Repo {
 
 #[derive(Clone, Debug)]
 pub struct Log {
-  pub(crate) age: String,
-  pub(crate) author: String,
-  pub(crate) cdate: String,
+  pub age: String,
+  pub author: String,
+  pub cdate: String,
   pub commit_datetime: chrono::DateTime<chrono::Utc>,
-  pub(crate) message: String,
-  pub(crate) sha: String,
+  pub message: String,
+  pub sha: String,
 }
 
 impl From<&str> for Log {

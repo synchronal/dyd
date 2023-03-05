@@ -23,7 +23,7 @@ pub fn render(app: &App) -> Table {
 
         let cells = [
           Cell::from(sha(&log.sha)),
-          Cell::from(age(&log.age)),
+          Cell::from(age(&log.commit_datetime, app)),
           Cell::from(author(&log.author)),
           Cell::from(message(&log.message)),
         ];
@@ -53,9 +53,12 @@ fn title(app: &App) -> text::Span {
   text::Span::styled(" Diff ", text_style)
 }
 
-fn age(text: &String) -> text::Span {
+fn age<'a>(datetime: &'a chrono::DateTime<chrono::Utc>, app: &App) -> text::Span<'a> {
   let text_style = Style::default().fg(Color::Red);
-  text::Span::styled(text, text_style)
+  let text = datetime
+    .with_timezone(&app.timezone_offset)
+    .format("%a %b %d %R");
+  text::Span::styled(text.to_string(), text_style)
 }
 
 fn author(text: &String) -> text::Span {

@@ -4,6 +4,7 @@ use crate::repo::{Log, Repo, RepoStatus};
 use crate::ui;
 use crate::widget::calendar::CalendarState;
 
+use chrono::Local;
 use indexmap::map::IndexMap;
 use std::cmp::Ordering;
 use std::error;
@@ -52,6 +53,7 @@ pub struct App {
   pub selected_repo_state: TableState,
   pub since: chrono::DateTime<chrono::Utc>,
   pub state: AppState,
+  pub timezone_offset: chrono::offset::FixedOffset,
 }
 
 impl From<Manifest> for App {
@@ -73,6 +75,9 @@ impl From<Manifest> for App {
     let since = manifest.since_datetime.unwrap();
     let calendar_state = CalendarState::from_datetime(&since);
 
+    let offset_sec = Local::now().offset().local_minus_utc();
+    let offset = chrono::offset::FixedOffset::east_opt(offset_sec).unwrap();
+
     Self {
       calendar_state,
       repos,
@@ -85,6 +90,7 @@ impl From<Manifest> for App {
       running: true,
       selected_pane: SelectedPane::default(),
       state: AppState::default(),
+      timezone_offset: offset,
     }
   }
 }
