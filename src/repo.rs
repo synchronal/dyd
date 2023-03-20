@@ -7,20 +7,15 @@ use crate::time;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum RepoStatus {
+  #[default]
   Checking,
   Cloning,
   Pulling,
   Failed,
   Log,
   Finished,
-}
-
-impl Default for RepoStatus {
-  fn default() -> Self {
-    RepoStatus::Checking
-  }
 }
 
 #[derive(Debug, Default)]
@@ -127,7 +122,6 @@ impl Repo {
       .unwrap()
       .trim()
       .split('\n')
-      .into_iter()
       .map(|l| l.into())
       .collect()
   }
