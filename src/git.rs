@@ -1,3 +1,4 @@
+use crate::app::AppResult;
 use crate::repo::{Log, Repo};
 
 use std::path::{Path, PathBuf};
@@ -14,8 +15,8 @@ pub fn clone(origin: &String, path: &Path) {
     .unwrap();
 }
 
-pub fn logs(path: &PathBuf) -> Vec<u8> {
-  Command::new("git")
+pub fn logs(path: &PathBuf) -> AppResult<Vec<u8>> {
+  let logs = Command::new("git")
     .args([
       "log",
       "--date=local",
@@ -26,9 +27,10 @@ pub fn logs(path: &PathBuf) -> Vec<u8> {
       &format!("--pretty=tformat:{GIT_FORMAT}"),
     ])
     .current_dir(path)
-    .output()
-    .expect("failed to retrieve git log")
-    .stdout
+    .output()?
+    .stdout;
+
+  Ok(logs)
 }
 
 pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log) {

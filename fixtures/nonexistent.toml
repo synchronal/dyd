@@ -1,0 +1,11 @@
+since = "1 week ago"
+
+[remotes]
+
+[remotes.phoenix]
+name = "Does not exist"
+origin = "https://github.com/nopenopenope/do-not-exist.git"
+
+[remotes.phoenix_live_view]
+name = "Phoenix LiveView"
+origin = "https://github.com/phoenixframework/phoenix_live_view.git"

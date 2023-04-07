@@ -99,10 +99,11 @@ impl Repo {
         .send(Event::RepoStatusChange(id.clone(), RepoStatus::Log))
         .unwrap();
 
-      let logs = Repo::logs(&path);
-      sender
-        .send(Event::RepoStatusComplete(id.clone(), logs))
-        .unwrap();
+      if let Ok(logs) = Repo::logs(&path) {
+        sender
+          .send(Event::RepoStatusComplete(id.clone(), logs))
+          .unwrap();
+      };
     });
     Ok(())
   }
@@ -115,14 +116,16 @@ impl Repo {
     }
   }
 
-  fn logs(path: &PathBuf) -> Vec<Log> {
-    let logs = git::logs(path);
+  fn logs(path: &PathBuf) -> AppResult<Vec<Log>> {
+    let logs = git::logs(path)?;
 
-    std::str::from_utf8(&logs)
-      .unwrap()
-      .trim()
-      .split('\n')
-      .map(|l| l.into())
-      .collect()
+    Ok(
+      std::str::from_utf8(&logs)
+        .unwrap()
+        .trim()
+        .split('\n')
+        .map(|l| l.into())
+        .collect(),
+    )
   }
 }
