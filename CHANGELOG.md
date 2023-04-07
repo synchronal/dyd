@@ -2,6 +2,19 @@
 
 - Fix handling of default subcommand with default args.
 
+### 1.5.1
+
+- Avoid panic when logs can't be parsed, ie when specifying a repo that
+  does not actually exist.
+
+### 1.5.0
+
+- Show times in local timezone.
+
+### 1.4.1
+
+- Fix argument handling when running with implicit `diff` subcommand.
+
 ### 1.4.0
 
 - When not specifying a subcommand, diff params are parsed.
