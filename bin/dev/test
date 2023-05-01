@@ -1,17 +1,3 @@
 #!/usr/bin/env bash
 
-trap "exit" INT
-
-source ".medic/_support/cecho.sh"
-source ".medic/_support/step.sh"
-
-set -o pipefail
-
-step "Check for warnings" \
-  "cargo build --features strict"
-
-step_header "Run tests" "cargo test"
-echo
-
-set -e
-cargo test
+medic test

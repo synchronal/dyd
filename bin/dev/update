@@ -1,16 +1,3 @@
 #!/usr/bin/env bash
 
-trap "exit" INT
-
-source ".medic/_support/cecho.sh"
-source ".medic/_support/step.sh"
-
-set -o pipefail
-
-step "Update code" "git pull --rebase"
-
-echo
-step_header "Doctor" "bin/dev/doctor"
-echo
-bin/dev/doctor
-
+medic up
