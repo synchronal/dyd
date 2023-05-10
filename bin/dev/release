@@ -38,3 +38,7 @@ step "shasum: Darwin x84_64" \
 
 step "shasum: Darwin universal" \
   "(cd tmp/release && sha256sum dyd-darwin-universal.tar.gz > dyd-darwin-universal.sha256sum)"
+
+cecho --bright-green "\nChecksums:"
+cat tmp/release/*.sha256sum
+
