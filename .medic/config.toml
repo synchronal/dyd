@@ -14,7 +14,7 @@ checks = [
 
 checks = [
   { name = "Check for warnings", shell = "cargo build --workspace --features strict" },
-  { step = "cargo", command = "test", verbose = true },
+  { step = "rust", command = "test", verbose = true },
 ]
 
 [audit]
@@ -23,7 +23,7 @@ checks = [
   ## chrono and time have known potential segfaults
   { name = "Audit crates", shell = "cargo audit", allow_failure = true, verbose = true },
   { check = "rust", command = "format-check" },
-  { step = "cargo", command = "clippy" },
+  { step = "rust", command = "clippy" },
 ]
 
 [update]
