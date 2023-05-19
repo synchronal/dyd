@@ -157,8 +157,8 @@ impl App {
   #[allow(clippy::ptr_arg)]
   fn sort_repos(_key1: &String, repo1: &Repo, _key2: &String, repo2: &Repo) -> Ordering {
     if !repo1.logs.is_empty() && !repo2.logs.is_empty() {
-      let commit1 = repo1.logs[0].cdate.clone();
-      let commit2 = repo2.logs[0].cdate.clone();
+      let commit1 = repo1.logs[0].commit_datetime.clone();
+      let commit2 = repo2.logs[0].commit_datetime.clone();
 
       if commit1 > commit2 {
         return Ordering::Less;
