@@ -1,5 +1,7 @@
 # Change log
 
+## 1.5.2
+
 - Sort repos by _parsed_ datetime of most recent log.
 - Fix handling of default subcommand with default args.
 
