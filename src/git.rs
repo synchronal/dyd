@@ -83,7 +83,7 @@ pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log
 
 pub fn pull(path: &PathBuf) {
   Command::new("git")
-    .args(["pull"])
+    .args(["pull", "--prune"])
     .current_dir(path)
     .output()
     .unwrap();
