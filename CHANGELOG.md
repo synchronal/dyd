@@ -1,5 +1,7 @@
 # Change log
 
+- Use Rust 1.70.0.
+
 ## 1.5.2
 
 - Sort repos by _parsed_ datetime of most recent log.
