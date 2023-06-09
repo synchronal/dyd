@@ -1,5 +1,7 @@
 # Change log
 
+## 1.5.3
+
 - Prune git repositories when pulling.
 - Use Rust 1.70.0.
 
