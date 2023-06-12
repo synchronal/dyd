@@ -1,5 +1,8 @@
 # Change log
 
+- Add dyd version to help box.
+- Change styling of Help section.
+
 ## 1.5.3
 
 - Prune git repositories when pulling.

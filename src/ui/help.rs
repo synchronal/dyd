@@ -4,6 +4,8 @@ use tui::style::{Color, Modifier, Style};
 use tui::text::{self, Span, Spans};
 use tui::widgets::{Block, Borders, Paragraph};
 
+const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
+
 pub fn render(app: &App) -> Paragraph {
   let text = vec![
     Spans::from(vec![
@@ -63,5 +65,5 @@ pub fn render(app: &App) -> Paragraph {
 
 fn title(_app: &App) -> text::Span {
   let text_style = Style::default().fg(Color::Gray).add_modifier(Modifier::DIM);
-  text::Span::styled(" Help ", text_style)
+  text::Span::styled(format!(" Help (v{})", VERSION.unwrap()), text_style)
 }
