@@ -53,7 +53,11 @@ pub fn render(app: &App) -> Paragraph {
     Block::default()
       .title(title(app))
       .borders(Borders::ALL)
-      .style(Style::default().fg(Color::LightCyan)),
+      .style(
+        Style::default()
+          .fg(Color::LightCyan)
+          .add_modifier(Modifier::DIM),
+      ),
   )
 }
 
