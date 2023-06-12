@@ -1,5 +1,7 @@
 # Change log
 
+## 1.5.4
+
 - Add dyd version to help box.
 - Change styling of Help section.
 
