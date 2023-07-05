@@ -59,6 +59,7 @@ impl Manifest {
 pub struct Remote {
   pub(crate) name: String,
   pub(crate) origin: String,
+  pub(crate) branch: Option<String>,
 }
 
 fn default_difftool() -> String {

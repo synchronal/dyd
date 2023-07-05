@@ -88,3 +88,11 @@ pub fn pull_repo(path: &PathBuf) {
     .output()
     .unwrap();
 }
+
+pub fn switch_branch(path: &PathBuf, branch: String) {
+  Command::new("git")
+    .args(["switch", &branch])
+    .current_dir(path)
+    .output()
+    .unwrap();
+}

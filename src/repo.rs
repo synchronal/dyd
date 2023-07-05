@@ -20,15 +20,28 @@ pub enum RepoStatus {
 
 #[derive(Debug, Default)]
 pub struct Repo {
+  pub(crate) branch: Option<String>,
   pub(crate) logs: Vec<Log>,
   pub(crate) name: String,
   pub(crate) origin: String,
   pub(crate) status: RepoStatus,
 }
 
+impl std::fmt::Display for Repo {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    write!(f, "{}", self.name)?;
+    if let Some(branch) = &self.branch {
+      write!(f, " — ({})", branch)
+    } else {
+      Ok(())
+    }
+  }
+}
+
 impl From<Remote> for Repo {
   fn from(remote: Remote) -> Self {
     Repo {
+      branch: remote.branch,
       name: remote.name,
       origin: remote.origin,
       ..Default::default()
@@ -81,6 +94,7 @@ impl Repo {
   pub fn update(&self, id: String, root_path: &Path, sender: mpsc::Sender<Event>) -> AppResult<()> {
     let path = self.path(root_path)?;
     let origin = self.origin.clone();
+    let branch = self.branch.clone();
 
     std::thread::spawn(move || {
       if path.is_dir() {
@@ -88,12 +102,18 @@ impl Repo {
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Pulling))
           .unwrap();
 
+        if let Some(branch) = branch {
+          git::switch_branch(&path, branch);
+        }
         git::pull_repo(&path);
       } else {
         sender
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Cloning))
           .unwrap();
         git::clone_repo(&origin, &path);
+        if let Some(branch) = branch {
+          git::switch_branch(&path, branch);
+        }
       }
       sender
         .send(Event::RepoStatusChange(id.clone(), RepoStatus::Log))

@@ -1,5 +1,7 @@
 # Change log
 
+- Allow branch to be specified for a repo.
+
 ## 1.5.4
 
 - Add dyd version to help box.
