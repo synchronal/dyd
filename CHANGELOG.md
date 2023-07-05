@@ -1,5 +1,7 @@
 # Change log
 
+## 1.6.0
+
 - Allow branch to be specified for a repo.
 
 ## 1.5.4
