@@ -6,7 +6,7 @@ use std::process::Command;
 
 static GIT_FORMAT: &str = "%h\x0B%ct\x0B%ch\x0B%an\x0B%s";
 
-pub fn clone(origin: &String, path: &Path) {
+pub fn clone_repo(origin: &String, path: &Path) {
   let path_str = path.to_path_buf();
 
   Command::new("git")
@@ -81,7 +81,7 @@ pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log
   };
 }
 
-pub fn pull(path: &PathBuf) {
+pub fn pull_repo(path: &PathBuf) {
   Command::new("git")
     .args(["pull", "--prune"])
     .current_dir(path)

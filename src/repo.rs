@@ -88,12 +88,12 @@ impl Repo {
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Pulling))
           .unwrap();
 
-        git::pull(&path);
+        git::pull_repo(&path);
       } else {
         sender
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Cloning))
           .unwrap();
-        git::clone(&origin, &path);
+        git::clone_repo(&origin, &path);
       }
       sender
         .send(Event::RepoStatusChange(id.clone(), RepoStatus::Log))
