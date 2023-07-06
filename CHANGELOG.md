@@ -1,5 +1,7 @@
 # Change log
 
+## 1.6.1
+
 - View logs from branches via `origin/{branch}` rather than switching branches.
 
 ## 1.6.0
