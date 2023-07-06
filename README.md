@@ -61,6 +61,10 @@ origin = "git@github.com:synchronal/dyd"
 [remotes.tui]
 name = "TUI"
 origin = "git@github.com:fdehau/tui-rs"
+
+[remotes.tui]
+name = "TUI"
+origin = "git@github.com:fdehau/tui-rs"
 ```
 
 - `since` - Must be in the format `<N>` `<units>` `ago`. Defaults to `1 week ago`.
@@ -74,6 +78,9 @@ origin = "git@github.com:fdehau/tui-rs"
     - `REF_FROM` - the sha of the earlier commit of the diff.
     - `REF_TO` - the sha of the more recent commit of the diff. `HEAD`.
 - `remotes` - a list of remote repositories to clone and pull.
+  - `name` - Text to show in the UI.
+  - `origin` - The git origin from which to pull.
+  - `branch` - An optional branch to show diffs from. Depends on being able to view logs via `origin/{branch}`.
 
 Ensure that your shell is authorized with the origin. DYD will *not* route input to the SSH agent.
 

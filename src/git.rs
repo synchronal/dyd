@@ -15,8 +15,9 @@ pub fn clone_repo(origin: &String, path: &Path) {
     .unwrap();
 }
 
-pub fn logs(path: &PathBuf) -> AppResult<Vec<u8>> {
-  let logs = Command::new("git")
+pub fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<u8>> {
+  let mut logs = Command::new("git");
+  logs
     .args([
       "log",
       "--date=local",
@@ -26,11 +27,13 @@ pub fn logs(path: &PathBuf) -> AppResult<Vec<u8>> {
       "--color=always",
       &format!("--pretty=tformat:{GIT_FORMAT}"),
     ])
-    .current_dir(path)
-    .output()?
-    .stdout;
+    .current_dir(path);
 
-  Ok(logs)
+  if let Some(branch) = branch {
+    logs.arg(format!("origin/{branch}"));
+  }
+
+  Ok(logs.output()?.stdout)
 }
 
 pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log) {

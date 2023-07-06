@@ -102,24 +102,18 @@ impl Repo {
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Pulling))
           .unwrap();
 
-        if let Some(branch) = branch {
-          git::switch_branch(&path, branch);
-        }
         git::pull_repo(&path);
       } else {
         sender
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Cloning))
           .unwrap();
         git::clone_repo(&origin, &path);
-        if let Some(branch) = branch {
-          git::switch_branch(&path, branch);
-        }
       }
       sender
         .send(Event::RepoStatusChange(id.clone(), RepoStatus::Log))
         .unwrap();
 
-      if let Ok(logs) = Repo::logs(&path) {
+      if let Ok(logs) = Repo::logs(&path, &branch) {
         sender
           .send(Event::RepoStatusComplete(id.clone(), logs))
           .unwrap();
@@ -136,8 +130,8 @@ impl Repo {
     }
   }
 
-  fn logs(path: &PathBuf) -> AppResult<Vec<Log>> {
-    let logs = git::logs(path)?;
+  fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<Log>> {
+    let logs = git::logs(path, branch)?;
 
     Ok(
       std::str::from_utf8(&logs)

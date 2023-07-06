@@ -1,5 +1,7 @@
 # Change log
 
+- View logs from branches via `origin/{branch}` rather than switching branches.
+
 ## 1.6.0
 
 - Allow branch to be specified for a repo.
