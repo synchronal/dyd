@@ -34,6 +34,7 @@ clean_github_origin() {
 
 github_compare_path() {
   declare origin="$1" ref_from="$2" ref_to="$3"
+  ref_to="$(echo "${ref_to}" | sed -e 's/origin\///')"
 
   echo "${origin}/compare/${ref_from}..${ref_to}?diff=split"
 }

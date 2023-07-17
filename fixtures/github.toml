@@ -14,3 +14,8 @@ origin = "git://github.com/phoenixframework/phoenix_live_view"
 [remotes.dyd]
 name = "DYD"
 origin = "git@github.com:synchronal/dyd.git"
+
+[remotes.seed]
+name = "Seed"
+origin = "git@github.com:synchronal/seed"
+branch = "v0.1.0"

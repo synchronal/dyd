@@ -39,7 +39,11 @@ pub fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<u8>> {
 pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log) {
   let mut cmd: String = "".to_string();
   let mut args: Vec<String> = vec![];
-  let diff = format!("{}..HEAD", log.sha);
+  let ref_to: String = match repo.branch.clone() {
+    Some(branch) => format!("origin/{branch}"),
+    None => "HEAD".into(),
+  };
+  let diff = format!("{}..{ref_to}", log.sha);
   let repo_path = repo.path(root_path).unwrap();
 
   let cwd = std::env::current_dir()
@@ -53,7 +57,7 @@ pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log
   context.insert("DIFF".to_string(), diff.clone());
   context.insert("ORIGIN".to_string(), repo.origin.clone());
   context.insert("REF_FROM".to_string(), log.sha.clone());
-  context.insert("REF_TO".to_string(), "HEAD".to_string());
+  context.insert("REF_TO".to_string(), ref_to.clone());
   assert!(envsubst::validate_vars(&context).is_ok());
   let difftool_expansion = envsubst::substitute(difftool, &context).unwrap();
 
@@ -74,7 +78,7 @@ pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log
     .env("DYD_PWD", cwd)
     .env("DIFF", diff)
     .env("REF_FROM", &log.sha)
-    .env("REF_TO", "HEAD")
+    .env("REF_TO", ref_to)
     .env("ORIGIN", &repo.origin)
     .current_dir(repo_path)
     .output()
