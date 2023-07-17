@@ -1,3 +1,4 @@
+use crate::difftool::Difftool;
 use crate::event::Event;
 use crate::manifest::Manifest;
 use crate::repo::{Log, Repo, RepoStatus};
@@ -43,7 +44,7 @@ pub enum SelectedModal {
 #[derive(Debug)]
 pub struct App {
   pub calendar_state: crate::widget::calendar::CalendarState,
-  pub difftool: String,
+  pub difftool: Difftool,
   pub modal: SelectedModal,
   pub repo_state: TableState,
   pub repos: IndexMap<String, Repo>,

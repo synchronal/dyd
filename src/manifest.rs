@@ -1,3 +1,4 @@
+use crate::difftool::Difftool;
 use crate::time;
 use anyhow::{Context, Result};
 use serde::Deserialize;
@@ -17,7 +18,7 @@ impl std::error::Error for ManifestParseError {}
 #[derive(Debug, Deserialize)]
 pub struct Manifest {
   #[serde(default = "default_difftool")]
-  pub(crate) difftool: String,
+  pub(crate) difftool: Difftool,
   pub(crate) since: String,
   #[serde(skip)]
   pub(crate) since_datetime: Option<chrono::DateTime<chrono::Utc>>,
@@ -28,7 +29,7 @@ pub struct Manifest {
 impl Default for Manifest {
   fn default() -> Self {
     Self {
-      difftool: "git difftool -g -y ${DIFF}".to_string(),
+      difftool: Difftool::Git,
       since: "1 week ago".to_string(),
       since_datetime: None,
       remotes: HashMap::new(),
@@ -44,10 +45,15 @@ impl Manifest {
 
     let mut manifest: Manifest = toml::from_str(&manifest_contents)?;
     let since_datetime = time::parse_relative(&manifest.since, &chrono::Utc::now())?;
-    if manifest.difftool.is_empty() {
-      return Err(Box::new(ManifestParseError(
-        "When difftool is present in manifest, it must have length > 0".to_string(),
-      )));
+    match &manifest.difftool {
+      Difftool::Fallthrough(difftool) => {
+        if difftool.is_empty() {
+          return Err(Box::new(ManifestParseError(
+            "When difftool is present in manifest, it must have length > 0".to_string(),
+          )));
+        }
+      }
+      _ => {}
     }
     manifest.root = Some(root);
     manifest.since_datetime = Some(since_datetime);
@@ -62,6 +68,6 @@ pub struct Remote {
   pub(crate) branch: Option<String>,
 }
 
-fn default_difftool() -> String {
-  "git difftool -g -y ${DIFF}".to_string()
+fn default_difftool() -> Difftool {
+  Difftool::Git
 }

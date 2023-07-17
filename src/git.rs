@@ -1,4 +1,5 @@
 use crate::app::AppResult;
+use crate::difftool::Difftool;
 use crate::repo::{Log, Repo};
 
 use std::path::{Path, PathBuf};
@@ -36,7 +37,7 @@ pub fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<u8>> {
   Ok(logs.output()?.stdout)
 }
 
-pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log) {
+pub fn open_difftool(root_path: &Path, difftool: &Difftool, repo: &Repo, log: &Log) {
   let mut cmd: String = "".to_string();
   let mut args: Vec<String> = vec![];
   let ref_to: String = match repo.branch.clone() {
@@ -59,7 +60,7 @@ pub fn open_difftool(root_path: &Path, difftool: &String, repo: &Repo, log: &Log
   context.insert("REF_FROM".to_string(), log.sha.clone());
   context.insert("REF_TO".to_string(), ref_to.clone());
   assert!(envsubst::validate_vars(&context).is_ok());
-  let difftool_expansion = envsubst::substitute(difftool, &context).unwrap();
+  let difftool_expansion = envsubst::substitute(format!("{difftool}"), &context).unwrap();
 
   let difftool_parts: Vec<&str> = difftool_expansion.split(' ').collect();
   difftool_parts
