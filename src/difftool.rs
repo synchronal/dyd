@@ -1,3 +1,4 @@
+use regex::Regex;
 use serde::de::{value, Deserializer, IntoDeserializer};
 use serde::Deserialize;
 use std::str::FromStr;
@@ -18,12 +19,24 @@ impl Default for Difftool {
 }
 
 impl Difftool {
-  pub fn to_str(&self, _repo: &Repo) -> String {
+  pub fn to_str(&self, repo: &Repo, from_sha: &String, branch: &Option<String>) -> String {
     match self {
       Difftool::Git => "git difftool -g -y ${DIFF}".to_owned(),
-      Difftool::GitHub => todo!(),
+      Difftool::GitHub => Difftool::open_github(repo, from_sha, branch),
       Difftool::Fallthrough(difftool) => difftool.clone(),
     }
+  }
+
+  fn open_github(repo: &Repo, from_sha: &String, branch: &Option<String>) -> String {
+    let mut github_url = repo.origin.clone();
+    github_url = github_url
+      .trim()
+      .replace(':', "/")
+      .replace("git@", "https://");
+    let re = Regex::new(r"\.git$").unwrap();
+    let origin = re.replace_all(&github_url, "");
+    let ref_to = branch.clone().unwrap_or("HEAD".to_owned());
+    format!("open {origin}/compare/{from_sha}..{ref_to}?diff=split")
   }
 }
 

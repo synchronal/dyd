@@ -61,7 +61,7 @@ pub fn open_difftool(root_path: &Path, difftool: &Difftool, repo: &Repo, log: &L
   context.insert("REF_TO".to_string(), ref_to.clone());
   assert!(envsubst::validate_vars(&context).is_ok());
 
-  let difftool_expansion = envsubst::substitute(difftool.to_str(repo), &context).unwrap();
+  let difftool_expansion = envsubst::substitute(difftool.to_str(repo, &log.sha, &repo.branch), &context).unwrap();
 
   let difftool_parts: Vec<&str> = difftool_expansion.split(' ').collect();
   difftool_parts

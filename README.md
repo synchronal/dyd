@@ -51,6 +51,9 @@ since = "3 days ago"
 #       "  ^^^^ days | weeks | months
 
 ## difftool = "my diff tool"
+difftool = "git"     # Uses the configured default GUI difftool.
+difftool = "github"  # Uses the `open` command to open a diff in the GitHub site.
+difftool = "git difftool --dir-diff --tool=intellij -y ${DIFF}" # Arbitrary commands may be set.
 
 [remotes]
 
