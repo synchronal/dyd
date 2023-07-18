@@ -113,22 +113,13 @@ q <esc> - quit
 
 ### GitHub (browser)
 
-When all repos in a manifest have their origins in GitHub, `dyd` can be configured to open diffs in a
-browser, with the help of a shell script.
-
-```shell
-curl https://raw.githubusercontent.com/synchronal/dyd/main/priv/shell/dyd-github-compare \
-  -o /usr/local/bin/dyd-github-compare
-
-chmod +x /usr/local/bin/dyd-github-compare
-```
-
-Note that depending on permissions, the above commands may need to be run via `sudo`.
+When all repos in a manifest have their origins in GitHub, `dyd` can be configured to open diffs in
+the system's default browser.
 
 *Add to your `dyd.toml` manifest file:*
 
 ```toml
-difftool = "/usr/local/bin/dyd-github-compare --origin ${ORIGIN} --from ${REF_FROM} --to ${REF_TO}"
+difftool = "github"
 ```
 
 
