@@ -1,7 +1,7 @@
-use dyd::app::{App, AppResult};
-use dyd::cli::{Command, CLI};
-use dyd::app::{Event, EventHandler};
 use dyd::app::handler::handle_key_events;
+use dyd::app::{App, AppResult};
+use dyd::app::{Event, EventHandler};
+use dyd::cli::{Command, CLI};
 use dyd::manifest::Manifest;
 use dyd::terminal::Tui;
 

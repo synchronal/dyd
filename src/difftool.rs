@@ -44,7 +44,7 @@ impl Difftool {
     context.insert("REF_TO".to_string(), ref_to.clone());
     assert!(envsubst::validate_vars(&context).is_ok());
 
-    let difftool_expansion = envsubst::substitute(self.to_str(repo, &log.sha, &repo.branch), &context).unwrap();
+    let difftool_expansion = envsubst::substitute(self.to_str(repo, &log.sha), &context).unwrap();
 
     let difftool_parts: Vec<&str> = difftool_expansion.split(' ').collect();
     difftool_parts
@@ -73,24 +73,24 @@ impl Difftool {
     };
   }
 
-  pub fn to_str(&self, repo: &Repo, from_sha: &String, branch: &Option<String>) -> String {
+  pub fn to_str(&self, repo: &Repo, from_sha: &String) -> String {
     match self {
       Difftool::Git => "git difftool -g -y ${DIFF}".to_owned(),
-      Difftool::GitHub => Difftool::open_github(repo, from_sha, branch),
+      Difftool::GitHub => Difftool::github_diff_url(repo, from_sha),
       Difftool::Fallthrough(difftool) => difftool.clone(),
     }
   }
 
-  fn open_github(repo: &Repo, from_sha: &String, branch: &Option<String>) -> String {
-    let mut github_url = repo.origin.clone();
-    github_url = github_url
-      .trim()
-      .replace(':', "/")
-      .replace("git@", "https://");
-    let re = Regex::new(r"\.git$").unwrap();
-    let origin = re.replace_all(&github_url, "");
-    let ref_to = branch.clone().unwrap_or("HEAD".to_owned());
-    format!("open {origin}/compare/{from_sha}..{ref_to}?diff=split")
+  fn github_diff_url(repo: &Repo, from_sha: &String) -> String {
+    let origin = repo.origin.clone();
+    let origin_re = Regex::new(r"(git@|https://)([^:]+)[:/](.+)(?:\.git)$").unwrap();
+    let caps = origin_re.captures(&origin).unwrap();
+    let url = caps.get(2).unwrap().as_str();
+    let repository = caps.get(3).unwrap().as_str();
+
+    let github_url = format!("https://{}/{}", url, repository);
+    let ref_to = repo.branch.clone().unwrap_or("HEAD".to_owned());
+    format!("open {github_url}/compare/{from_sha}..{ref_to}?diff=split")
   }
 }
 
@@ -127,5 +127,75 @@ impl<'de> Deserialize<'de> for Difftool {
       Self::Fallthrough(s)
     };
     Ok(deserialized)
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  #[test]
+  fn difftool_git_to_str() {
+    let difftool = super::Difftool::Git;
+    let repo = crate::git::repo::Repo {
+      name: "test repo".into(),
+      origin: "git@github.com:synchronal/dyd.git".into(),
+      ..Default::default()
+    };
+    let from_sha = "abc1234".into();
+
+    let string = difftool.to_str(&repo, &from_sha);
+    assert_eq!(string, "git difftool -g -y ${DIFF}")
+  }
+
+  #[test]
+  fn difftool_github_ssh_to_str() {
+    let difftool = super::Difftool::GitHub;
+    let repo = crate::git::repo::Repo {
+      name: "test repo".into(),
+      origin: "git@github.com:synchronal/dyd.git".into(),
+      ..Default::default()
+    };
+    let from_sha = "abc1234".into();
+
+    let string = difftool.to_str(&repo, &from_sha);
+    assert_eq!(
+      string,
+      "open https://github.com/synchronal/dyd/compare/abc1234..HEAD?diff=split"
+    )
+  }
+
+  #[test]
+  fn difftool_github_ssh_branch_to_str() {
+    let difftool = super::Difftool::GitHub;
+    let repo = crate::git::repo::Repo {
+      branch: Some("my-branch".into()),
+      name: "test repo".into(),
+      origin: "git@github.com:synchronal/dyd.git".into(),
+      ..Default::default()
+    };
+    let from_sha = "abc1234".into();
+
+    let string = difftool.to_str(&repo, &from_sha);
+    assert_eq!(
+      string,
+      "open https://github.com/synchronal/dyd/compare/abc1234..my-branch?diff=split"
+    )
+  }
+
+  #[test]
+  fn difftool_github_https_to_str() {
+    let difftool = super::Difftool::GitHub;
+    let repo = crate::git::repo::Repo {
+      branch: Some("my-branch".into()),
+      name: "test repo".into(),
+      origin: "https://github.com/synchronal/dyd.git".into(),
+      ..Default::default()
+    };
+    let from_sha = "abc1234".into();
+
+    let string = difftool.to_str(&repo, &from_sha);
+    assert_eq!(
+      string,
+      "open https://github.com/synchronal/dyd/compare/abc1234..my-branch?diff=split"
+    )
   }
 }
