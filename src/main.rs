@@ -1,9 +1,9 @@
 use dyd::app::{App, AppResult};
 use dyd::cli::{Command, CLI};
-use dyd::event::{Event, EventHandler};
-use dyd::handler::handle_key_events;
+use dyd::app::{Event, EventHandler};
+use dyd::app::handler::handle_key_events;
 use dyd::manifest::Manifest;
-use dyd::tui::Tui;
+use dyd::terminal::Tui;
 
 use anyhow::Context;
 use std::io::Write;

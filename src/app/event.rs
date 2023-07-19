@@ -1,5 +1,5 @@
 use crate::app::AppResult;
-use crate::repo::{Log, RepoStatus};
+use crate::git::repo::{Log, RepoStatus};
 use crossterm::event::{self, Event as CrosstermEvent, KeyEvent, MouseEvent};
 use std::sync::mpsc;
 use std::thread;

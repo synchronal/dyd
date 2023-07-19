@@ -1,5 +1,5 @@
 use crate::app::{App, SelectedPane};
-use crate::repo::{Repo, RepoStatus};
+use crate::git::repo::{Repo, RepoStatus};
 
 use tui::layout::Constraint;
 use tui::style::{Color, Modifier, Style};

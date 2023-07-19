@@ -1,4 +1,4 @@
-use crate::repo::{Log, Repo};
+use crate::git::repo::{Log, Repo};
 use regex::Regex;
 use serde::de::{value, Deserializer, IntoDeserializer};
 use serde::Deserialize;

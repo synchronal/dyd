@@ -1,7 +1,10 @@
+pub mod event;
+pub mod handler;
+
+pub use self::event::{Event, EventHandler};
 use crate::difftool::Difftool;
-use crate::event::Event;
+use crate::git::repo::{Log, Repo, RepoStatus};
 use crate::manifest::Manifest;
-use crate::repo::{Log, Repo, RepoStatus};
 use crate::ui;
 use crate::widget::calendar::CalendarState;
 

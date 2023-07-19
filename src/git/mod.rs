@@ -2,6 +2,8 @@ use crate::app::AppResult;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+pub mod repo;
+
 static GIT_FORMAT: &str = "%h\x0B%ct\x0B%ch\x0B%an\x0B%s";
 
 pub fn clone_repo(origin: &String, path: &Path) {

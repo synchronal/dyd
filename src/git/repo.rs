@@ -1,5 +1,4 @@
-use crate::app::AppResult;
-use crate::event::Event;
+use crate::app::{AppResult, Event};
 use crate::git;
 use crate::manifest::Remote;
 use crate::time;
