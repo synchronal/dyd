@@ -1,5 +1,11 @@
 # Change log
 
+- Difftool configuration defines an enum.
+  - git - use default git gui difftool.
+  - github - open the default browser to a github diff.
+  - fallthrough - any unrecognized string is treated as the difftool command.
+- Fix opening of difftool with branch specified.
+
 ## 1.6.1
 
 - View logs from branches via `origin/{branch}` rather than switching branches.
