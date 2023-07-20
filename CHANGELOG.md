@@ -1,5 +1,7 @@
 # Change log
 
+## 1.7.0
+
 - Difftool configuration defines an enum.
   - git - use default git gui difftool.
   - github - open the default browser to a github diff.
