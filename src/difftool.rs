@@ -83,7 +83,11 @@ impl Difftool {
 
   fn github_diff_url(repo: &Repo, from_sha: &String) -> String {
     let origin = repo.origin.clone();
-    let origin_re = Regex::new(r"(git@|https://)([^:]+)[:/](.+)(?:\.git)$").unwrap();
+
+    let trailing_git_re = Regex::new(r"\.git$").unwrap();
+    let origin = trailing_git_re.replace_all(&origin, "");
+
+    let origin_re = Regex::new(r"^([^@]+@|[^:]+://)([^:]+)[:/](.+)$").unwrap();
     let caps = origin_re.captures(&origin).unwrap();
     let url = caps.get(2).unwrap().as_str();
     let repository = caps.get(3).unwrap().as_str();
