@@ -25,7 +25,7 @@ lazy_static = "1.4"
 regex = "1.5"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.7"
-tui = "0.19"
+tui = { package = "ratatui", version = "0.22.0" }
 
 [features]
 # Treat warnings as a build error.

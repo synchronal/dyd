@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Switch `tui` dependency to `ratatui`.
 - Fix possible future (nightly) regex incompatibility with optional lookahead in github difftool url.
 
 ## 1.7.0
