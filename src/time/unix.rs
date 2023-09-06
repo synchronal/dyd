@@ -5,7 +5,7 @@ use chrono::prelude::*;
 pub fn parse_unix(time: &str) -> AppResult<DateTime<Utc>> {
   let timestamp = time.parse::<i64>()?;
   let naive = NaiveDateTime::from_timestamp_opt(timestamp, 0).unwrap();
-  let datetime: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+  let datetime: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
   Ok(datetime)
 }
@@ -24,7 +24,7 @@ mod tests {
       .unwrap()
       .and_hms_opt(16, 11, 21)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
     assert_eq!(time, expected);
 

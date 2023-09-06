@@ -115,14 +115,14 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let now: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
     let time = super::parse_relative(&"1 week ago".to_owned(), &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2022, 3, 25)
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     let time = super::parse_relative(&"2 weeks ago".to_owned(), &now).unwrap();
@@ -130,7 +130,7 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     Ok(())
@@ -142,14 +142,14 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let now: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
     let time = super::parse_relative(&"4 days ago".to_owned(), &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2022, 3, 28)
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     Ok(())
@@ -161,14 +161,14 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let now: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
     let time = super::parse_relative(&"2 months ago".to_owned(), &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2022, 2, 2)
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     let time = super::parse_relative(&"4 months ago".to_owned(), &now).unwrap();
@@ -176,7 +176,7 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     let time = super::parse_relative(&"8 months ago".to_owned(), &now).unwrap();
@@ -184,7 +184,7 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     let time = super::parse_relative(&"12 months ago".to_owned(), &now).unwrap();
@@ -192,7 +192,7 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     let time = super::parse_relative(&"16 months ago".to_owned(), &now).unwrap();
@@ -200,7 +200,7 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     Ok(())
@@ -212,14 +212,14 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let now: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
     let time = super::parse_relative(&"1 month ago".to_owned(), &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2022, 2, 28)
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     let time = super::parse_relative(&"4 months ago".to_owned(), &now).unwrap();
@@ -227,7 +227,7 @@ mod tests {
       .unwrap()
       .and_hms_opt(6, 1, 2)
       .unwrap();
-    let expected: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
     Ok(())
