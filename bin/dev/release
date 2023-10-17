@@ -2,8 +2,8 @@
 
 trap "exit" INT
 
-source ".medic/_support/cecho.sh"
-source ".medic/_support/step.sh"
+source "$(brew --prefix)/share/medic-bash/cecho.bash"
+source "$(brew --prefix)/share/medic-bash/step.bash"
 
 set -e
 
