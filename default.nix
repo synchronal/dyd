@@ -2,5 +2,5 @@
 rustPlatform.buildRustPackage {
   name = "dyd";
   src = ./.;
-  cargoHash = "sha256-VduByUoO4aeGQfSpNcVxmJlYrpmGF6XLdC040YsDuO4=";
+  cargoHash = "sha256-OMnw8AkdeiG9SGDgCiaDbPBcor3+E696Z171M/7rApM=";
 }
