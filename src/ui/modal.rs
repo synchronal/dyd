@@ -1,12 +1,11 @@
 use crate::app::{App, SelectedModal};
 use crate::widget::calendar::Calendar;
-use tui::backend::Backend;
 use tui::layout::{Margin, Rect};
 use tui::style::{Color, Style};
 use tui::widgets::{Block, Borders, Clear};
 use tui::Frame;
 
-pub fn render<B: Backend>(app: &App, frame: &mut Frame<'_, B>) {
+pub fn render(app: &App, frame: &mut Frame) {
   let window = frame.size();
 
   match app.modal {

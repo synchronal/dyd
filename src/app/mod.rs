@@ -14,7 +14,6 @@ use std::cmp::Ordering;
 use std::error;
 use std::path::PathBuf;
 use std::sync::mpsc;
-use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout};
 use tui::terminal::Frame;
 use tui::widgets::TableState;
@@ -108,7 +107,7 @@ impl App {
     Ok(())
   }
 
-  pub fn render<B: Backend>(&mut self, frame: &mut Frame<'_, B>) {
+  pub fn render(&mut self, frame: &mut Frame) {
     let size = frame.size();
     let layout = Layout::default()
       .direction(Direction::Horizontal)
