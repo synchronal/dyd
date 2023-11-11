@@ -1,9 +1,9 @@
 [doctor]
 
 checks = [
-  { check = "asdf", command = "plugin-installed", args = { plugin = "rust" } },
-  { check = "asdf", command = "package-installed", args = { plugin = "rust" } },
   { check = "homebrew" },
+  { check = "tool-versions", command = "plugin-installed", args = { plugin = "rust" } },
+  { check = "tool-versions", command = "package-installed", args = { plugin = "rust" } },
   { check = "rust", command = "crate-installed", args = { name = "cargo-audit" } },
   { check = "rust", command = "crate-installed", args = { name = "cargo-outdated" } },
   { check = "rust", command = "target-installed", args = { target = "aarch64-apple-darwin" } },
