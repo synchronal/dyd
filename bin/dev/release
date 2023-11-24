@@ -3,41 +3,36 @@
 trap "exit" INT
 
 source "$(brew --prefix)/share/medic-bash/cecho.bash"
-source "$(brew --prefix)/share/medic-bash/step.bash"
 
 set -e
 
 mkdir -p tmp/release
 
-step_header "Build: Darwin aarch64" "cargo build --target aarch64-apple-darwin -r"
-echo
-cargo build --target aarch64-apple-darwin -r
+medic run --name "Build: Darwin aarch64" \
+  --cmd "cargo build --target aarch64-apple-darwin -r --color always" \
+  --verbose
 
-step_header "Build: Darwin x86_64" "cargo build --target x86_64-apple-darwin -r"
-echo
-cargo build --target x86_64-apple-darwin -r
+medic run --name "Build: Darwin x86_64" \
+  --cmd "cargo build --target x86_64-apple-darwin -r --color always" \
+  --verbose
 
-echo
-step "Package: Darwin aarch64" \
-  "(cd target/aarch64-apple-darwin/release && tar -czf ../../../tmp/release/dyd-darwin-arm64.tar.gz dyd)"
+medic run --name "Package: Darwin aarch64" \
+  --cmd "(cd target/aarch64-apple-darwin/release && tar -czf ../../../tmp/release/dyd-darwin-arm64.tar.gz dyd)"
 
-step "Package: Darwin x86_64" \
-  "(cd target/x86_64-apple-darwin/release && tar -czf ../../../tmp/release/dyd-darwin-x86_64.tar.gz dyd)"
+medic run --name "Package: Darwin x86_64" \
+  --cmd "(cd target/x86_64-apple-darwin/release && tar -czf ../../../tmp/release/dyd-darwin-x86_64.tar.gz dyd)"
 
-step "Package: Darwin universal" \
-  "(mkdir -p target/universal-apple-darwin/release \
-    && cd target/universal-apple-darwin/release \
-    && lipo ../../aarch64-apple-darwin/release/dyd ../../x86_64-apple-darwin/release/dyd -create -output dyd \
-    && tar -czf ../../../tmp/release/dyd-darwin-universal.tar.gz dyd)"
+medic run --name "Package: Darwin universal" \
+  --cmd "(mkdir -p target/universal-apple-darwin/release && cd target/universal-apple-darwin/release && lipo ../../aarch64-apple-darwin/release/dyd ../../x86_64-apple-darwin/release/dyd -create -output dyd && tar -czf ../../../tmp/release/dyd-darwin-universal.tar.gz dyd)"
 
-step "shasum: Darwin aarch64" \
-  "(cd tmp/release && sha256sum dyd-darwin-arm64.tar.gz > dyd-darwin-arm64.sha256sum)"
+medic run --name "shasum: Darwin aarch64" \
+  --cmd "(cd tmp/release && sha256sum dyd-darwin-arm64.tar.gz > dyd-darwin-arm64.sha256sum)"
 
-step "shasum: Darwin x84_64" \
-  "(cd tmp/release && sha256sum dyd-darwin-x86_64.tar.gz > dyd-darwin-x86_64.sha256sum)"
+medic run --name "shasum: Darwin x84_64" \
+  --cmd "(cd tmp/release && sha256sum dyd-darwin-x86_64.tar.gz > dyd-darwin-x86_64.sha256sum)"
 
-step "shasum: Darwin universal" \
-  "(cd tmp/release && sha256sum dyd-darwin-universal.tar.gz > dyd-darwin-universal.sha256sum)"
+medic run --name "shasum: Darwin universal" \
+  --cmd "(cd tmp/release && sha256sum dyd-darwin-universal.tar.gz > dyd-darwin-universal.sha256sum)"
 
 cecho --bright-green "\nChecksums:"
 cat tmp/release/*.sha256sum

@@ -4,10 +4,8 @@ checks = [
   { check = "homebrew" },
   { check = "tool-versions", command = "plugin-installed", args = { plugin = "rust" } },
   { check = "tool-versions", command = "package-installed", args = { plugin = "rust" } },
-  { check = "rust", command = "crate-installed", args = { name = "cargo-audit" } },
-  { check = "rust", command = "crate-installed", args = { name = "cargo-outdated" } },
-  { check = "rust", command = "target-installed", args = { target = "aarch64-apple-darwin" } },
-  { check = "rust", command = "target-installed", args = { target = "x86_64-apple-darwin" } },
+  { check = "rust", command = "crate-installed", args = { name = ["cargo-audit","cargo-outdated"] } },
+  { check = "rust", command = "target-installed", args = { target = ["aarch64-apple-darwin", "x86_64-apple-darwin"] } },
 ]
 
 [test]
@@ -40,7 +38,7 @@ steps = [
   { audit = {} },
   { update = {} },
   { test = {} },
-  { name = "Release", shell = "bin/dev/release", verbose = true },
+  { name = "Release", shell = "bin/dev/release", inline = true },
   { step = "git", command = "push" },
   { step = "github", command = "link-to-actions", verbose = true },
 ]
