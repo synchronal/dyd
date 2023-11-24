@@ -1,34 +1,34 @@
 # DYD
 
 [![CI](https://github.com/synchronal/dyd/actions/workflows/tests.yml/badge.svg)](https://github.com/synchronal/dyd/actions)
-[![Hex pm](http://img.shields.io/crates/v/dyd.svg?style=flat)](https://crates.io/crates/dyd)
+[![Hex
+pm](http://img.shields.io/crates/v/dyd.svg?style=flat)](https://crates.io/crates/dyd)
 [![License](http://img.shields.io/github/license/synchronal/dyd.svg?style=flat)](https://github.com/synchronal/dyd/blob/main/LICENSE.md)
 
 Daily diff.
 
-This command line tool facilitates the viewing of git diffs across multiple projects, across
-multiple days. See what you're doing across teams, and across all the git repos your teams
-manage.
-
+This command line tool facilitates the viewing of git diffs across
+multiple projects, across multiple days. See what you're doing across
+teams, and across all the git repos your teams manage.
 
 ## Installation
 
 via homebrew:
 
-```shell
+``` shell
 brew tap synchronal/tap
 brew install dyd
 ```
 
 via cargo:
 
-```shell
+``` shell
 cargo install dyd
 ```
 
 Configure git with a GUI difftool:
 
-```toml
+``` toml
 [diff]
   tool = Kaleidoscope
   guitool = Kaleidoscope
@@ -41,12 +41,11 @@ Configure git with a GUI difftool:
   trustExitCode = true
 ```
 
-
 ## Usage
 
 Create a manifest file at `dyd.toml` with the following format:
 
-```toml
+``` toml
 since = "3 days ago"
 #       "  ^^^^ days | weeks | months
 
@@ -70,30 +69,36 @@ name = "TUI"
 origin = "git@github.com:fdehau/tui-rs"
 ```
 
-- `since` - Must be in the format `<N>` `<units>` `ago`. Defaults to `1 week ago`.
-- `difftool` - Optional command to run in order to open a diff. Defaults to `git difftool -g -y ${DIFF}`.
-  - Variables that will be interpolated into the command, and also made available in the difftool
-    ENV. **IMPORTANT**: variables will **only** be replaced if they are in the format `${VAR}`,
-    including braces.
+- `since` - Must be in the format `<N>` `<units>` `ago`. Defaults to
+  `1 week ago`.
+- `difftool` - Optional command to run in order to open a diff. Defaults
+  to `git difftool -g -y ${DIFF}`.
+  - Variables that will be interpolated into the command, and also made
+    available in the difftool ENV. **IMPORTANT**: variables will
+    **only** be replaced if they are in the format `${VAR}`, including
+    braces.
     - `DIFF` - in the format `@{u}..HEAD`.
     - `DYD_PWD` - the working directory that `dyd` was run from.
-    - `ORIGIN` - the origin used to check out the repository, ie `git@github.com:<org>/<repo>(.git)?`
+    - `ORIGIN` - the origin used to check out the repository, ie
+      `git@github.com:<org>/<repo>(.git)?`
     - `REF_FROM` - the sha of the earlier commit of the diff.
     - `REF_TO` - the sha of the more recent commit of the diff. `HEAD`.
 - `remotes` - a list of remote repositories to clone and pull.
   - `name` - Text to show in the UI.
   - `origin` - The git origin from which to pull.
-  - `branch` - An optional branch to show diffs from. Depends on being able to view logs via `origin/{branch}`.
+  - `branch` - An optional branch to show diffs from. Depends on being
+    able to view logs via `origin/{branch}`.
 
-Ensure that your shell is authorized with the origin. DYD will *not* route input to the SSH agent.
+Ensure that your shell is authorized with the origin. DYD will *not*
+route input to the SSH agent.
 
-```shell
+``` shell
 ssh-add ~/.ssh/id_ed25519
 ```
 
 Open the diff tool:
 
-```shell
+``` shell
 dyd -m dyd.toml
 dyd --manifest dyd.toml
 DYD_MANIFEST_PATH="dyd.toml" dyd diff
@@ -101,58 +106,56 @@ DYD_MANIFEST_PATH="dyd.toml" dyd diff
 
 Keymap:
 
-```
+``` text
 h l <left> <right> <tab> - switch panes
 j k <up> <down> - change current selection
 d - open git gui difftool
 q <esc> - quit
 ```
 
-
 ## Other difftools
 
 ### GitHub (browser)
 
-When all repos in a manifest have their origins in GitHub, `dyd` can be configured to open diffs in
-the system's default browser.
+When all repos in a manifest have their origins in GitHub, `dyd` can be
+configured to open diffs in the system's default browser.
 
 *Add to your `dyd.toml` manifest file:*
 
-```toml
+``` toml
 difftool = "github"
 ```
 
-
 ### IntelliJ IDEA
 
-(You can [download IntelliJ IDEA Community Edition](https://www.jetbrains.com/idea/download/#section=mac) 
-for free, which has a pretty good graphical difftool.)
+(You can [download IntelliJ IDEA Community
+Edition](https://www.jetbrains.com/idea/download/#section=mac) for free,
+which has a pretty good graphical difftool.)
 
 *Add to your `~/.gitconfig` file:*
 
-```toml
+``` toml
 [diff]
-	tool = intellij
-	guitool = intellij
+    tool = intellij
+    guitool = intellij
 [difftool "intellij"]
-	cmd = open -nWa 'IntelliJ IDEA CE.app' --args diff $(realpath "$LOCAL") $(realpath "$REMOTE")
+    cmd = open -nWa 'IntelliJ IDEA CE.app' --args diff $(realpath "$LOCAL") $(realpath "$REMOTE")
 [difftool]
-	prompt=false
+    prompt=false
 ```
 
 *Add to your `dyd.toml` manifest file:*
 
-```toml
+``` toml
 difftool = "git difftool --dir-diff --tool=intellij -y ${DIFF}"
 ```
 
 ### Others
+
 - gitx
 - kdiff3
 - ???
 
-
 ## References
 
-- https://github.com/orhun/rust-tui-template
-
+- <https://github.com/orhun/rust-tui-template>

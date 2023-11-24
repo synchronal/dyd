@@ -9,19 +9,22 @@
 ## 1.7.1
 
 - Switch `tui` dependency to `ratatui`.
-- Fix possible future (nightly) regex incompatibility with optional lookahead in github difftool url.
+- Fix possible future (nightly) regex incompatibility with optional
+  lookahead in github difftool url.
 
 ## 1.7.0
 
 - Difftool configuration defines an enum.
   - git - use default git gui difftool.
   - github - open the default browser to a github diff.
-  - fallthrough - any unrecognized string is treated as the difftool command.
+  - fallthrough - any unrecognized string is treated as the difftool
+    command.
 - Fix opening of difftool with branch specified.
 
 ## 1.6.1
 
-- View logs from branches via `origin/{branch}` rather than switching branches.
+- View logs from branches via `origin/{branch}` rather than switching
+  branches.
 
 ## 1.6.0
 
@@ -39,7 +42,7 @@
 
 ## 1.5.2
 
-- Sort repos by _parsed_ datetime of most recent log.
+- Sort repos by *parsed* datetime of most recent log.
 - Fix handling of default subcommand with default args.
 
 ### 1.5.1
@@ -67,32 +70,29 @@
 
 ### 1.2.1
 
-- Sort repos based on unix datetime, rather than on chrono::DateTime struct.
+- Sort repos based on unix datetime, rather than on chrono::DateTime
+  struct.
 
 ### 1.2.0
 
 - Include `DYD_PWD` in env when opening difftool.
 - Updates the README to better reflect recent changes.
 
-
 ### 1.1.1
 
 Handle log parsing for repos with no commits.
-
 
 ### 1.1.0
 
 Adds `r` binding to refresh all repos.
 
-
 ### 1.0.0
 
-Adds subcommands (`diff`, `init`) with the default subcommand being `diff`. When not
-specifying a subcommand, the default manifest path of `./dyd.toml` is used. In order
-to specify a specific manifest file, use `dyd diff -m <path/to/file.toml>`.
-
+Adds subcommands (`diff`, `init`) with the default subcommand being
+`diff`. When not specifying a subcommand, the default manifest path of
+`./dyd.toml` is used. In order to specify a specific manifest file, use
+`dyd diff -m <path/to/file.toml>`.
 
 ### 0.5.0
 
 Last non-1.0 release.
-
