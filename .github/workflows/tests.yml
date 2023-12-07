@@ -12,12 +12,87 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+    - name: Use rust 1.74.1
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.74.1
+        components: rustfmt, clippy
+    - name: Set up cargo cache
+      uses: actions/cache@v3
+      continue-on-error: false
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo-
+    - name: Install cargo audit
+      run: cargo install cargo-audit
     - name: Build
-      run: cargo build --verbose
+      run: cargo build --workspace --features strict --verbose
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use rust 1.74.1
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.74.1
+        components: rustfmt, clippy
+    - name: Set up cargo cache
+      uses: actions/cache@v3
+      continue-on-error: false
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo-
     - name: Run tests
-      run: cargo test --verbose
-    - name: Validate formatting
-      run: cargo fmt --check --verbose
+      run: |
+        export PATH="${PATH}:${GITHUB_WORKSPACE}/fixtures/bin"
+        cargo test --verbose --color=always
+
+  audit:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use rust 1.74.1
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.74.1
+        components: rustfmt, clippy
+    - name: Set up cargo cache
+      uses: actions/cache@v3
+      continue-on-error: false
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo-
+    - name: Install cargo audit
+      run: cargo install cargo-audit
+    - name: Cargo audit
+      run: cargo audit
+    - name: Cargo format check
+      run: cargo fmt --check
+    - uses: PurpleBooth/gfmfmt-action@v2.0.14
+      name: Check markdown formatting
+    - name: Cargo clippy
+      run: cargo clippy
+
