@@ -1,4 +1,5 @@
 use crate::app::AppResult;
+use std::error::Error;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -6,13 +7,20 @@ pub mod repo;
 
 static GIT_FORMAT: &str = "%h\x0B%ct\x0B%ch\x0B%an\x0B%s";
 
-pub fn clone_repo(origin: &String, path: &Path) {
-  let path_str = path.to_path_buf();
+pub fn clone_repo(origin: String, path: &Path) -> Result<(), Box<dyn Error>> {
+  gix::interrupt::init_handler(1, || {})?;
+  std::fs::create_dir_all(path)?;
+  let mut prepare_clone = gix::prepare_clone(origin, path)?;
 
-  Command::new("git")
-    .args(["clone", origin, path_str.to_str().unwrap()])
-    .output()
-    .unwrap();
+  let (mut prepare_checkout, _) =
+    prepare_clone.fetch_then_checkout(gix::progress::Discard, &gix::interrupt::IS_INTERRUPTED)?;
+
+  let (repo, _) = prepare_checkout.main_worktree(gix::progress::Discard, &gix::interrupt::IS_INTERRUPTED)?;
+  let _remote = repo
+    .find_default_remote(gix::remote::Direction::Fetch)
+    .expect("always present after clone")?;
+
+  Ok(())
 }
 
 pub fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<u8>> {
