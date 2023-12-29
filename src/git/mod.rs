@@ -1,7 +1,9 @@
 use crate::app::AppResult;
+use gix::remote::Direction;
 use std::error::Error;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::sync::atomic::AtomicBool;
 
 pub mod repo;
 
@@ -44,12 +46,26 @@ pub fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<u8>> {
   Ok(logs.output()?.stdout)
 }
 
-pub fn pull_repo(path: &PathBuf) {
+pub fn pull_repo(path: &PathBuf) -> AppResult<()> {
+  gix::interrupt::init_handler(1, || {})?;
+  let repo = gix::discover(path)?;
+  let remote = repo
+    .head()?
+    .into_remote(Direction::Fetch)
+    .expect("present")?;
+
+  remote
+    .connect(Direction::Fetch)?
+    .prepare_fetch(gix::progress::Discard, Default::default())?
+    .receive(gix::progress::Discard, &AtomicBool::default())?;
+
   Command::new("git")
-    .args(["pull", "--prune"])
+    .args(["merge", "--no-edit", "--ff-only", "--quiet", "--no-commit"])
     .current_dir(path)
     .output()
     .unwrap();
+
+  Ok(())
 }
 
 pub fn switch_branch(path: &PathBuf, branch: String) {
