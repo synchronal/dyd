@@ -17,12 +17,13 @@ pub fn render(app: &App) -> Table {
     Row::new(cells)
   });
 
-  Table::new(rows)
+  let widths = [Constraint::Length(2), Constraint::Percentage(100)];
+
+  Table::new(rows, widths)
     .block(container)
     .highlight_style(Style::default().add_modifier(Modifier::BOLD))
     .highlight_symbol("·")
     .column_spacing(2)
-    .widths(&[Constraint::Length(2), Constraint::Percentage(100)])
 }
 
 fn title(app: &App) -> text::Span {

@@ -32,18 +32,18 @@ pub fn render(app: &App) -> Table {
       })
       .collect()
   }
+  let widths = [
+    Constraint::Length(9),
+    Constraint::Length(17),
+    Constraint::Percentage(20),
+    Constraint::Percentage(100),
+  ];
 
-  Table::new(rows)
+  Table::new(rows, widths)
     .block(container)
     .highlight_style(Style::default().add_modifier(Modifier::BOLD))
     .highlight_symbol("·")
     .column_spacing(2)
-    .widths(&[
-      Constraint::Length(9),
-      Constraint::Length(17),
-      Constraint::Percentage(20),
-      Constraint::Percentage(100),
-    ])
 }
 
 fn title(app: &App) -> text::Span {

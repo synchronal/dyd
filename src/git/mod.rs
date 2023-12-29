@@ -10,7 +10,6 @@ pub mod repo;
 static GIT_FORMAT: &str = "%h\x0B%ct\x0B%ch\x0B%an\x0B%s";
 
 pub fn clone_repo(origin: String, path: &Path) -> Result<(), Box<dyn Error>> {
-  gix::interrupt::init_handler(1, || {})?;
   std::fs::create_dir_all(path)?;
   let mut prepare_clone = gix::prepare_clone(origin, path)?;
 
@@ -47,7 +46,6 @@ pub fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<u8>> {
 }
 
 pub fn pull_repo(path: &PathBuf) -> AppResult<()> {
-  gix::interrupt::init_handler(1, || {})?;
   let repo = gix::discover(path)?;
   let remote = repo
     .head()?
