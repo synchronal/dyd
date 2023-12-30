@@ -3,19 +3,16 @@ name = "dyd"
 authors = ["Eric Saxby", "synchronal.dev"]
 description = "CLI for daily diffing of git repos"
 edition = "2021"
-exclude = [
-  "fixtures/*"
-]
+exclude = ["fixtures/*"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/synchronal/dyd"
 version = "1.7.2"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-
 anyhow = "1.0"
+byte-unit = "5.1"
 chrono = "0.4"
 clap = { version = "4.0", features = ["derive", "env"] }
 crossterm = "0.27"
@@ -23,11 +20,13 @@ envsubst = "0.2"
 gix = { version = "0.57", features = ["worktree-mutation", "blocking-network-client"] }
 indexmap = "2.0"
 lazy_static = "1.4"
+log = "0.4"
+log4rs = { version = "1.2", features = ["delete_roller", "rolling_file_appender"] }
 regex = "1.5"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
 tui = { package = "ratatui", version = "0.25.0" }
 
+
 [features]
-# Treat warnings as a build error.
-strict = []
+strict = [] # Treat warnings as a build error.

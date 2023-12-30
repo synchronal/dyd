@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add log file at `~/.local/state/dyd/dyd.log`.
+- Use rust package `gitoxide` for some git clone and fetch.
+
 ## 1.7.2
 
 - Update of internal dependency `ratatui` with breaking changes.
