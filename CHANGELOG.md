@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Update deps
+
 ## 1.8.0
 
 - Add log file at `~/.local/state/dyd/dyd.log`.
