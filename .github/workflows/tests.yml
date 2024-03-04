@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Use rust 1.75.0
+    - name: Setup rust toolchain
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.75.0
+        toolchain: 1.76.0
         components: rustfmt, clippy
     - name: Set up cargo cache
       uses: actions/cache@v3
@@ -41,10 +41,10 @@ jobs:
     needs: build
     steps:
     - uses: actions/checkout@v4
-    - name: Use rust 1.75.0
+    - name: Setup rust toolchain
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.75.0
+        toolchain: 1.76.0
         components: rustfmt, clippy
     - name: Set up cargo cache
       uses: actions/cache@v3
@@ -68,10 +68,10 @@ jobs:
     needs: build
     steps:
     - uses: actions/checkout@v4
-    - name: Use rust 1.75.0
+    - name: Setup rust toolchain
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.75.0
+        toolchain: 1.76.0
         components: rustfmt, clippy
     - name: Set up cargo cache
       uses: actions/cache@v3
