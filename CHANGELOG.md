@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.8.1
+
 - Update deps
 
 ## 1.8.0
