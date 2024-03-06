@@ -4,8 +4,7 @@ use chrono::prelude::*;
 /// Transforms a UNIX timestamp to a DateTime in UTC.
 pub fn parse_unix(time: &str) -> AppResult<DateTime<Utc>> {
   let timestamp = time.parse::<i64>()?;
-  let naive = NaiveDateTime::from_timestamp_opt(timestamp, 0).unwrap();
-  let datetime: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
+  let datetime = DateTime::from_timestamp(timestamp, 0).unwrap();
 
   Ok(datetime)
 }

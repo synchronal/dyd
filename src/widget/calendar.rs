@@ -64,11 +64,11 @@ impl CalendarState {
   }
 
   pub fn decrement(&mut self, days: i64) {
-    self.datetime -= Duration::days(days);
+    self.datetime -= Duration::try_days(days).unwrap();
   }
 
   pub fn increment(&mut self, days: i64) {
-    self.datetime += Duration::days(days);
+    self.datetime += Duration::try_days(days).unwrap();
   }
 }
 
@@ -123,7 +123,7 @@ impl<'a> StatefulWidget for Calendar<'a> {
         if day_of_week == Weekday::Sat {
           printing_week += 1;
         }
-        current_date += Duration::days(1);
+        current_date += Duration::try_days(1).unwrap();
       }
     }
   }

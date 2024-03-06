@@ -38,9 +38,9 @@ fn compute_relative(captures: regex::Captures, base: &DateTime<Utc>) -> AppResul
     let amount: i64 = captures.name("amount").unwrap().as_str().parse::<i64>()?;
 
     match captures.name("unit").unwrap().as_str() {
-      "day" | "days" => chrono::Duration::days(amount),
+      "day" | "days" => chrono::Duration::try_days(amount).unwrap(),
       "month" | "months" => return relative_months(base, amount),
-      "week" | "weeks" => chrono::Duration::weeks(amount),
+      "week" | "weeks" => chrono::Duration::try_weeks(amount).unwrap(),
       other => return Err(Box::new(TimeParseError(format!("Unknown unit {other}")))),
     }
   };
