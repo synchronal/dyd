@@ -123,9 +123,9 @@ impl<'de> Deserialize<'de> for Difftool {
   {
     let s = String::deserialize(deserializer)?;
 
-    let deserialized = if s == "git".to_owned() {
+    let deserialized = if s == *"git" {
       Self::Git
-    } else if s == "github".to_owned() {
+    } else if s == *"github" {
       Self::GitHub
     } else {
       Self::Fallthrough(s)

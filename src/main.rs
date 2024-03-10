@@ -6,7 +6,7 @@ use dyd::manifest::Manifest;
 use dyd::terminal::Tui;
 
 use anyhow::Context;
-use log;
+
 use log4rs::append::rolling_file::policy::compound::roll::delete::DeleteRoller;
 use log4rs::append::rolling_file::policy::compound::trigger::size::SizeTrigger;
 use log4rs::append::rolling_file::policy::compound::CompoundPolicy;
@@ -88,7 +88,6 @@ fn write_default_manifest(manifest_path: PathBuf) -> AppResult<()> {
 
   let mut file = std::fs::OpenOptions::new()
     .create_new(true)
-    .write(true)
     .append(true)
     .open(manifest_path)?;
 

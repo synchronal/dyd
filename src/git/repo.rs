@@ -101,7 +101,7 @@ impl Repo {
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Pulling))
           .unwrap();
 
-        if let Err(_) = git::pull_repo(&path) {
+        if git::pull_repo(&path).is_err() {
           sender
             .send(Event::RepoStatusChange(id.clone(), RepoStatus::Failed))
             .unwrap();
@@ -113,7 +113,7 @@ impl Repo {
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Cloning))
           .unwrap();
 
-        if let Err(_) = git::clone_repo(origin, &path) {
+        if git::clone_repo(origin, &path).is_err() {
           sender
             .send(Event::RepoStatusChange(id.clone(), RepoStatus::Failed))
             .unwrap();

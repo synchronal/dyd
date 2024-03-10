@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Linter fixes.
+- Update `chrono` library, with internal fixes for deprecations.
+
 ## 1.8.1
 
 - Update deps

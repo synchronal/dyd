@@ -17,7 +17,7 @@ mod tests {
 
   #[test]
   fn parse_unix_ok() -> Result<(), Box<dyn Error>> {
-    let time = super::parse_unix(&"1650989481".to_owned())?;
+    let time = super::parse_unix("1650989481")?;
 
     let naive = NaiveDate::from_ymd_opt(2022, 4, 26)
       .unwrap()
@@ -32,7 +32,7 @@ mod tests {
 
   #[test]
   fn parse_unix_error() {
-    let error = super::parse_unix(&"hello".to_owned()).unwrap_err();
+    let error = super::parse_unix("hello").unwrap_err();
     assert!(error.is::<ParseIntError>());
   }
 }

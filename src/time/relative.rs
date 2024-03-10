@@ -117,7 +117,7 @@ mod tests {
       .unwrap();
     let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
-    let time = super::parse_relative(&"1 week ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("1 week ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2022, 3, 25)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -125,7 +125,7 @@ mod tests {
     let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
-    let time = super::parse_relative(&"2 weeks ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("2 weeks ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2022, 3, 18)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -144,7 +144,7 @@ mod tests {
       .unwrap();
     let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
-    let time = super::parse_relative(&"4 days ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("4 days ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2022, 3, 28)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -163,7 +163,7 @@ mod tests {
       .unwrap();
     let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
-    let time = super::parse_relative(&"2 months ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("2 months ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2022, 2, 2)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -171,7 +171,7 @@ mod tests {
     let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
-    let time = super::parse_relative(&"4 months ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("4 months ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2021, 12, 2)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -179,7 +179,7 @@ mod tests {
     let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
-    let time = super::parse_relative(&"8 months ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("8 months ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2021, 8, 2)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -187,7 +187,7 @@ mod tests {
     let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
-    let time = super::parse_relative(&"12 months ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("12 months ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2021, 4, 2)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -195,7 +195,7 @@ mod tests {
     let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
-    let time = super::parse_relative(&"16 months ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("16 months ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2020, 12, 2)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -214,7 +214,7 @@ mod tests {
       .unwrap();
     let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
 
-    let time = super::parse_relative(&"1 month ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("1 month ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2022, 2, 28)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -222,7 +222,7 @@ mod tests {
     let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
     assert_eq!(time, expected);
 
-    let time = super::parse_relative(&"4 months ago".to_owned(), &now).unwrap();
+    let time = super::parse_relative("4 months ago", &now).unwrap();
     let naive = NaiveDate::from_ymd_opt(2021, 11, 30)
       .unwrap()
       .and_hms_opt(6, 1, 2)
@@ -235,10 +235,10 @@ mod tests {
 
   #[test]
   fn parse_relative_error() {
-    let error = super::parse_relative(&"hello".to_owned(), &Utc::now()).unwrap_err();
+    let error = super::parse_relative("hello", &Utc::now()).unwrap_err();
     assert!(error.is::<super::TimeParseError>());
 
-    let error = super::parse_relative(&"2 moons ago".to_owned(), &Utc::now()).unwrap_err();
+    let error = super::parse_relative("2 moons ago", &Utc::now()).unwrap_err();
     assert!(error.is::<super::TimeParseError>());
   }
 }
