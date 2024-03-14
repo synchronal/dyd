@@ -9,13 +9,13 @@ checks = [
 
 [test]
 checks = [
-  { name = "Check for warnings", shell = "cargo build --workspace --features strict" },
+  { name = "Check for warnings", shell = "cargo build --workspace --features strict --color always" },
   { step = "rust", command = "test", verbose = true },
 ]
 
 [audit]
 checks = [
-  { name = "Audit crates", shell = "cargo audit", verbose = true },
+  { name = "Audit crates", shell = "cargo audit --color always", verbose = true },
   { check = "rust", command = "format-check" },
   { name = "Check md format", shell = "bin/dev/format-md --check", remedy = "bin/dev/format-md --all" },
   { step = "rust", command = "clippy" },
