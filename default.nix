@@ -1,21 +1,25 @@
-{ lib, fetchFromGitHub, rustPlatform }:
+{ lib, rustPlatform }:
+
+let
+  cargoToml = builtins.readFile ./Cargo.toml;
+  versionMatches = builtins.match ".*\nversion = \"([0-9.]+)\".*" cargoToml;
+  version = builtins.elemAt versionMatches 0;
+in
+
 rustPlatform.buildRustPackage {
   pname = "dyd";
-  version = "1.8.0";
+  inherit version;
 
-  src = fetchFromGitHub {
-    owner = "synchronal";
-    repo = "dyd";
-    rev = "v1.8.0";
-    hash = "sha256-DmdrOacLOxb8v5niYmSCmxvU3bcLzRlZa+JROn4HDHE=";
+  src = ./.;
+
+  cargoLock = {
+    lockFile = ./Cargo.lock;
   };
-
-  cargoHash = "sha256-45gqEanUjzXNJz/muWps/HUJqKLx8/YCh18L4gIJhSk=";
 
   meta = with lib; {
     description = "Daily diff";
     homepage = "https://github.com/synchronal/dyd";
     license = licenses.mit;
-    maintainers = ["synchronal.dev"];
+    maintainers = [ "synchronal.dev" ];
   };
 }
