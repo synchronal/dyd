@@ -18,7 +18,7 @@ jobs:
       id: setup-rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.77.0
+        toolchain: 1.77.1
         components: rustfmt, clippy
     - name: Set up cargo cache
       uses: actions/cache@v4
@@ -31,7 +31,6 @@ jobs:
           ~/.cargo/git/db/
           target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ steps.setup-rust.outputs.cachekey }}
-        restore-keys: ${{ runner.os }}-cargo-
     - name: Install cargo audit
       run: cargo install cargo-audit
     - name: Build
@@ -46,7 +45,7 @@ jobs:
       id: setup-rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.77.0
+        toolchain: 1.77.1
         components: rustfmt, clippy
     - name: Set up cargo cache
       uses: actions/cache@v4
@@ -59,7 +58,6 @@ jobs:
           ~/.cargo/git/db/
           target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ steps.setup-rust.outputs.cachekey }}
-        restore-keys: ${{ runner.os }}-cargo-
     - name: Run tests
       run: |
         export PATH="${PATH}:${GITHUB_WORKSPACE}/fixtures/bin"
@@ -74,7 +72,7 @@ jobs:
       id: setup-rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.77.0
+        toolchain: 1.77.1
         components: rustfmt, clippy
     - name: Set up cargo cache
       uses: actions/cache@v4
@@ -87,7 +85,6 @@ jobs:
           ~/.cargo/git/db/
           target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ steps.setup-rust.outputs.cachekey }}
-        restore-keys: ${{ runner.os }}-cargo-
     - name: Install cargo audit
       run: cargo install cargo-audit
     - name: Cargo audit
