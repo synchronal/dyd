@@ -3,6 +3,7 @@ use clap::Parser;
 use clap::Subcommand;
 
 #[derive(Parser, Debug)]
+#[clap(version)]
 #[clap(args_conflicts_with_subcommands = true)]
 pub struct CLI {
   #[command(subcommand)]
