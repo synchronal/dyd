@@ -1,4 +1,8 @@
-{ lib, rustPlatform }:
+{ lib
+, stdenv
+, rustPlatform
+, darwin
+}:
 
 let
   cargoToml = builtins.readFile ./Cargo.toml;
@@ -15,6 +19,8 @@ rustPlatform.buildRustPackage {
   cargoLock = {
     lockFile = ./Cargo.lock;
   };
+
+  buildInputs = lib.lists.optional stdenv.isDarwin darwin.apple_sdk.frameworks.SystemConfiguration;
 
   meta = with lib; {
     description = "Daily diff";
