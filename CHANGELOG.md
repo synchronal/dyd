@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.8.4
+
 - Update Ratatui.
 
 ## 1.8.3
