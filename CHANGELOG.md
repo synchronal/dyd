@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 1.8.3
+
+- Update dependencies to fix security advisory.
+
+## 1.8.2
+
+- Git clone and pull have a chance of succeeding with https remotes.
+- Log errors when failing git clone or pull
 - Linter fixes.
 - Update `chrono` library, with internal fixes for deprecations.
 
