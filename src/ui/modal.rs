@@ -6,7 +6,7 @@ use tui::widgets::{Block, Borders, Clear};
 use tui::Frame;
 
 pub fn render(app: &App, frame: &mut Frame) {
-  let window = frame.size();
+  let window = frame.area();
 
   match app.modal {
     SelectedModal::None => {}
@@ -14,7 +14,7 @@ pub fn render(app: &App, frame: &mut Frame) {
       let x = std::cmp::max(window.width / 2 - 12, 0);
       let y = std::cmp::max(window.height / 2 - 10, 0);
       let background = Rect::new(x, y, 28, 12);
-      let area = background.inner(&Margin {
+      let area = background.inner(Margin {
         vertical: 1,
         horizontal: 2,
       });

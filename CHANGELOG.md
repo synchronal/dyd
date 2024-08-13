@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Update Ratatui.
+
 ## 1.8.3
 
 - Update dependencies to fix security advisory.

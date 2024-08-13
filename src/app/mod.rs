@@ -15,8 +15,8 @@ use std::error;
 use std::path::PathBuf;
 use std::sync::mpsc;
 use tui::layout::{Constraint, Direction, Layout};
-use tui::terminal::Frame;
 use tui::widgets::TableState;
+use tui::Frame;
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
@@ -108,7 +108,7 @@ impl App {
   }
 
   pub fn render(&mut self, frame: &mut Frame) {
-    let size = frame.size();
+    let size = frame.area();
     let layout = Layout::default()
       .direction(Direction::Horizontal)
       .margin(0)
