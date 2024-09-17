@@ -14,16 +14,16 @@ version = "1.8.4"
 anyhow = "1.0"
 byte-unit = "5.1"
 chrono = "0.4"
-clap = { version = "4.0", features = ["derive", "env"] }
+clap = { version = "4", features = ["derive", "env"] }
 crossterm = "0.28"
 envsubst = "0.2"
-gix = { version = "0.64", features = ["worktree-mutation", "blocking-network-client", "blocking-http-transport-reqwest", "blocking-http-transport-reqwest-rust-tls"] }
-indexmap = "2.0"
-lazy_static = "1.4"
+gix = { version = "0.66", features = ["worktree-mutation", "blocking-network-client", "blocking-http-transport-reqwest", "blocking-http-transport-reqwest-rust-tls"] }
+indexmap = "2"
+lazy_static = "1"
 log = "0.4"
-log4rs = { version = "1.2", features = ["delete_roller", "rolling_file_appender"] }
-regex = "1.5"
-serde = { version = "1.0", features = ["derive"] }
+log4rs = { version = "1", features = ["delete_roller", "rolling_file_appender"] }
+regex = "1"
+serde = { version = "1", features = ["derive"] }
 toml = "0.8"
 tui = { package = "ratatui", version = "0.28.0" }
 
