@@ -12,7 +12,6 @@ version = "1.8.4"
 
 [dependencies]
 anyhow = "1.0"
-byte-unit = "5.1"
 chrono = "0.4"
 clap = { version = "4", features = ["derive", "env"] }
 crossterm = "0.28"

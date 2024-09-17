@@ -117,9 +117,7 @@ fn setup_dyd_state_path() -> AppResult<PathBuf> {
 }
 
 fn setup_logger(state_path: PathBuf) -> AppResult<()> {
-  let trigger_size = byte_unit::Byte::from_u64_with_unit(1, byte_unit::Unit::MB)
-    .unwrap()
-    .as_u64();
+  let trigger_size: u64 = 1000000; // 1MB
   let trigger = Box::new(SizeTrigger::new(trigger_size));
   let roller = Box::new(DeleteRoller::new());
 
