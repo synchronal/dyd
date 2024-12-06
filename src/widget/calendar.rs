@@ -72,7 +72,7 @@ impl CalendarState {
   }
 }
 
-impl<'a> StatefulWidget for Calendar<'a> {
+impl StatefulWidget for Calendar<'_> {
   type State = CalendarState;
 
   fn render(mut self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
@@ -129,7 +129,7 @@ impl<'a> StatefulWidget for Calendar<'a> {
   }
 }
 
-impl<'a> Widget for Calendar<'a> {
+impl Widget for Calendar<'_> {
   fn render(self, area: Rect, buf: &mut Buffer) {
     let mut state = CalendarState::today();
     StatefulWidget::render(self, area, buf, &mut state);
