@@ -41,7 +41,7 @@ pub fn render(app: &App) -> Table {
 
   Table::new(rows, widths)
     .block(container)
-    .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+    .row_highlight_style(Style::default().add_modifier(Modifier::BOLD))
     .highlight_symbol("·")
     .column_spacing(2)
 }
