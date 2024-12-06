@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 1.8.5
+
+- Update Ratatui and Gix.
+- Update audited deps.
+- Update to Rust 1.83.0.
+
 ## 1.8.4
 
 - Update Ratatui.
