@@ -3,10 +3,11 @@ use crate::git;
 use crate::manifest::Remote;
 use crate::time;
 
+use std::cmp::Ordering;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, PartialOrd)]
 pub enum RepoStatus {
   #[default]
   Checking,
@@ -17,7 +18,7 @@ pub enum RepoStatus {
   Finished,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Eq, PartialEq)]
 pub struct Repo {
   pub(crate) branch: Option<String>,
   pub(crate) logs: Vec<Log>,
@@ -48,7 +49,33 @@ impl From<Remote> for Repo {
   }
 }
 
-#[derive(Clone, Debug)]
+impl Ord for Repo {
+  fn cmp(&self, other: &Self) -> Ordering {
+    if !self.logs.is_empty() && !other.logs.is_empty() {
+      return self.logs[0].cmp(&other.logs[0]);
+    };
+
+    if self.logs.is_empty() && !other.logs.is_empty() {
+      return Ordering::Greater;
+    }
+    if !self.logs.is_empty() && other.logs.is_empty() {
+      return Ordering::Less;
+    }
+
+    if self.name > other.name {
+      return Ordering::Greater;
+    }
+    Ordering::Less
+  }
+}
+
+impl PartialOrd for Repo {
+  fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+    Some(self.cmp(other))
+  }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Log {
   pub age: String,
   pub author: String,
@@ -56,6 +83,27 @@ pub struct Log {
   pub commit_datetime: chrono::DateTime<chrono::Utc>,
   pub message: String,
   pub sha: String,
+}
+
+impl Ord for Log {
+  fn cmp(&self, other: &Self) -> Ordering {
+    if self.commit_datetime > other.commit_datetime {
+      return Ordering::Less;
+    };
+    if self.commit_datetime < other.commit_datetime {
+      return Ordering::Greater;
+    };
+    if self.message > other.message {
+      return Ordering::Less;
+    }
+    Ordering::Greater
+  }
+}
+
+impl PartialOrd for Log {
+  fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+    Some(self.cmp(other))
+  }
 }
 
 impl From<&str> for Log {

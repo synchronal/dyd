@@ -152,25 +152,13 @@ impl App {
       repo.status = RepoStatus::Finished;
     }
 
-    self.repos.sort_by(&Self::sort_repos);
+    self.repos.sort_unstable_by(&Self::sort_repos);
 
     Ok(())
   }
 
   #[allow(clippy::ptr_arg)]
   fn sort_repos(_key1: &String, repo1: &Repo, _key2: &String, repo2: &Repo) -> Ordering {
-    if !repo1.logs.is_empty() && !repo2.logs.is_empty() {
-      let commit1 = repo1.logs[0].commit_datetime;
-      let commit2 = repo2.logs[0].commit_datetime;
-
-      if commit1 > commit2 {
-        return Ordering::Less;
-      };
-      if commit1 < commit2 {
-        return Ordering::Greater;
-      };
-    };
-
-    Ordering::Equal
+    repo1.cmp(repo2)
   }
 }
