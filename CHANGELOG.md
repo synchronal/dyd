@@ -2,7 +2,14 @@
 
 ## Unreleased
 
-## 1.8.5
+## 1.8.6
+
+- Make repo ordering always consistent.
+
+## ~1.8.5~
+
+Note: This release panics. Rust now panics when ordering comparison
+return `Ordering::Equal`.
 
 - Update Ratatui and Gix.
 - Update audited deps.
