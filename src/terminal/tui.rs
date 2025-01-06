@@ -26,30 +26,44 @@ impl<B: Backend> Tui<B> {
   /// Initializes the terminal interface.
   ///
   /// It enables the raw mode and sets terminal properties.
-  pub fn init(&mut self) -> AppResult<()> {
+  pub fn init(&mut self) -> AppResult<()>
+  where
+    <B as Backend>::Error: 'static,
+  {
     terminal::enable_raw_mode()?;
     crossterm::execute!(io::stderr(), EnterAlternateScreen, EnableMouseCapture)?;
-    self.terminal.hide_cursor()?;
-    self.terminal.clear()?;
-    Ok(())
+    match self.terminal.hide_cursor() {
+      Ok(_it) => Ok(()),
+      Err(err) => Err(Box::new(err)),
+    }
   }
 
   /// [`Draw`] the terminal interface by [`rendering`] the widgets.
   ///
   /// [`Draw`]: tui::Terminal::draw
   /// [`rendering`]: crate::app::App::render
-  pub fn draw(&mut self, app: &mut App) -> AppResult<()> {
-    self.terminal.draw(|frame| app.render(frame))?;
-    Ok(())
+  pub fn draw(&mut self, app: &mut App) -> AppResult<()>
+  where
+    <B as Backend>::Error: 'static,
+  {
+    match self.terminal.draw(|frame| app.render(frame)) {
+      Ok(_it) => Ok(()),
+      Err(err) => Err(Box::new(err)),
+    }
   }
 
   /// Exits the terminal interface.
   ///
   /// It disables the raw mode and reverts back the terminal properties.
-  pub fn exit(&mut self) -> AppResult<()> {
+  pub fn exit(&mut self) -> AppResult<()>
+  where
+    <B as Backend>::Error: 'static,
+  {
     terminal::disable_raw_mode()?;
     crossterm::execute!(io::stderr(), LeaveAlternateScreen, DisableMouseCapture)?;
-    self.terminal.show_cursor()?;
-    Ok(())
+    match self.terminal.show_cursor() {
+      Ok(_it) => Ok(()),
+      Err(err) => Err(Box::new(err)),
+    }
   }
 }

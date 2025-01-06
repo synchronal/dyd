@@ -4,6 +4,9 @@
 
 ## Unreleased
 
+- Use Rust 1.92.0.
+- Update Ratatui to 0.30; fix error lifetimes.
+
 ## 1.9.1
 
 - Use Rust 1.90.0.

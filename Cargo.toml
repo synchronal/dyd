@@ -17,12 +17,12 @@ chrono = "0.4"
 clap = { version = "4", features = ["derive", "env"] }
 crossterm = "0.29"
 envsubst = "0.2"
-gix = { version = "0.73", features = ["worktree-mutation", "blocking-network-client", "blocking-http-transport-reqwest", "blocking-http-transport-reqwest-rust-tls"] }
+gix = { version = "0.77", features = ["worktree-mutation", "blocking-network-client", "blocking-http-transport-reqwest", "blocking-http-transport-reqwest-rust-tls"] }
 indexmap = "2"
 lazy_static = "1"
 log = "0.4"
 log4rs = { version = "1", features = ["delete_roller", "rolling_file_appender"] }
-ratatui = { version = "0.29.0" }
+ratatui = { version = "0.30" }
 regex = "1"
 serde = { version = "1", features = ["derive"] }
 terminal-colorsaurus = "1.0"
