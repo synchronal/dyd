@@ -32,7 +32,7 @@ jobs:
           target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ steps.setup-rust.outputs.cachekey }}
     - name: Install cargo audit
-      run: cargo install cargo-audit
+      run: cargo install cargo-audit || true
     - name: Build
       run: cargo build --workspace --features strict --verbose
 
@@ -86,7 +86,7 @@ jobs:
           target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ steps.setup-rust.outputs.cachekey }}
     - name: Install cargo audit
-      run: cargo install cargo-audit
+      run: cargo install cargo-audit || true
     - name: Cargo audit
       run: cargo audit
     - name: Cargo format check
