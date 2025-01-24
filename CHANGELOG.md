@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 1.8.7
+
+- Update deps.
+- Update to Rust 1.84.0.
+
 ## 1.8.6
 
 - Make repo ordering always consistent.
