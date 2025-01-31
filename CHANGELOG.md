@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 1.8.8
+
+- Update deps.
+- Update to Rust 1.84.1.
+
 ## 1.8.7
 
 - Update deps.
