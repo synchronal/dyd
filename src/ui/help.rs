@@ -1,8 +1,8 @@
 use crate::app::App;
 
-use tui::style::{Color, Modifier, Style};
-use tui::text::{self, Line, Span};
-use tui::widgets::{Block, Borders, Paragraph};
+use ratatui::style::{Color, Modifier, Style};
+use ratatui::text::{self, Line, Span};
+use ratatui::widgets::{Block, Borders, Paragraph};
 
 const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
 

@@ -1,9 +1,9 @@
 use crate::app::{App, SelectedPane};
 
-use tui::layout::Constraint;
-use tui::style::{Color, Modifier, Style};
-use tui::text;
-use tui::widgets::{Block, Borders, Cell, Row, Table};
+use ratatui::layout::Constraint;
+use ratatui::style::{Color, Modifier, Style};
+use ratatui::text;
+use ratatui::widgets::{Block, Borders, Cell, Row, Table};
 
 pub fn render(app: &App) -> Table {
   let container = Block::default()

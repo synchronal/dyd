@@ -12,10 +12,10 @@ use log4rs::append::rolling_file::policy::compound::trigger::size::SizeTrigger;
 use log4rs::append::rolling_file::policy::compound::CompoundPolicy;
 use log4rs::append::rolling_file::RollingFileAppender;
 use log4rs::encode::pattern::PatternEncoder;
+use ratatui::backend::CrosstermBackend;
+use ratatui::Terminal;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use tui::backend::CrosstermBackend;
-use tui::Terminal;
 
 fn main() -> AppResult<()> {
   let cli = CLI::new();

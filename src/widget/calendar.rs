@@ -1,8 +1,8 @@
 use chrono::{DateTime, Datelike, Duration, NaiveDate, Timelike, Utc, Weekday};
-use tui::buffer::Buffer;
-use tui::layout::Rect;
-use tui::style::{Color, Modifier, Style};
-use tui::widgets::{Block, StatefulWidget, Widget};
+use ratatui::buffer::Buffer;
+use ratatui::layout::Rect;
+use ratatui::style::{Color, Modifier, Style};
+use ratatui::widgets::{Block, StatefulWidget, Widget};
 
 #[derive(Debug, Default, Clone, Eq, PartialEq)]
 pub struct Calendar<'a> {

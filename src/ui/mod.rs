@@ -1,5 +1,5 @@
 use crate::app::{App, SelectedPane};
-use tui::style::Color;
+use ratatui::style::Color;
 
 pub mod diff;
 pub mod help;

@@ -10,13 +10,13 @@ use crate::widget::calendar::CalendarState;
 
 use chrono::Local;
 use indexmap::map::IndexMap;
+use ratatui::layout::{Constraint, Direction, Layout};
+use ratatui::widgets::TableState;
+use ratatui::Frame;
 use std::cmp::Ordering;
 use std::error;
 use std::path::PathBuf;
 use std::sync::mpsc;
-use tui::layout::{Constraint, Direction, Layout};
-use tui::widgets::TableState;
-use tui::Frame;
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
