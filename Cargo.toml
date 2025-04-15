@@ -15,9 +15,9 @@ version = "1.8.8"
 anyhow = "1.0"
 chrono = "0.4"
 clap = { version = "4", features = ["derive", "env"] }
-crossterm = "0.28"
+crossterm = "0.29"
 envsubst = "0.2"
-gix = { version = "0.70", features = ["worktree-mutation", "blocking-network-client", "blocking-http-transport-reqwest", "blocking-http-transport-reqwest-rust-tls"] }
+gix = { version = "0.71", features = ["worktree-mutation", "blocking-network-client", "blocking-http-transport-reqwest", "blocking-http-transport-reqwest-rust-tls"] }
 indexmap = "2"
 lazy_static = "1"
 log = "0.4"
