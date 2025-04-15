@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Update to Rust 1.85.0.
+- Update to Rust 1.86.0.
 
 ## 1.8.8
 
