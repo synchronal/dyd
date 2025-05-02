@@ -11,6 +11,18 @@ This command line tool facilitates the viewing of git diffs across
 multiple projects, across multiple days. See what you're doing across
 teams, and across all the git repos your teams manage.
 
+## Sponsorship 💕
+
+This library is part of the [Synchronal suite of libraries and
+tools](https://github.com/synchronal) which includes more than 15 open
+source Elixir libraries as well as some Rust libraries and tools.
+
+You can support our open source work by [sponsoring
+us](https://github.com/sponsors/reflective-dev). If you have specific
+features in mind, bugs you'd like fixed, or new libraries you'd like to
+see, file an issue or contact us at
+[<contact@reflective.dev>](mailto:contact@reflective.dev).
+
 ## Installation
 
 via homebrew:
