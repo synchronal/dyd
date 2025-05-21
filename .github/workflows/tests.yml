@@ -18,7 +18,7 @@ jobs:
       id: setup-rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.86.0
+        toolchain: 1.87.0
         components: rustfmt, clippy
     - name: Set up cargo cache
       uses: actions/cache@v4
@@ -45,7 +45,7 @@ jobs:
       id: setup-rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.86.0
+        toolchain: 1.87.0
         components: rustfmt, clippy
     - name: Set up cargo cache
       uses: actions/cache@v4
@@ -72,7 +72,7 @@ jobs:
       id: setup-rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.86.0
+        toolchain: 1.87.0
         components: rustfmt, clippy
     - name: Set up cargo cache
       uses: actions/cache@v4
