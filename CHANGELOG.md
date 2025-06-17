@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.9.0
+
 - Color theme may be specified in the user's config file.
 - Add light, dark, and auto color themes.
 - Introduce config file at `~/.config/dyd/dyd.toml`.
