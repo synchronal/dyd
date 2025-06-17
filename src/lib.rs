@@ -9,6 +9,7 @@ use crate::app::handler::handle_key_events;
 use crate::app::{App, AppResult, Event, EventHandler};
 use crate::manifest::Manifest;
 use crate::terminal::Tui;
+use crate::theme::ColorTheme;
 use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
 use std::io::Write;
@@ -21,6 +22,7 @@ pub mod difftool;
 pub mod git;
 pub mod manifest;
 pub mod terminal;
+pub mod theme;
 pub mod time;
 pub mod ui;
 pub mod widget;
@@ -44,9 +46,9 @@ pub fn clean(share_path: PathBuf, verbose: bool) -> AppResult<()> {
   Ok(())
 }
 
-pub fn diff(manifest: PathBuf, share_path: PathBuf) -> AppResult<()> {
+pub fn diff(manifest: PathBuf, share_path: PathBuf, theme: Box<dyn ColorTheme>) -> AppResult<()> {
   let manifest = Manifest::new(manifest, share_path)?;
-  let mut app: App = manifest.into();
+  let mut app: App = App::from_manifest(manifest, theme);
 
   let backend = CrosstermBackend::new(std::io::stderr());
   let terminal = Terminal::new(backend)?;

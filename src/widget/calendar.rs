@@ -109,10 +109,15 @@ impl StatefulWidget for Calendar<'_> {
       let mut style = Style::default();
 
       if current_date == today {
-        style = style.add_modifier(Modifier::UNDERLINED);
+        style = style
+          .add_modifier(Modifier::UNDERLINED)
+          .add_modifier(Modifier::BOLD);
       };
       if day == state.datetime.day() {
-        style = style.bg(Color::Red);
+        style = style
+          .bg(Color::LightRed)
+          .fg(Color::Black)
+          .add_modifier(Modifier::BOLD);
       };
 
       buf.set_string(x, y, format!("{day}"), style);

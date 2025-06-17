@@ -25,6 +25,7 @@ log4rs = { version = "1", features = ["delete_roller", "rolling_file_appender"] 
 ratatui = { version = "0.29.0" }
 regex = "1"
 serde = { version = "1", features = ["derive"] }
+terminal-colorsaurus = "0.4.8"
 toml = "0.8"
 
 

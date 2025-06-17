@@ -14,17 +14,16 @@ use std::path::{Path, PathBuf};
 fn main() -> AppResult<()> {
   let cli = CLI::new();
   let command = cli.command.unwrap_or(Command::Diff(cli.diff));
+  let _config = Config::load();
 
   let _ = setup_dyd_config_path()?;
   let share_path = setup_dyd_share_path()?;
   let state_path = setup_dyd_state_path()?;
   setup_logger(state_path)?;
 
-  let _config = Config::load();
-
   match command {
     Command::Clean { verbose } => dyd::clean(share_path, verbose),
-    Command::Diff(args) => dyd::diff(args.manifest, share_path),
+    Command::Diff(args) => dyd::diff(args.manifest, share_path, args.theme.consume()?),
     Command::Init(args) => dyd::write_default_manifest(args.manifest),
   }
 }

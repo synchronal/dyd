@@ -2,7 +2,7 @@ use crate::app::{App, SelectedPane};
 use crate::git::repo::{Repo, RepoStatus};
 
 use ratatui::layout::Constraint;
-use ratatui::style::{Color, Modifier, Style};
+use ratatui::style::{Modifier, Style};
 use ratatui::text;
 use ratatui::widgets::{Block, Borders, Cell, Row, Table};
 
@@ -10,10 +10,11 @@ pub fn render(app: &App) -> Table {
   let container = Block::default()
     .title(title(app))
     .borders(Borders::ALL)
-    .style(Style::default().fg(Color::LightCyan));
+    .style(Style::default().fg(app.theme.border_color()));
 
   let rows = app.repos.iter().map(|(_id, repo)| {
-    let cells = [status_icon(repo), Cell::from(format!("{repo}"))];
+    let repo_name = text::Span::styled(repo.to_string(), Style::default().fg(app.theme.text_color()));
+    let cells = [status_icon(repo, app), Cell::from(repo_name)];
     Row::new(cells)
   });
 
@@ -21,7 +22,8 @@ pub fn render(app: &App) -> Table {
 
   Table::new(rows, widths)
     .block(container)
-    .row_highlight_style(Style::default().add_modifier(Modifier::BOLD))
+    .row_highlight_style(app.theme.repo_row_hightlight_style())
+    .style(Style::default().fg(app.theme.text_color()))
     .highlight_symbol("·")
     .column_spacing(2)
 }
@@ -33,7 +35,7 @@ fn title(app: &App) -> text::Span {
   text::Span::styled(" Repos ", text_style)
 }
 
-fn status_icon(repo: &Repo) -> Cell {
+fn status_icon<'a>(repo: &'a Repo, app: &'a App) -> Cell<'a> {
   let icon = match repo.status {
     RepoStatus::Checking => " ⁇",
     RepoStatus::Cloning => " ⚭",
@@ -42,5 +44,5 @@ fn status_icon(repo: &Repo) -> Cell {
     RepoStatus::Log => " ☈",
     RepoStatus::Pulling => " ⤵",
   };
-  Cell::from(icon)
+  Cell::from(text::Span::styled(icon, Style::default().fg(app.theme.text_color())))
 }

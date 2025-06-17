@@ -1,3 +1,4 @@
+use crate::theme;
 use clap::Args;
 use clap::Parser;
 use clap::Subcommand;
@@ -32,6 +33,10 @@ pub struct ManifestCliArgs {
   #[clap(value_parser)]
   #[arg(short, long, env = "DYD_MANIFEST_PATH", default_value = "dyd.toml", value_hint = clap::ValueHint::FilePath)]
   pub manifest: std::path::PathBuf,
+
+  /// Color theme
+  #[arg(short, long, env = "DYD_THEME", default_value = "auto", value_hint = clap::ValueHint::FilePath)]
+  pub theme: theme::Theme,
 }
 
 impl Default for CLI {

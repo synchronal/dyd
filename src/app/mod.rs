@@ -5,6 +5,7 @@ pub use self::event::{Event, EventHandler};
 use crate::difftool::Difftool;
 use crate::git::repo::{Log, Repo, RepoStatus};
 use crate::manifest::Manifest;
+use crate::theme::ColorTheme;
 use crate::ui;
 use crate::widget::calendar::CalendarState;
 
@@ -56,11 +57,12 @@ pub struct App {
   pub selected_repo_state: TableState,
   pub since: chrono::DateTime<chrono::Utc>,
   pub state: AppState,
+  pub theme: Box<dyn ColorTheme>,
   pub timezone_offset: chrono::offset::FixedOffset,
 }
 
-impl From<Manifest> for App {
-  fn from(manifest: Manifest) -> Self {
+impl App {
+  pub fn from_manifest(manifest: Manifest, theme: Box<dyn ColorTheme>) -> Self {
     let repos: IndexMap<String, Repo> = manifest
       .remotes
       .into_iter()
@@ -93,12 +95,10 @@ impl From<Manifest> for App {
       running: true,
       selected_pane: SelectedPane::default(),
       state: AppState::default(),
+      theme,
       timezone_offset: offset,
     }
   }
-}
-
-impl App {
   pub fn tick(&mut self, sender: mpsc::Sender<Event>) -> AppResult<()> {
     if self.state == AppState::Init {
       self.update(sender)?;

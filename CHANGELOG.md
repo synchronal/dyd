@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add light, dark, and auto color themes.
 - Introduce config file at `~/.config/dyd/dyd.toml`.
 - Update to Rust 1.87.0.
 
