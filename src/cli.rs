@@ -35,8 +35,8 @@ pub struct ManifestCliArgs {
   pub manifest: std::path::PathBuf,
 
   /// Color theme
-  #[arg(short, long, env = "DYD_THEME", default_value = "auto", value_hint = clap::ValueHint::FilePath)]
-  pub theme: theme::Theme,
+  #[arg(short, long, env = "DYD_THEME", value_hint = clap::ValueHint::FilePath)]
+  pub theme: Option<theme::Theme>,
 }
 
 impl Default for CLI {

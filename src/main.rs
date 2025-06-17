@@ -4,6 +4,7 @@ use dyd::config::Config;
 
 use anyhow::Context;
 
+use dyd::theme::Theme;
 use log4rs::append::rolling_file::policy::compound::roll::delete::DeleteRoller;
 use log4rs::append::rolling_file::policy::compound::trigger::size::SizeTrigger;
 use log4rs::append::rolling_file::policy::compound::CompoundPolicy;
@@ -14,7 +15,7 @@ use std::path::{Path, PathBuf};
 fn main() -> AppResult<()> {
   let cli = CLI::new();
   let command = cli.command.unwrap_or(Command::Diff(cli.diff));
-  let _config = Config::load();
+  let config = Config::load()?;
 
   let _ = setup_dyd_config_path()?;
   let share_path = setup_dyd_share_path()?;
@@ -23,7 +24,10 @@ fn main() -> AppResult<()> {
 
   match command {
     Command::Clean { verbose } => dyd::clean(share_path, verbose),
-    Command::Diff(args) => dyd::diff(args.manifest, share_path, args.theme.consume()?),
+    Command::Diff(args) => {
+      let theme = args.theme.unwrap_or(config.theme.unwrap_or(Theme::Auto));
+      dyd::diff(args.manifest, share_path, theme.consume()?)
+    }
     Command::Init(args) => dyd::write_default_manifest(args.manifest),
   }
 }

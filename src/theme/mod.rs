@@ -4,6 +4,7 @@ use serde::Deserialize;
 use terminal_colorsaurus::{color_palette, ColorScheme, QueryOptions};
 
 #[derive(clap:: ValueEnum, Clone, Debug, Default, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum Theme {
   #[default]
   Auto,

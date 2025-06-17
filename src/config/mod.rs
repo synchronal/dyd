@@ -1,10 +1,13 @@
+use crate::theme;
 use anyhow::Result;
 use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
 
 #[derive(Debug, Deserialize, Default)]
-pub struct Config {}
+pub struct Config {
+  pub theme: Option<theme::Theme>,
+}
 
 impl Config {
   pub fn load() -> Result<Self> {
