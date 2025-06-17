@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Introduce config file at `~/.config/dyd/dyd.toml`.
 - Update to Rust 1.87.0.
 
 ## 1.8.9

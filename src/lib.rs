@@ -6,6 +6,7 @@
 //! the configured GUI git difftool for opening diffs.
 pub mod app;
 pub mod cli;
+pub mod config;
 pub mod difftool;
 pub mod git;
 pub mod manifest;

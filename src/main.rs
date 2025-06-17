@@ -2,6 +2,7 @@ use dyd::app::handler::handle_key_events;
 use dyd::app::{App, AppResult};
 use dyd::app::{Event, EventHandler};
 use dyd::cli::{Command, CLI};
+use dyd::config::Config;
 use dyd::manifest::Manifest;
 use dyd::terminal::Tui;
 
@@ -21,9 +22,12 @@ fn main() -> AppResult<()> {
   let cli = CLI::new();
   let command = cli.command.unwrap_or(Command::Diff(cli.diff));
 
+  let _ = setup_dyd_config_path()?;
   let share_path = setup_dyd_share_path()?;
   let state_path = setup_dyd_state_path()?;
   setup_logger(state_path)?;
+
+  let _config = Config::load();
 
   match command {
     Command::Clean { verbose } => clean(verbose),
@@ -100,6 +104,13 @@ fn write_default_manifest(manifest_path: PathBuf) -> AppResult<()> {
   writeln!(file, "origin = \"git@github.com:sychronal/dyd\"")?;
   writeln!(file)?;
   Ok(())
+}
+
+fn setup_dyd_config_path() -> AppResult<PathBuf> {
+  let home = std::env::var("HOME").context("Unable to access HOME")?;
+  let path = Path::new(&home).join(".config/dyd");
+  std::fs::create_dir_all(&path)?;
+  Ok(path)
 }
 
 fn setup_dyd_share_path() -> AppResult<PathBuf> {
