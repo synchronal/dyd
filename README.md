@@ -101,7 +101,7 @@ origin = "git@github.com:fdehau/tui-rs"
   - `branch` - An optional branch to show diffs from. Depends on being
     able to view logs via `origin/{branch}`.
 
-Ensure that your shell is authorized with the origin. DYD will *not*
+Ensure that your shell is authorized with the origin. Dyd will *not*
 route input to the SSH agent.
 
 ``` shell
@@ -124,6 +124,14 @@ j k <up> <down> - change current selection
 d - open git gui difftool
 q <esc> - quit
 ```
+
+## Global configuration
+
+Dyd may be configured globally via a config file at
+`~/.config/dyd/dyd.toml`. This file supports the following values:
+
+- `theme` - (`auto`, `light`, `dark`) - the color theme to apply, if the
+  default theme detection does not work.
 
 ## Other difftools
 
