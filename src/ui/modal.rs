@@ -22,7 +22,7 @@ pub fn render(app: &App, frame: &mut Frame) {
       let container = Block::default()
         .title(" Calendar ")
         .borders(Borders::ALL)
-        .style(Style::default().fg(app.theme.border_color()));
+        .style(Style::default().fg(app.theme.border_color));
 
       let calendar = Calendar::new().block(container);
 

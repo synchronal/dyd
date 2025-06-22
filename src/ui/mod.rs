@@ -8,7 +8,7 @@ pub mod repos;
 
 pub fn selected_color(app: &App, pane: SelectedPane) -> Color {
   if pane == app.selected_pane {
-    app.theme.header_selected_color()
+    app.theme.header_selected_color
   } else {
     Color::Reset
   }

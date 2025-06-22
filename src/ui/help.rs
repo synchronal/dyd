@@ -52,11 +52,11 @@ pub fn render(app: &App) -> Paragraph {
       Block::default()
         .title(title(app))
         .borders(Borders::ALL)
-        .style(Style::default().fg(app.theme.border_color())),
+        .style(Style::default().fg(app.theme.border_color)),
     )
-    .style(app.theme.help_text_style())
+    .style(app.theme.help_text_style)
 }
 
 fn title(app: &App) -> text::Span {
-  text::Span::styled(format!(" Help (v{})", VERSION.unwrap()), app.theme.help_header_style())
+  text::Span::styled(format!(" Help (v{})", VERSION.unwrap()), app.theme.help_header_style)
 }

@@ -46,7 +46,7 @@ pub fn clean(share_path: PathBuf, verbose: bool) -> AppResult<()> {
   Ok(())
 }
 
-pub fn diff(manifest: PathBuf, share_path: PathBuf, theme: Box<dyn ColorTheme>) -> AppResult<()> {
+pub fn diff(manifest: PathBuf, share_path: PathBuf, theme: ColorTheme) -> AppResult<()> {
   let manifest = Manifest::new(manifest, share_path)?;
   let mut app: App = App::from_manifest(manifest, theme);
 

@@ -9,7 +9,7 @@ pub fn render(app: &App) -> Table {
   let container = Block::default()
     .title(title(app))
     .borders(Borders::ALL)
-    .style(Style::default().fg(app.theme.border_color()));
+    .style(Style::default().fg(app.theme.border_color));
 
   let mut rows: Vec<Row> = vec![];
 
@@ -41,7 +41,7 @@ pub fn render(app: &App) -> Table {
 
   Table::new(rows, widths)
     .block(container)
-    .row_highlight_style(app.theme.diff_row_hightlight_style())
+    .row_highlight_style(app.theme.diff_row_hightlight_style)
     .highlight_symbol("·")
     .column_spacing(2)
 }
@@ -54,7 +54,7 @@ fn title(app: &App) -> text::Span {
 }
 
 fn age<'a>(datetime: &'a chrono::DateTime<chrono::Utc>, app: &App) -> text::Span<'a> {
-  let text_style = Style::default().fg(app.theme.diff_age_color());
+  let text_style = Style::default().fg(app.theme.diff_age_color);
   let text = datetime
     .with_timezone(&app.timezone_offset)
     .format("%a %b %d %R");
@@ -62,17 +62,17 @@ fn age<'a>(datetime: &'a chrono::DateTime<chrono::Utc>, app: &App) -> text::Span
 }
 
 fn author<'a>(text: &'a String, app: &'a App) -> text::Span<'a> {
-  let text_style = Style::default().fg(app.theme.diff_author_color());
+  let text_style = Style::default().fg(app.theme.diff_author_color);
   text::Span::styled(text, text_style)
 }
 
 fn message<'a>(text: &'a String, app: &'a App) -> text::Span<'a> {
-  let text_style = Style::default().fg(app.theme.diff_message_color());
+  let text_style = Style::default().fg(app.theme.diff_message_color);
   text::Span::styled(text, text_style)
 }
 
 fn sha<'a>(text: &'a String, app: &'a App) -> text::Span<'a> {
-  let text_style = Style::default().fg(app.theme.diff_sha_color());
+  let text_style = Style::default().fg(app.theme.diff_sha_color);
   text::Span::styled(text, text_style)
 }
 

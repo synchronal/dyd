@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Simplify color themes into a single struct.
+
 ## 1.9.0
 
 - Color theme may be specified in the user's config file.

@@ -57,12 +57,12 @@ pub struct App {
   pub selected_repo_state: TableState,
   pub since: chrono::DateTime<chrono::Utc>,
   pub state: AppState,
-  pub theme: Box<dyn ColorTheme>,
+  pub theme: ColorTheme,
   pub timezone_offset: chrono::offset::FixedOffset,
 }
 
 impl App {
-  pub fn from_manifest(manifest: Manifest, theme: Box<dyn ColorTheme>) -> Self {
+  pub fn from_manifest(manifest: Manifest, theme: ColorTheme) -> Self {
     let repos: IndexMap<String, Repo> = manifest
       .remotes
       .into_iter()
