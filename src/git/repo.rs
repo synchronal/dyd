@@ -31,7 +31,7 @@ impl std::fmt::Display for Repo {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     write!(f, "{}", self.name)?;
     if let Some(branch) = &self.branch {
-      write!(f, " — ({})", branch)
+      write!(f, " — ({branch})")
     } else {
       Ok(())
     }
@@ -150,7 +150,7 @@ impl Repo {
           .unwrap();
 
         if let Err(err) = git::pull_repo(&path) {
-          log::error!("failed git pull: {:?}, reason: {err}", path);
+          log::error!("failed git pull: {path:?}, reason: {err}");
           sender
             .send(Event::RepoStatusChange(id.clone(), RepoStatus::Failed))
             .unwrap();
@@ -163,7 +163,7 @@ impl Repo {
           .unwrap();
 
         if let Err(err) = git::clone_repo(origin, &path) {
-          log::error!("failed git clone: {:?}, reason: {err}", path);
+          log::error!("failed git clone: {path:?}, reason: {err}");
           sender
             .send(Event::RepoStatusChange(id.clone(), RepoStatus::Failed))
             .unwrap();

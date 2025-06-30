@@ -92,7 +92,7 @@ impl Difftool {
     let url = caps.get(2).unwrap().as_str();
     let repository = caps.get(3).unwrap().as_str();
 
-    let github_url = format!("https://{}/{}", url, repository);
+    let github_url = format!("https://{url}/{repository}");
     let ref_to = repo.branch.clone().unwrap_or("HEAD".to_owned());
     format!("open {github_url}/compare/{from_sha}..{ref_to}?diff=split")
   }

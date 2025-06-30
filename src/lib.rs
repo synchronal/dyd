@@ -40,7 +40,7 @@ pub fn clean(share_path: PathBuf, verbose: bool) -> AppResult<()> {
         std::fs::remove_dir_all(repo.path())?;
       }
     }
-    log::info!("clean: {:?}", share_path);
+    log::info!("clean: {share_path:?}");
     std::fs::remove_dir_all(share_path)?;
   }
   Ok(())
