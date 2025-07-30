@@ -1,7 +1,7 @@
 use crate::app::AppResult;
 use ratatui::style::{Color, Modifier, Style};
 use serde::Deserialize;
-use terminal_colorsaurus::{color_palette, ColorScheme, QueryOptions};
+use terminal_colorsaurus::{color_palette, QueryOptions, ThemeMode};
 
 #[derive(clap:: ValueEnum, Clone, Debug, Default, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -24,9 +24,9 @@ impl Theme {
 
 fn detect_colortheme() -> AppResult<ColorTheme> {
   let colors = color_palette(QueryOptions::default())?;
-  match colors.color_scheme() {
-    ColorScheme::Dark => Ok(dark_theme()),
-    ColorScheme::Light => Ok(light_theme()),
+  match colors.theme_mode() {
+    ThemeMode::Dark => Ok(dark_theme()),
+    ThemeMode::Light => Ok(light_theme()),
   }
 }
 
