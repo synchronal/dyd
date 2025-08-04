@@ -15,7 +15,7 @@ pub enum Theme {
 impl Theme {
   pub fn consume(self) -> AppResult<ColorTheme> {
     match self {
-      Theme::Auto => detect_colortheme(),
+      Theme::Auto => detect_colortheme().or(Ok(dark_theme())),
       Theme::Dark => Ok(dark_theme()),
       Theme::Light => Ok(light_theme()),
     }

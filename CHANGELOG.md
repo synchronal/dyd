@@ -1,5 +1,7 @@
 # Change log
 
+- Fall back to dark theme when `auto` fails.
+
 ## Unreleased
 
 - Use Rust 1.88.0.
