@@ -134,20 +134,20 @@ impl App {
 
   pub fn update(&self, sender: mpsc::Sender<Event>) -> AppResult<()> {
     for (id, repo) in &self.repos {
-      repo.update(id.clone(), &self.root_path, sender.clone())?;
+      repo.update(id, &self.root_path, sender.clone())?;
     }
     Ok(())
   }
 
-  pub fn update_repo_status(&mut self, id: String, status: RepoStatus) -> AppResult<()> {
-    if let Some(repo) = self.repos.get_mut(&id) {
+  pub fn update_repo_status(&mut self, id: &str, status: RepoStatus) -> AppResult<()> {
+    if let Some(repo) = self.repos.get_mut(id) {
       repo.status = status;
     }
     Ok(())
   }
 
-  pub fn update_repo_logs(&mut self, id: String, logs: Vec<Log>) -> AppResult<()> {
-    if let Some(repo) = self.repos.get_mut(&id) {
+  pub fn update_repo_logs(&mut self, id: &str, logs: Vec<Log>) -> AppResult<()> {
+    if let Some(repo) = self.repos.get_mut(id) {
       repo.logs = logs;
       repo.status = RepoStatus::Finished;
     }

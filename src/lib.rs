@@ -65,8 +65,8 @@ pub fn diff(manifest: PathBuf, share_path: PathBuf, theme: ColorTheme) -> AppRes
       Event::Key(key_event) => handle_key_events(key_event, &mut app)?,
       Event::Mouse(_) => {}
       Event::Resize(_, _) => {}
-      Event::RepoStatusChange(id, state) => app.update_repo_status(id, state)?,
-      Event::RepoStatusComplete(id, logs) => app.update_repo_logs(id, logs)?,
+      Event::RepoStatusChange(id, state) => app.update_repo_status(&id, state)?,
+      Event::RepoStatusComplete(id, logs) => app.update_repo_logs(&id, logs)?,
     }
   }
 

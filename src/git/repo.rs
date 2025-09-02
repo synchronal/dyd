@@ -138,10 +138,11 @@ impl From<&str> for Log {
 }
 
 impl Repo {
-  pub fn update(&self, id: String, root_path: &Path, sender: mpsc::Sender<Event>) -> AppResult<()> {
+  pub fn update(&self, id: &str, root_path: &Path, sender: mpsc::Sender<Event>) -> AppResult<()> {
     let path = self.path(root_path)?;
     let origin = self.origin.clone();
     let branch = self.branch.clone();
+    let id = id.to_string();
 
     std::thread::spawn(move || {
       if path.is_dir() {
@@ -162,7 +163,7 @@ impl Repo {
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Cloning))
           .unwrap();
 
-        if let Err(err) = git::clone_repo(origin, &path) {
+        if let Err(err) = git::clone_repo(&origin, &path) {
           log::error!("failed git clone: {path:?}, reason: {err}");
           sender
             .send(Event::RepoStatusChange(id.clone(), RepoStatus::Failed))

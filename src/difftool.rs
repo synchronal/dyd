@@ -73,7 +73,7 @@ impl Difftool {
     };
   }
 
-  pub fn to_str(&self, repo: &Repo, from_sha: &String) -> String {
+  pub fn to_str(&self, repo: &Repo, from_sha: &str) -> String {
     match self {
       Difftool::Git => "git difftool -g -y ${DIFF}".to_owned(),
       Difftool::GitHub => Difftool::github_diff_url(repo, from_sha),
@@ -81,7 +81,7 @@ impl Difftool {
     }
   }
 
-  fn github_diff_url(repo: &Repo, from_sha: &String) -> String {
+  fn github_diff_url(repo: &Repo, from_sha: &str) -> String {
     let origin = repo.origin.clone();
 
     let trailing_git_re = Regex::new(r"\.git$").unwrap();
@@ -144,7 +144,7 @@ mod tests {
       origin: "git@github.com:synchronal/dyd.git".into(),
       ..Default::default()
     };
-    let from_sha = "abc1234".into();
+    let from_sha = "abc1234";
 
     let string = difftool.to_str(&repo, &from_sha);
     assert_eq!(string, "git difftool -g -y ${DIFF}")
@@ -158,7 +158,7 @@ mod tests {
       origin: "git@github.com:synchronal/dyd.git".into(),
       ..Default::default()
     };
-    let from_sha = "abc1234".into();
+    let from_sha = "abc1234";
 
     let string = difftool.to_str(&repo, &from_sha);
     assert_eq!(
@@ -176,7 +176,7 @@ mod tests {
       origin: "git@github.com:synchronal/dyd.git".into(),
       ..Default::default()
     };
-    let from_sha = "abc1234".into();
+    let from_sha = "abc1234";
 
     let string = difftool.to_str(&repo, &from_sha);
     assert_eq!(
@@ -194,7 +194,7 @@ mod tests {
       origin: "https://github.com/synchronal/dyd.git".into(),
       ..Default::default()
     };
-    let from_sha = "abc1234".into();
+    let from_sha = "abc1234";
 
     let string = difftool.to_str(&repo, &from_sha);
     assert_eq!(

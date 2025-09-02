@@ -10,10 +10,10 @@ pub mod repo;
 
 static GIT_FORMAT: &str = "%h\x0B%ct\x0B%ch\x0B%an\x0B%s";
 
-pub fn clone_repo(origin: String, path: &Path) -> Result<(), Box<dyn Error>> {
+pub fn clone_repo(origin: &str, path: &Path) -> Result<(), Box<dyn Error>> {
   log::info!("starting git clone: remote: \"{origin}\", path: {path:?}");
   std::fs::create_dir_all(path)?;
-  let mut prepare_clone = gix::prepare_clone(origin.clone(), path)?;
+  let mut prepare_clone = gix::prepare_clone(origin, path)?;
 
   let (mut prepare_checkout, _) =
     prepare_clone.fetch_then_checkout(gix::progress::Discard, &gix::interrupt::IS_INTERRUPTED)?;
@@ -82,9 +82,9 @@ pub fn pull_repo(path: &PathBuf) -> AppResult<()> {
   Ok(())
 }
 
-pub fn switch_branch(path: &PathBuf, branch: String) {
+pub fn switch_branch(path: &PathBuf, branch: &str) {
   Command::new("git")
-    .args(["switch", &branch])
+    .args(["switch", branch])
     .current_dir(path)
     .output()
     .unwrap();
