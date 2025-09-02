@@ -5,7 +5,7 @@ use ratatui::style::{Modifier, Style};
 use ratatui::text;
 use ratatui::widgets::{Block, Borders, Cell, Row, Table};
 
-pub fn render(app: &App) -> Table {
+pub fn render(app: &App) -> Table<'_> {
   let container = Block::default()
     .title(title(app))
     .borders(Borders::ALL)
@@ -46,7 +46,7 @@ pub fn render(app: &App) -> Table {
     .column_spacing(2)
 }
 
-fn title(app: &App) -> text::Span {
+fn title(app: &App) -> text::Span<'_> {
   let text_style = Style::default()
     .fg(super::selected_color(app, SelectedPane::Diff))
     .add_modifier(Modifier::BOLD);
@@ -61,17 +61,17 @@ fn age<'a>(datetime: &'a chrono::DateTime<chrono::Utc>, app: &App) -> text::Span
   text::Span::styled(text.to_string(), text_style)
 }
 
-fn author<'a>(text: &'a String, app: &'a App) -> text::Span<'a> {
+fn author<'a>(text: &'a str, app: &'a App) -> text::Span<'a> {
   let text_style = Style::default().fg(app.theme.diff_author_color);
   text::Span::styled(text, text_style)
 }
 
-fn message<'a>(text: &'a String, app: &'a App) -> text::Span<'a> {
+fn message<'a>(text: &'a str, app: &'a App) -> text::Span<'a> {
   let text_style = Style::default().fg(app.theme.diff_message_color);
   text::Span::styled(text, text_style)
 }
 
-fn sha<'a>(text: &'a String, app: &'a App) -> text::Span<'a> {
+fn sha<'a>(text: &'a str, app: &'a App) -> text::Span<'a> {
   let text_style = Style::default().fg(app.theme.diff_sha_color);
   text::Span::styled(text, text_style)
 }

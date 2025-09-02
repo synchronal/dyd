@@ -6,7 +6,7 @@ use ratatui::style::{Modifier, Style};
 use ratatui::text;
 use ratatui::widgets::{Block, Borders, Cell, Row, Table};
 
-pub fn render(app: &App) -> Table {
+pub fn render(app: &App) -> Table<'_> {
   let container = Block::default()
     .title(title(app))
     .borders(Borders::ALL)
@@ -28,7 +28,7 @@ pub fn render(app: &App) -> Table {
     .column_spacing(2)
 }
 
-fn title(app: &App) -> text::Span {
+fn title(app: &App) -> text::Span<'_> {
   let text_style = Style::default()
     .fg(super::selected_color(app, SelectedPane::Repos))
     .add_modifier(Modifier::BOLD);

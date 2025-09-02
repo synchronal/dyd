@@ -6,7 +6,7 @@ use ratatui::widgets::{Block, Borders, Paragraph};
 
 const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
 
-pub fn render(app: &App) -> Paragraph {
+pub fn render(app: &App) -> Paragraph<'_> {
   let text = vec![
     Line::from(vec![
       Span::raw(" hl ←→ "),
@@ -57,6 +57,6 @@ pub fn render(app: &App) -> Paragraph {
     .style(app.theme.help_text_style)
 }
 
-fn title(app: &App) -> text::Span {
+fn title(app: &App) -> text::Span<'_> {
   text::Span::styled(format!(" Help (v{})", VERSION.unwrap()), app.theme.help_header_style)
 }
