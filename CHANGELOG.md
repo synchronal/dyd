@@ -4,7 +4,7 @@
 
 ## Unreleased
 
-- Use Rust 1.88.0.
+- Use Rust 1.89.0.
 - Simplify color themes into a single struct.
 
 ## 1.9.0
