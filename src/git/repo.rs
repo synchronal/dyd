@@ -1,11 +1,13 @@
 use crate::app::{AppResult, Event};
 use crate::git;
 use crate::manifest::Remote;
+use crate::semaphore::Semaphore;
 use crate::time;
 
 use std::cmp::Ordering;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc;
+use std::sync::Arc;
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, PartialOrd)]
 pub enum RepoStatus {
@@ -136,13 +138,21 @@ impl From<&str> for Log {
 }
 
 impl Repo {
-  pub fn update(&self, id: &str, root_path: &Path, sender: mpsc::Sender<Event>) -> AppResult<()> {
+  pub fn update(
+    &self,
+    id: &str,
+    root_path: &Path,
+    sender: mpsc::Sender<Event>,
+    semaphore: Arc<Semaphore>,
+  ) -> AppResult<()> {
     let path = self.path(root_path)?;
     let origin = self.origin.clone();
     let branch = self.branch.clone();
     let id = id.to_string();
 
     std::thread::spawn(move || {
+      let _permit = semaphore.acquire();
+
       if path.is_dir() {
         sender
           .send(Event::RepoStatusChange(id.clone(), RepoStatus::Pulling))

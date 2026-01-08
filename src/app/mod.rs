@@ -5,6 +5,7 @@ pub use self::event::{Event, EventHandler};
 use crate::difftool::Difftool;
 use crate::git::repo::{Log, Repo, RepoStatus};
 use crate::manifest::Manifest;
+use crate::semaphore::Semaphore;
 use crate::theme::ColorTheme;
 use crate::ui;
 use crate::widget::calendar::CalendarState;
@@ -18,6 +19,7 @@ use std::cmp::Ordering;
 use std::error;
 use std::path::PathBuf;
 use std::sync::mpsc;
+use std::sync::Arc;
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
@@ -44,6 +46,9 @@ pub enum SelectedModal {
   Calendar,
 }
 
+/// Maximum number of concurrent git operations.
+const MAX_CONCURRENT_GIT_OPS: usize = 5;
+
 #[derive(Debug)]
 pub struct App {
   pub calendar_state: crate::widget::calendar::CalendarState,
@@ -59,6 +64,7 @@ pub struct App {
   pub state: AppState,
   pub theme: ColorTheme,
   pub timezone_offset: chrono::offset::FixedOffset,
+  semaphore: Arc<Semaphore>,
 }
 
 impl App {
@@ -85,15 +91,16 @@ impl App {
 
     Self {
       calendar_state,
-      repos,
-      repo_state,
-      selected_repo_state,
-      since,
       difftool: manifest.difftool,
       modal: SelectedModal::default(),
+      repo_state,
+      repos,
       root_path: manifest.root.unwrap(),
       running: true,
       selected_pane: SelectedPane::default(),
+      selected_repo_state,
+      semaphore: Arc::new(Semaphore::new(MAX_CONCURRENT_GIT_OPS)),
+      since,
       state: AppState::default(),
       theme,
       timezone_offset: offset,
@@ -134,7 +141,7 @@ impl App {
 
   pub fn update(&self, sender: mpsc::Sender<Event>) -> AppResult<()> {
     for (id, repo) in &self.repos {
-      repo.update(id, &self.root_path, sender.clone())?;
+      repo.update(id, &self.root_path, sender.clone(), Arc::clone(&self.semaphore))?;
     }
     Ok(())
   }

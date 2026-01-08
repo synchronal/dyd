@@ -21,6 +21,7 @@ pub mod config;
 pub mod difftool;
 pub mod git;
 pub mod manifest;
+pub mod semaphore;
 pub mod terminal;
 pub mod theme;
 pub mod time;

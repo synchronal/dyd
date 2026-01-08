@@ -6,6 +6,7 @@
 
 - Use Rust 1.92.0.
 - Update Ratatui to 0.30; fix error lifetimes.
+- Limit concurrency of git to max 5 concurrent operations.
 
 ## 1.9.1
 
