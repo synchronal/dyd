@@ -6,17 +6,12 @@ use std::path::Path;
 use std::process::Command;
 use std::str::FromStr;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub enum Difftool {
+  #[default]
   Git,
   GitHub,
   Fallthrough(String),
-}
-
-impl Default for Difftool {
-  fn default() -> Self {
-    Self::Git
-  }
 }
 
 impl Difftool {
