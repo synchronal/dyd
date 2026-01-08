@@ -1,8 +1,10 @@
 use crate::app::AppResult;
 
 use chrono::prelude::*;
-use lazy_static::lazy_static;
 use regex::Regex;
+use std::sync::OnceLock;
+
+static PATTERN: OnceLock<Regex> = OnceLock::new();
 
 #[derive(Debug)]
 struct TimeParseError(String);
@@ -23,11 +25,9 @@ impl std::error::Error for TimeParseError {}
 /// - `1 week ago`
 ///
 pub fn parse_relative(string: &str, base: &DateTime<Utc>) -> AppResult<DateTime<Utc>> {
-  lazy_static! {
-    static ref PATTERN: Regex = Regex::new(r"^(?P<amount>\d+) (?P<unit>\w+) ago$").unwrap();
-  }
+  let pattern = PATTERN.get_or_init(|| Regex::new(r"^(?P<amount>\d+) (?P<unit>\w+) ago$").unwrap());
 
-  match PATTERN.captures(string) {
+  match pattern.captures(string) {
     Some(captures) => compute_relative(captures, base),
     None => Err(Box::new(TimeParseError("Pattern should match 'N <units> ago".into()))),
   }

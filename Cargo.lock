@@ -604,7 +604,6 @@ dependencies = [
  "envsubst",
  "gix",
  "indexmap",
- "lazy_static",
  "log",
  "log4rs",
  "ratatui",
