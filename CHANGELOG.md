@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 1.11.0
+
+- Use Rust 1.93.0
+
 ## 1.10.0
 
 - Use Rust 1.92.0.
