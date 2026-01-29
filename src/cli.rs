@@ -39,13 +39,8 @@ pub struct ManifestCliArgs {
   pub theme: Option<theme::Theme>,
 }
 
-impl Default for CLI {
-  fn default() -> Self {
-    Self::new()
-  }
-}
-
 impl CLI {
+  #[allow(clippy::new_without_default)]
   pub fn new() -> Self {
     CLI::parse()
   }

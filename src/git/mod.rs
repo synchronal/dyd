@@ -2,7 +2,7 @@ use crate::app::AppResult;
 use gix::remote::Direction;
 use log;
 use std::error::Error;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::process::Command;
 use std::sync::atomic::AtomicBool;
 
@@ -28,7 +28,7 @@ pub fn clone_repo(origin: &str, path: &Path) -> Result<(), Box<dyn Error>> {
   Ok(())
 }
 
-pub fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<u8>> {
+pub fn logs(path: &Path, branch: Option<&str>) -> AppResult<Vec<u8>> {
   let mut logs = Command::new("git");
   logs
     .args([
@@ -49,7 +49,7 @@ pub fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<u8>> {
   Ok(logs.output()?.stdout)
 }
 
-pub fn pull_repo(path: &PathBuf) -> AppResult<()> {
+pub fn pull_repo(path: &Path) -> AppResult<()> {
   log::info!("starting git fetch: {path:?}");
   let repo = gix::discover(path)?;
   log::debug!("repo: {repo:?}");
@@ -82,7 +82,7 @@ pub fn pull_repo(path: &PathBuf) -> AppResult<()> {
   Ok(())
 }
 
-pub fn switch_branch(path: &PathBuf, branch: &str) {
+pub fn switch_branch(path: &Path, branch: &str) {
   Command::new("git")
     .args(["switch", branch])
     .current_dir(path)

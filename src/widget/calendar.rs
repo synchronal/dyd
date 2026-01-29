@@ -12,10 +12,7 @@ pub struct Calendar<'a> {
 
 impl<'a> Calendar<'a> {
   pub fn new() -> Self {
-    Self {
-      block: None,
-      style: Default::default(),
-    }
+    Self::default()
   }
 
   pub fn block(mut self, block: Block<'a>) -> Self {
@@ -29,20 +26,16 @@ pub struct CalendarState {
   datetime: NaiveDate,
 }
 
-impl CalendarState {
-  pub fn from_datetime(datetime: &DateTime<Utc>) -> Self {
+impl From<&DateTime<Utc>> for CalendarState {
+  fn from(datetime: &DateTime<Utc>) -> Self {
     Self {
       datetime: datetime.date_naive(),
     }
   }
+}
 
-  pub fn today() -> Self {
-    Self {
-      datetime: chrono::Utc::now().date_naive(),
-    }
-  }
-
-  pub fn to_utc_datetime(&self) -> DateTime<Utc> {
+impl From<&CalendarState> for DateTime<Utc> {
+  fn from(state: &CalendarState) -> Self {
     let mut datetime = chrono::Utc::now();
     datetime = datetime
       .with_hour(0)
@@ -53,14 +46,26 @@ impl CalendarState {
       .unwrap();
 
     datetime = datetime
-      .with_year(self.datetime.year())
+      .with_year(state.datetime.year())
       .unwrap()
-      .with_month(self.datetime.month())
+      .with_month(state.datetime.month())
       .unwrap()
-      .with_day(self.datetime.day())
+      .with_day(state.datetime.day())
       .unwrap();
 
     datetime
+  }
+}
+
+impl CalendarState {
+  pub fn today() -> Self {
+    Self {
+      datetime: chrono::Utc::now().date_naive(),
+    }
+  }
+
+  pub fn to_utc_datetime(&self) -> DateTime<Utc> {
+    self.into()
   }
 
   pub fn decrement(&mut self, days: i64) {

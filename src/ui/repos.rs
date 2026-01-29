@@ -1,5 +1,5 @@
 use crate::app::{App, SelectedPane};
-use crate::git::repo::{Repo, RepoStatus};
+use crate::git::repo::Repo;
 
 use ratatui::layout::Constraint;
 use ratatui::style::{Modifier, Style};
@@ -36,13 +36,8 @@ fn title(app: &App) -> text::Span<'_> {
 }
 
 fn status_icon<'a>(repo: &'a Repo, app: &'a App) -> Cell<'a> {
-  let icon = match repo.status {
-    RepoStatus::Checking => " ⁇",
-    RepoStatus::Cloning => " ⚭",
-    RepoStatus::Failed => " 𝗫",
-    RepoStatus::Finished => " ✓",
-    RepoStatus::Log => " ☈",
-    RepoStatus::Pulling => " ⤵",
-  };
-  Cell::from(text::Span::styled(icon, Style::default().fg(app.theme.text_color)))
+  Cell::from(text::Span::styled(
+    repo.status.to_string(),
+    Style::default().fg(app.theme.text_color),
+  ))
 }

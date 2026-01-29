@@ -8,8 +8,6 @@ use crate::manifest::Manifest;
 use crate::semaphore::Semaphore;
 use crate::theme::ColorTheme;
 use crate::ui;
-use crate::widget::calendar::CalendarState;
-
 use chrono::Local;
 use indexmap::map::IndexMap;
 use ratatui::layout::{Constraint, Direction, Layout};
@@ -84,7 +82,7 @@ impl App {
     selected_repo_state.select(Some(0));
 
     let since = manifest.since_datetime.unwrap();
-    let calendar_state = CalendarState::from_datetime(&since);
+    let calendar_state = (&since).into();
 
     let offset_sec = Local::now().offset().local_minus_utc();
     let offset = chrono::offset::FixedOffset::east_opt(offset_sec).unwrap();

@@ -14,10 +14,23 @@ pub enum RepoStatus {
   #[default]
   Checking,
   Cloning,
-  Pulling,
   Failed,
-  Log,
   Finished,
+  Log,
+  Pulling,
+}
+
+impl std::fmt::Display for RepoStatus {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    match self {
+      RepoStatus::Checking => write!(f, " ⁇"),
+      RepoStatus::Cloning => write!(f, " ⚭"),
+      RepoStatus::Failed => write!(f, " 𝗫"),
+      RepoStatus::Finished => write!(f, " ✓"),
+      RepoStatus::Log => write!(f, " ☈"),
+      RepoStatus::Pulling => write!(f, " ⤵"),
+    }
+  }
 }
 
 #[derive(Debug, Default, Eq, PartialEq)]
@@ -184,7 +197,7 @@ impl Repo {
         .send(Event::RepoStatusChange(id.clone(), RepoStatus::Log))
         .unwrap();
 
-      if let Ok(logs) = Repo::logs(&path, &branch) {
+      if let Ok(logs) = Repo::logs(&path, branch.as_deref()) {
         sender
           .send(Event::RepoStatusComplete(id.clone(), logs))
           .unwrap();
@@ -201,7 +214,7 @@ impl Repo {
     }
   }
 
-  fn logs(path: &PathBuf, branch: &Option<String>) -> AppResult<Vec<Log>> {
+  fn logs(path: &Path, branch: Option<&str>) -> AppResult<Vec<Log>> {
     let logs = git::logs(path, branch)?;
 
     Ok(

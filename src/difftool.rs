@@ -39,7 +39,7 @@ impl Difftool {
     context.insert("REF_TO".to_string(), ref_to.clone());
     assert!(envsubst::validate_vars(&context).is_ok());
 
-    let difftool_expansion = envsubst::substitute(self.to_str(repo, &log.sha), &context).unwrap();
+    let difftool_expansion = envsubst::substitute(self.command_template(repo, &log.sha), &context).unwrap();
 
     let difftool_parts: Vec<&str> = difftool_expansion.split(' ').collect();
     difftool_parts
@@ -68,7 +68,7 @@ impl Difftool {
     };
   }
 
-  pub fn to_str(&self, repo: &Repo, from_sha: &str) -> String {
+  pub fn command_template(&self, repo: &Repo, from_sha: &str) -> String {
     match self {
       Difftool::Git => "git difftool -g -y ${DIFF}".to_owned(),
       Difftool::GitHub => Difftool::github_diff_url(repo, from_sha),
@@ -132,7 +132,7 @@ impl<'de> Deserialize<'de> for Difftool {
 #[cfg(test)]
 mod tests {
   #[test]
-  fn difftool_git_to_str() {
+  fn difftool_git_command_template() {
     let difftool = super::Difftool::Git;
     let repo = crate::git::repo::Repo {
       name: "test repo".into(),
@@ -141,12 +141,12 @@ mod tests {
     };
     let from_sha = "abc1234";
 
-    let string = difftool.to_str(&repo, &from_sha);
+    let string = difftool.command_template(&repo, &from_sha);
     assert_eq!(string, "git difftool -g -y ${DIFF}")
   }
 
   #[test]
-  fn difftool_github_ssh_to_str() {
+  fn difftool_github_ssh_command_template() {
     let difftool = super::Difftool::GitHub;
     let repo = crate::git::repo::Repo {
       name: "test repo".into(),
@@ -155,7 +155,7 @@ mod tests {
     };
     let from_sha = "abc1234";
 
-    let string = difftool.to_str(&repo, &from_sha);
+    let string = difftool.command_template(&repo, &from_sha);
     assert_eq!(
       string,
       "open https://github.com/synchronal/dyd/compare/abc1234..HEAD?diff=split"
@@ -163,7 +163,7 @@ mod tests {
   }
 
   #[test]
-  fn difftool_github_ssh_branch_to_str() {
+  fn difftool_github_ssh_branch_command_template() {
     let difftool = super::Difftool::GitHub;
     let repo = crate::git::repo::Repo {
       branch: Some("my-branch".into()),
@@ -173,7 +173,7 @@ mod tests {
     };
     let from_sha = "abc1234";
 
-    let string = difftool.to_str(&repo, &from_sha);
+    let string = difftool.command_template(&repo, &from_sha);
     assert_eq!(
       string,
       "open https://github.com/synchronal/dyd/compare/abc1234..my-branch?diff=split"
@@ -181,7 +181,7 @@ mod tests {
   }
 
   #[test]
-  fn difftool_github_https_to_str() {
+  fn difftool_github_https_command_template() {
     let difftool = super::Difftool::GitHub;
     let repo = crate::git::repo::Repo {
       branch: Some("my-branch".into()),
@@ -191,7 +191,7 @@ mod tests {
     };
     let from_sha = "abc1234";
 
-    let string = difftool.to_str(&repo, &from_sha);
+    let string = difftool.command_template(&repo, &from_sha);
     assert_eq!(
       string,
       "open https://github.com/synchronal/dyd/compare/abc1234..my-branch?diff=split"

@@ -1,5 +1,4 @@
 use crate::app::{App, AppResult, SelectedModal, SelectedPane};
-use crate::widget::calendar::CalendarState;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 /// Handles the key events and updates the state of [`App`].
@@ -54,7 +53,7 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
       if app.modal == SelectedModal::Calendar {
         close_modal(app)
       } else {
-        app.calendar_state = CalendarState::from_datetime(&app.since);
+        app.calendar_state = (&app.since).into();
         open_modal(app, SelectedModal::Calendar)
       }
     }

@@ -11,7 +11,7 @@ struct TimeParseError(String);
 
 impl std::fmt::Display for TimeParseError {
   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "There is an error: {}", self.0)
+    write!(f, "{}", self.0)
   }
 }
 impl std::error::Error for TimeParseError {}

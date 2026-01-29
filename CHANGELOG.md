@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- Use stdlib traits where more appropriate.
+
 ## 1.11.0
 
 - Use Rust 1.93.0

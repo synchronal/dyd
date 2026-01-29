@@ -26,7 +26,7 @@ fn main() -> AppResult<()> {
     Command::Clean { verbose } => dyd::clean(share_path, verbose),
     Command::Diff(args) => {
       let theme = args.theme.unwrap_or(config.theme.unwrap_or(Theme::Auto));
-      dyd::diff(args.manifest, share_path, theme.consume()?)
+      dyd::diff(args.manifest, share_path, theme.try_into()?)
     }
     Command::Init(args) => dyd::write_default_manifest(args.manifest),
   }

@@ -1,4 +1,3 @@
-use crate::app::AppResult;
 use ratatui::style::{Color, Modifier, Style};
 use serde::Deserialize;
 use terminal_colorsaurus::{color_palette, QueryOptions, ThemeMode};
@@ -12,9 +11,11 @@ pub enum Theme {
   Light,
 }
 
-impl Theme {
-  pub fn consume(self) -> AppResult<ColorTheme> {
-    match self {
+impl TryFrom<Theme> for ColorTheme {
+  type Error = Box<dyn std::error::Error>;
+
+  fn try_from(theme: Theme) -> Result<Self, Self::Error> {
+    match theme {
       Theme::Auto => detect_colortheme().or(Ok(dark_theme())),
       Theme::Dark => Ok(dark_theme()),
       Theme::Light => Ok(light_theme()),
@@ -22,7 +23,7 @@ impl Theme {
   }
 }
 
-fn detect_colortheme() -> AppResult<ColorTheme> {
+fn detect_colortheme() -> Result<ColorTheme, Box<dyn std::error::Error>> {
   let colors = color_palette(QueryOptions::default())?;
   match colors.theme_mode() {
     ThemeMode::Dark => Ok(dark_theme()),
