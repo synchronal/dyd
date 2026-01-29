@@ -1,14 +1,14 @@
 use dyd::app::AppResult;
-use dyd::cli::{Command, CLI};
+use dyd::cli::{CLI, Command};
 use dyd::config::Config;
 
 use anyhow::Context;
 
 use dyd::theme::Theme;
+use log4rs::append::rolling_file::RollingFileAppender;
+use log4rs::append::rolling_file::policy::compound::CompoundPolicy;
 use log4rs::append::rolling_file::policy::compound::roll::delete::DeleteRoller;
 use log4rs::append::rolling_file::policy::compound::trigger::size::SizeTrigger;
-use log4rs::append::rolling_file::policy::compound::CompoundPolicy;
-use log4rs::append::rolling_file::RollingFileAppender;
 use log4rs::encode::pattern::PatternEncoder;
 use std::path::{Path, PathBuf};
 

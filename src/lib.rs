@@ -10,8 +10,8 @@ use crate::app::{App, AppResult, Event, EventHandler};
 use crate::manifest::Manifest;
 use crate::terminal::Tui;
 use crate::theme::ColorTheme;
-use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
+use ratatui::backend::CrosstermBackend;
 use std::io::Write;
 use std::path::PathBuf;
 

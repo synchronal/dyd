@@ -1,7 +1,7 @@
 use crate::git::repo::{Log, Repo};
 use regex::Regex;
-use serde::de::{value, Deserializer, IntoDeserializer};
 use serde::Deserialize;
+use serde::de::{Deserializer, IntoDeserializer, value};
 use std::path::Path;
 use std::process::Command;
 use std::str::FromStr;

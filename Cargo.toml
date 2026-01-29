@@ -2,7 +2,7 @@
 name = "dyd"
 authors = ["Eric Saxby", "synchronal.dev"]
 description = "CLI for daily diffing of git repos"
-edition = "2021"
+edition = "2024"
 exclude = ["fixtures/*"]
 license = "MIT"
 readme = "README.md"

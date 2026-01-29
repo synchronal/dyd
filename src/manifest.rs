@@ -45,12 +45,12 @@ impl Manifest {
 
     let mut manifest: Manifest = toml::from_str(&manifest_contents)?;
     let since_datetime = time::parse_relative(&manifest.since, &chrono::Utc::now())?;
-    if let Difftool::Fallthrough(difftool) = &manifest.difftool {
-      if difftool.is_empty() {
-        return Err(Box::new(ManifestParseError(
-          "When difftool is present in manifest, it must have length > 0".to_string(),
-        )));
-      }
+    if let Difftool::Fallthrough(difftool) = &manifest.difftool
+      && difftool.is_empty()
+    {
+      return Err(Box::new(ManifestParseError(
+        "When difftool is present in manifest, it must have length > 0".to_string(),
+      )));
     }
     manifest.root = Some(root);
     manifest.since_datetime = Some(since_datetime);

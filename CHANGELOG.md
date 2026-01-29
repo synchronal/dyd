@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Use edition 2024.
+
 ## 1.11.1
 
 - Use stdlib traits where more appropriate.

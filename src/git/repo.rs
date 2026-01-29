@@ -6,8 +6,8 @@ use crate::time;
 
 use std::cmp::Ordering;
 use std::path::{Path, PathBuf};
-use std::sync::mpsc;
 use std::sync::Arc;
+use std::sync::mpsc;
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, PartialOrd)]
 pub enum RepoStatus {

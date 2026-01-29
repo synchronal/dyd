@@ -1,6 +1,6 @@
 use ratatui::style::{Color, Modifier, Style};
 use serde::Deserialize;
-use terminal_colorsaurus::{color_palette, QueryOptions, ThemeMode};
+use terminal_colorsaurus::{QueryOptions, ThemeMode, color_palette};
 
 #[derive(clap:: ValueEnum, Clone, Debug, Default, Deserialize)]
 #[serde(rename_all = "lowercase")]

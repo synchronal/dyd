@@ -174,11 +174,7 @@ fn day_x_offset(day: u32, weekday: Weekday) -> u16 {
     Weekday::Sat => 18,
   };
 
-  if day < 10 {
-    weekday_offset + 1
-  } else {
-    weekday_offset
-  }
+  if day < 10 { weekday_offset + 1 } else { weekday_offset }
 }
 
 fn total_days_in_month(year: i32, month: u32) -> Option<u32> {

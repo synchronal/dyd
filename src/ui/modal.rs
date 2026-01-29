@@ -1,9 +1,9 @@
 use crate::app::{App, SelectedModal};
 use crate::widget::calendar::Calendar;
+use ratatui::Frame;
 use ratatui::layout::{Margin, Rect};
 use ratatui::style::Style;
 use ratatui::widgets::{Block, Borders, Clear};
-use ratatui::Frame;
 
 pub fn render(app: &App, frame: &mut Frame) {
   let window = frame.area();

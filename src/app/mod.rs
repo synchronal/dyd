@@ -10,14 +10,14 @@ use crate::theme::ColorTheme;
 use crate::ui;
 use chrono::Local;
 use indexmap::map::IndexMap;
+use ratatui::Frame;
 use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::widgets::TableState;
-use ratatui::Frame;
 use std::cmp::Ordering;
 use std::error;
 use std::path::PathBuf;
-use std::sync::mpsc;
 use std::sync::Arc;
+use std::sync::mpsc;
 
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
