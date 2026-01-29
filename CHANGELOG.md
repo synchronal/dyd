@@ -1,8 +1,8 @@
 # Change log
 
-- Fall back to dark theme when `auto` fails.
-
 ## Unreleased
+
+## 1.11.1
 
 - Use stdlib traits where more appropriate.
 
@@ -20,6 +20,7 @@
 ## 1.9.1
 
 - Use Rust 1.90.0.
+- Fall back to dark theme when `auto` fails.
 - Simplify color themes into a single struct.
 
 ## 1.9.0
