@@ -8,8 +8,6 @@ use std::sync::atomic::AtomicBool;
 
 pub mod repo;
 
-static GIT_FORMAT: &str = "%h\x0B%ct\x0B%ch\x0B%an\x0B%s";
-
 pub fn clone_repo(origin: &str, path: &Path) -> Result<(), Box<dyn Error>> {
   log::info!("starting git clone: remote: \"{origin}\", path: {path:?}");
   std::fs::create_dir_all(path)?;
@@ -28,25 +26,38 @@ pub fn clone_repo(origin: &str, path: &Path) -> Result<(), Box<dyn Error>> {
   Ok(())
 }
 
-pub fn logs(path: &Path, branch: Option<&str>) -> AppResult<Vec<u8>> {
-  let mut logs = Command::new("git");
-  logs
-    .args([
-      "log",
-      "--date=local",
-      "-n",
-      "400",
-      "--abbrev-commit",
-      "--color=always",
-      &format!("--pretty=tformat:{GIT_FORMAT}"),
-    ])
-    .current_dir(path);
+pub fn logs(path: &Path, branch: Option<&str>) -> AppResult<Vec<repo::Log>> {
+  let repo = gix::discover(path)?;
 
-  if let Some(branch) = branch {
-    logs.arg(format!("origin/{branch}"));
+  let tip = match branch {
+    Some(b) => repo
+      .find_reference(&format!("refs/remotes/origin/{b}"))?
+      .into_fully_peeled_id()?
+      .detach(),
+    None => repo.head_id()?.detach(),
+  };
+
+  let mut logs = Vec::new();
+
+  for info in repo.rev_walk([tip]).all()?.take(400) {
+    let info = info?;
+    let commit = repo.find_commit(info.id)?;
+    let short_id = commit.short_id()?.to_string();
+    let author = commit.author()?.name.to_string();
+    let seconds = commit.time()?.seconds;
+    let commit_datetime =
+      chrono::DateTime::from_timestamp(seconds, 0).unwrap_or_else(|| chrono::DateTime::from_timestamp(0, 0).unwrap());
+    let message = commit.message()?.title.to_string();
+
+    logs.push(repo::Log {
+      author,
+      commit_datetime,
+      message,
+      sha: short_id,
+    });
   }
 
-  Ok(logs.output()?.stdout)
+  Ok(logs)
 }
 
 pub fn pull_repo(path: &Path) -> AppResult<()> {
