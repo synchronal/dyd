@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.11.2
+
 - Use gix for git log parsing.
 - Use edition 2024.
 
