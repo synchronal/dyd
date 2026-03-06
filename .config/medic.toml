@@ -9,8 +9,8 @@ checks = [
 
 [test]
 checks = [
-  { name = "Check for warnings", shell = "cargo build --workspace --features strict --color always" },
   { step = "rust", command = "test", verbose = true },
+  { name = "Check for warnings", shell = "cargo check --workspace --features strict --color always" },
 ]
 
 [audit]
