@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Use Rust 1.95.0.
+
 ## 1.11.2
 
 - Use gix for git log parsing.
