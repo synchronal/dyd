@@ -41,7 +41,7 @@ impl Default for Manifest {
 impl Manifest {
   pub fn new(path: std::path::PathBuf, root: PathBuf) -> Result<Manifest, Box<dyn std::error::Error>> {
     let manifest_contents =
-      std::fs::read_to_string(&path).with_context(|| format!("Error reading file: `{}`", &path.to_str().unwrap()))?;
+      std::fs::read_to_string(&path).with_context(|| format!("Error reading file: `{}`", path.to_str().unwrap()))?;
 
     let mut manifest: Manifest = toml::from_str(&manifest_contents)?;
     let since_datetime = time::parse_relative(&manifest.since, &chrono::Utc::now())?;

@@ -77,7 +77,7 @@ pub fn diff(manifest: PathBuf, share_path: PathBuf, theme: ColorTheme) -> AppRes
 }
 
 pub fn write_default_manifest(manifest_path: PathBuf) -> AppResult<()> {
-  println!("Creating file: {:?}", &manifest_path);
+  println!("Creating file: {:?}", manifest_path);
 
   let mut file = std::fs::OpenOptions::new()
     .create_new(true)
