@@ -27,16 +27,12 @@ see, file an issue or contact us at
 
 via homebrew:
 
-``` shell
-brew tap synchronal/tap
-brew install dyd
-```
+    brew tap synchronal/tap
+    brew install dyd
 
 via cargo:
 
-``` shell
-cargo install dyd
-```
+    cargo install dyd
 
 Configure git with a GUI difftool:
 
@@ -104,26 +100,20 @@ origin = "git@github.com:fdehau/tui-rs"
 Ensure that your shell is authorized with the origin. Dyd will *not*
 route input to the SSH agent.
 
-``` shell
-ssh-add ~/.ssh/id_ed25519
-```
+    ssh-add ~/.ssh/id_ed25519
 
 Open the diff tool:
 
-``` shell
-dyd -m dyd.toml
-dyd --manifest dyd.toml
-DYD_MANIFEST_PATH="dyd.toml" dyd diff
-```
+    dyd -m dyd.toml
+    dyd --manifest dyd.toml
+    DYD_MANIFEST_PATH="dyd.toml" dyd diff
 
 Keymap:
 
-``` text
-h l <left> <right> <tab> - switch panes
-j k <up> <down> - change current selection
-d - open git gui difftool
-q <esc> - quit
-```
+    h l <left> <right> <tab> - switch panes
+    j k <up> <down> - change current selection
+    d - open git gui difftool
+    q <esc> - quit
 
 ## Global configuration
 
