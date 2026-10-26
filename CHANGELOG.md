@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Update deps.
 - Use Rust 1.99.1.
 
 ## 1.11.4
