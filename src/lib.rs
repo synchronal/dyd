@@ -56,6 +56,7 @@ pub fn diff(manifest: PathBuf, share_path: PathBuf, theme: ColorTheme) -> AppRes
   let events = EventHandler::new(250);
   let mut tui = Tui::new(terminal, events);
 
+  crate::terminal::tui::install_panic_hook();
   tui.init()?;
 
   while app.running {

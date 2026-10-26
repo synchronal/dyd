@@ -1,4 +1,5 @@
 use crate::app::{App, AppResult, SelectedModal, SelectedPane};
+use crate::git::repo::Repo;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 /// Handles the key events and updates the state of [`App`].
@@ -76,10 +77,9 @@ fn decrement_selected_log(app: &mut App, count: usize) {
 }
 
 fn increment_selected_log(app: &mut App, count: usize) {
-  let selected_repo_index = app.repo_state.selected().unwrap();
-  let (_id, selected_repo) = app.repos.get_index(selected_repo_index).unwrap();
-
-  let max_log: usize = selected_repo.logs.len() - 1;
+  let Some(max_log) = selected_repo(app).and_then(|repo| repo.logs.len().checked_sub(1)) else {
+    return;
+  };
 
   if let Some(current) = app.selected_repo_state.selected() {
     let next = std::cmp::min(current + count, max_log);
@@ -100,7 +100,9 @@ fn decrement_repos(app: &mut App, count: usize) {
 
 fn increment_repos(app: &mut App, count: usize) {
   app.selected_repo_state.select(Some(0));
-  let max_repos: usize = app.repos.len() - 1;
+  let Some(max_repos) = app.repos.len().checked_sub(1) else {
+    return;
+  };
   if let Some(current) = app.repo_state.selected() {
     let next = std::cmp::min(current + count, max_repos);
     app.repo_state.select(Some(next));
@@ -142,10 +144,88 @@ fn close_modal(app: &mut App) {
 // // // Diff
 
 fn open_git_difftool(app: &App) {
-  let selected_repo_index = app.repo_state.selected().unwrap();
-  let (_id, selected_repo) = app.repos.get_index(selected_repo_index).unwrap();
-  let selected_log = app.selected_repo_state.selected().unwrap();
-  let log = &selected_repo.logs[selected_log];
+  let Some(selected_repo) = selected_repo(app) else {
+    return;
+  };
+  let Some(log) = app
+    .selected_repo_state
+    .selected()
+    .and_then(|index| selected_repo.logs.get(index))
+  else {
+    return;
+  };
 
   app.difftool.open(&app.root_path, selected_repo, log);
+}
+
+fn selected_repo(app: &App) -> Option<&Repo> {
+  let index = app.repo_state.selected()?;
+  app.repos.get_index(index).map(|(_id, repo)| repo)
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use crate::manifest::{Manifest, Remote};
+  use crate::theme::{ColorTheme, Theme};
+  use crossterm::event::KeyEvent;
+
+  fn app(remotes: &[&str]) -> App {
+    let manifest = Manifest {
+      remotes: remotes
+        .iter()
+        .map(|id| {
+          let remote = Remote {
+            name: id.to_string(),
+            origin: format!("git@github.com:example/{id}.git"),
+            branch: None,
+          };
+          (id.to_string(), remote)
+        })
+        .collect(),
+      root: Some("/nonexistent".into()),
+      since_datetime: Some(chrono::Utc::now()),
+      ..Default::default()
+    };
+    App::from_manifest(manifest, ColorTheme::try_from(Theme::Dark).unwrap())
+  }
+
+  fn press(app: &mut App, code: KeyCode) {
+    handle_key_events(KeyEvent::from(code), app).unwrap();
+  }
+
+  #[test]
+  fn keys_without_repos_do_not_panic() {
+    let mut app = app(&[]);
+    for pane in [SelectedPane::Repos, SelectedPane::Diff] {
+      app.selected_pane = pane;
+      for code in [
+        KeyCode::Down,
+        KeyCode::Up,
+        KeyCode::Char('f'),
+        KeyCode::Char('b'),
+        KeyCode::Char('d'),
+      ] {
+        press(&mut app, code);
+      }
+    }
+  }
+
+  #[test]
+  fn keys_before_logs_load_do_not_panic() {
+    let mut app = app(&["one", "two"]);
+    app.selected_pane = SelectedPane::Diff;
+    for code in [KeyCode::Down, KeyCode::Char('f'), KeyCode::Char('d')] {
+      press(&mut app, code);
+    }
+    assert_eq!(app.selected_repo_state.selected(), Some(0));
+  }
+
+  #[test]
+  fn open_difftool_with_stale_log_selection_does_not_panic() {
+    let mut app = app(&["one"]);
+    app.selected_pane = SelectedPane::Diff;
+    app.selected_repo_state.select(Some(5));
+    press(&mut app, KeyCode::Char('d'));
+  }
 }

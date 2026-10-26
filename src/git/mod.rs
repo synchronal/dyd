@@ -73,8 +73,7 @@ pub fn pull_repo(path: &Path) -> AppResult<()> {
   Command::new("git")
     .args(["merge", "--no-edit", "--ff-only", "--quiet", "--no-commit"])
     .current_dir(path)
-    .output()
-    .unwrap();
+    .output()?;
 
   log::info!("finished git merge: {path:?}");
 

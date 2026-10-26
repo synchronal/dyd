@@ -11,9 +11,9 @@ pub fn render(app: &App, frame: &mut Frame) {
   match app.modal {
     SelectedModal::None => {}
     SelectedModal::Calendar => {
-      let x = std::cmp::max(window.width / 2 - 12, 0);
-      let y = std::cmp::max(window.height / 2 - 10, 0);
-      let background = Rect::new(x, y, 28, 12);
+      let x = (window.width / 2).saturating_sub(12);
+      let y = (window.height / 2).saturating_sub(10);
+      let background = Rect::new(x, y, 28, 12).intersection(window);
       let area = background.inner(Margin {
         vertical: 1,
         horizontal: 2,

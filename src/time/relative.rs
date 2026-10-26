@@ -1,5 +1,6 @@
 use crate::app::AppResult;
 
+use chrono::Months;
 use chrono::prelude::*;
 use regex::Regex;
 use std::sync::OnceLock;
@@ -38,70 +39,27 @@ fn compute_relative(captures: regex::Captures, base: &DateTime<Utc>) -> AppResul
     let amount: i64 = captures.name("amount").unwrap().as_str().parse::<i64>()?;
 
     match captures.name("unit").unwrap().as_str() {
-      "day" | "days" => chrono::Duration::try_days(amount).unwrap(),
+      "day" | "days" => chrono::Duration::try_days(amount),
       "month" | "months" => return relative_months(base, amount),
-      "week" | "weeks" => chrono::Duration::try_weeks(amount).unwrap(),
+      "week" | "weeks" => chrono::Duration::try_weeks(amount),
       other => return Err(Box::new(TimeParseError(format!("Unknown unit {other}")))),
     }
   };
 
-  match base.checked_sub_signed(duration) {
+  match duration.and_then(|duration| base.checked_sub_signed(duration)) {
     Some(time) => Ok(time),
     None => Err(Box::new(TimeParseError("Unable to parse relative time".into()))),
   }
 }
 
+/// Clamps to the last day of the target month, so `1 month ago` from March 31 is February 28.
 fn relative_months(base: &DateTime<Utc>, amount: i64) -> AppResult<DateTime<Utc>> {
-  let current_month = base.month0();
-  let new_month = (current_month as i64) - amount;
+  let months = u32::try_from(amount).map(Months::new)?;
 
-  if new_month < 0 {
-    let current_year = base.year();
-    let amount = (new_month + 1).abs();
-    relative_months(
-      &base
-        .with_year(current_year - 1)
-        .unwrap()
-        .with_month(12)
-        .unwrap(),
-      amount,
-    )
-  } else {
-    match base.with_month0(new_month as u32) {
-      Some(datetime) => Ok(datetime),
-      None => {
-        let year = base.year();
-        let last_day = get_days_from_month(year, (new_month + 1) as u32);
-
-        Ok(
-          base
-            .with_day(1)
-            .unwrap()
-            .with_month0(new_month as u32)
-            .unwrap()
-            .with_day(last_day as u32)
-            .unwrap(),
-        )
-      }
-    }
+  match base.checked_sub_months(months) {
+    Some(time) => Ok(time),
+    None => Err(Box::new(TimeParseError("Unable to parse relative time".into()))),
   }
-}
-
-fn get_days_from_month(year: i32, month: u32) -> i64 {
-  NaiveDate::from_ymd_opt(
-    match month {
-      12 => year + 1,
-      _ => year,
-    },
-    match month {
-      12 => 1,
-      _ => month + 1,
-    },
-    1,
-  )
-  .unwrap()
-  .signed_duration_since(NaiveDate::from_ymd_opt(year, month, 1).unwrap())
-  .num_days()
 }
 
 #[cfg(test)]
@@ -231,6 +189,44 @@ mod tests {
     assert_eq!(time, expected);
 
     Ok(())
+  }
+
+  #[test]
+  fn parse_relative_months_from_leap_day_ok() -> Result<(), Box<dyn Error>> {
+    let naive = NaiveDate::from_ymd_opt(2024, 2, 29)
+      .unwrap()
+      .and_hms_opt(6, 1, 2)
+      .unwrap();
+    let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
+
+    let time = super::parse_relative("3 months ago", &now)?;
+    let naive = NaiveDate::from_ymd_opt(2023, 11, 29)
+      .unwrap()
+      .and_hms_opt(6, 1, 2)
+      .unwrap();
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
+    assert_eq!(time, expected);
+
+    let time = super::parse_relative("12 months ago", &now)?;
+    let naive = NaiveDate::from_ymd_opt(2023, 2, 28)
+      .unwrap()
+      .and_hms_opt(6, 1, 2)
+      .unwrap();
+    let expected: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
+    assert_eq!(time, expected);
+
+    Ok(())
+  }
+
+  #[test]
+  fn parse_relative_out_of_range_error() {
+    for string in [
+      "999999999999999 days ago",
+      "999999999999999 weeks ago",
+      "999999999999999 months ago",
+    ] {
+      assert!(super::parse_relative(string, &Utc::now()).is_err(), "{string}");
+    }
   }
 
   #[test]

@@ -1,4 +1,5 @@
 use crate::app::{App, AppResult, EventHandler};
+use crossterm::cursor::Show;
 use crossterm::event::{DisableMouseCapture, EnableMouseCapture};
 use crossterm::terminal::{self, EnterAlternateScreen, LeaveAlternateScreen};
 use ratatui::Terminal;
@@ -59,11 +60,29 @@ impl<B: Backend> Tui<B> {
   where
     <B as Backend>::Error: 'static,
   {
-    terminal::disable_raw_mode()?;
-    crossterm::execute!(io::stderr(), LeaveAlternateScreen, DisableMouseCapture)?;
+    restore()?;
     match self.terminal.show_cursor() {
       Ok(_it) => Ok(()),
       Err(err) => Err(Box::new(err)),
     }
   }
+}
+
+/// Reverts the terminal properties without a [`Tui`], for the panic hook.
+pub fn restore() -> io::Result<()> {
+  terminal::disable_raw_mode()?;
+  crossterm::execute!(io::stderr(), LeaveAlternateScreen, DisableMouseCapture, Show)
+}
+
+/// Restores the terminal before reporting a main-thread panic, so the message
+/// is readable and the shell usable. Worker-thread panics leave the interface
+/// running.
+pub fn install_panic_hook() {
+  let default_hook = std::panic::take_hook();
+  std::panic::set_hook(Box::new(move |info| {
+    if std::thread::current().name() == Some("main") {
+      let _ = restore();
+    }
+    default_hook(info);
+  }));
 }

@@ -1,4 +1,4 @@
-use chrono::{DateTime, Datelike, Duration, NaiveDate, Timelike, Utc, Weekday};
+use chrono::{DateTime, Datelike, Duration, NaiveDate, NaiveTime, Utc, Weekday};
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::style::{Color, Modifier, Style};
@@ -36,24 +36,7 @@ impl From<&DateTime<Utc>> for CalendarState {
 
 impl From<&CalendarState> for DateTime<Utc> {
   fn from(state: &CalendarState) -> Self {
-    let mut datetime = chrono::Utc::now();
-    datetime = datetime
-      .with_hour(0)
-      .unwrap()
-      .with_minute(0)
-      .unwrap()
-      .with_second(0)
-      .unwrap();
-
-    datetime = datetime
-      .with_year(state.datetime.year())
-      .unwrap()
-      .with_month(state.datetime.month())
-      .unwrap()
-      .with_day(state.datetime.day())
-      .unwrap();
-
-    datetime
+    state.datetime.and_time(NaiveTime::MIN).and_utc()
   }
 }
 
@@ -194,4 +177,24 @@ fn total_days_in_month(year: i32, month: u32) -> Option<u32> {
   .num_days();
 
   u32::try_from(days).ok()
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn to_utc_datetime_is_midnight_of_selected_day() {
+    for (year, month, day) in [(2026, 2, 28), (2024, 2, 29), (2026, 4, 30), (2026, 12, 31)] {
+      let state = CalendarState {
+        datetime: NaiveDate::from_ymd_opt(year, month, day).unwrap(),
+      };
+      let expected = NaiveDate::from_ymd_opt(year, month, day)
+        .unwrap()
+        .and_hms_opt(0, 0, 0)
+        .unwrap()
+        .and_utc();
+      assert_eq!(state.to_utc_datetime(), expected);
+    }
+  }
 }
