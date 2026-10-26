@@ -41,12 +41,6 @@ impl From<&CalendarState> for DateTime<Utc> {
 }
 
 impl CalendarState {
-  pub fn today() -> Self {
-    Self {
-      datetime: chrono::Utc::now().date_naive(),
-    }
-  }
-
   pub fn to_utc_datetime(&self) -> DateTime<Utc> {
     self.into()
   }
@@ -119,13 +113,6 @@ impl StatefulWidget for Calendar<'_> {
         current_date += Duration::try_days(1).unwrap();
       }
     }
-  }
-}
-
-impl Widget for Calendar<'_> {
-  fn render(self, area: Rect, buf: &mut Buffer) {
-    let mut state = CalendarState::today();
-    StatefulWidget::render(self, area, buf, &mut state);
   }
 }
 

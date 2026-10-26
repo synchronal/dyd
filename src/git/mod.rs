@@ -79,11 +79,3 @@ pub fn pull_repo(path: &Path) -> AppResult<()> {
 
   Ok(())
 }
-
-pub fn switch_branch(path: &Path, branch: &str) {
-  Command::new("git")
-    .args(["switch", branch])
-    .current_dir(path)
-    .output()
-    .unwrap();
-}
