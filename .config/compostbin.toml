@@ -1,0 +1,40 @@
+[claude]
+seed_from_keychain = true
+
+[host]
+clipboard = true
+
+[host.commands.audit]
+argv = ["cargo", "audit"]
+
+[host.commands.check]
+argv = ["cargo", "check", "--workspace", "--all-targets"]
+
+[host.commands.clippy]
+argv = ["cargo", "clippy", "--workspace", "--all-targets", "--", "-D", "warnings"]
+
+[host.commands.doctest]
+argv = ["cargo", "test", "--workspace", "--doc"]
+tty = true
+
+[host.commands.fmt]
+argv = ["cargo", "fmt", "--all"]
+
+# Exact: no arguments, the whole suite.
+[host.commands.test]
+argv = ["cargo", "nextest", "run", "--workspace"]
+tty = true
+
+# Widened deliberately, for the iterate-on-one-failing-test loop.
+[host.commands.test-one]
+arguments = true
+argv = ["cargo", "nextest", "run"]
+deny = ["--config", "--manifest-path", "-Z", "-p"]
+tty = true
+
+[project]
+image = "compostbin/base:latest"
+name = "dyd"
+
+[workspace]
+roots = []
