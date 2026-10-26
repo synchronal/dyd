@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::sync::mpsc;
 
-#[derive(Clone, Debug, Default, Eq, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
 pub enum RepoStatus {
   #[default]
   Checking,
@@ -65,23 +65,21 @@ impl From<Remote> for Repo {
   }
 }
 
+/// Newest commit first, then repos without logs, by name. Remaining fields
+/// only break ties, keeping `cmp` consistent with `Eq`.
 impl Ord for Repo {
   fn cmp(&self, other: &Self) -> Ordering {
-    if !self.logs.is_empty() && !other.logs.is_empty() {
-      return self.logs[0].cmp(&other.logs[0]);
-    };
-
-    if self.logs.is_empty() && !other.logs.is_empty() {
-      return Ordering::Greater;
+    match (self.logs.first(), other.logs.first()) {
+      (Some(log), Some(other_log)) => log.cmp(other_log),
+      (Some(_), None) => Ordering::Less,
+      (None, Some(_)) => Ordering::Greater,
+      (None, None) => Ordering::Equal,
     }
-    if !self.logs.is_empty() && other.logs.is_empty() {
-      return Ordering::Less;
-    }
-
-    if self.name > other.name {
-      return Ordering::Greater;
-    }
-    Ordering::Less
+    .then_with(|| self.name.cmp(&other.name))
+    .then_with(|| self.origin.cmp(&other.origin))
+    .then_with(|| self.branch.cmp(&other.branch))
+    .then_with(|| self.logs.cmp(&other.logs))
+    .then_with(|| self.status.cmp(&other.status))
   }
 }
 
@@ -99,18 +97,16 @@ pub struct Log {
   pub sha: String,
 }
 
+/// Newest commit first, then by message descending. Remaining fields only
+/// break ties, keeping `cmp` consistent with `Eq`.
 impl Ord for Log {
   fn cmp(&self, other: &Self) -> Ordering {
-    if self.commit_datetime > other.commit_datetime {
-      return Ordering::Less;
-    };
-    if self.commit_datetime < other.commit_datetime {
-      return Ordering::Greater;
-    };
-    if self.message > other.message {
-      return Ordering::Less;
-    }
-    Ordering::Greater
+    other
+      .commit_datetime
+      .cmp(&self.commit_datetime)
+      .then_with(|| other.message.cmp(&self.message))
+      .then_with(|| self.sha.cmp(&other.sha))
+      .then_with(|| self.author.cmp(&other.author))
   }
 }
 
@@ -251,5 +247,104 @@ mod tests {
 
     assert_eq!(log_a.cmp(&log_b), Ordering::Less);
     assert_eq!(log_b.cmp(&log_a), Ordering::Greater);
+  }
+
+  fn log(timestamp: i64, message: &str, sha: &str, author: &str) -> Log {
+    Log {
+      author: author.into(),
+      commit_datetime: chrono::DateTime::from_timestamp(timestamp, 0).unwrap(),
+      message: message.into(),
+      sha: sha.into(),
+    }
+  }
+
+  fn repo(name: &str, origin: &str, branch: Option<&str>, logs: Vec<Log>, status: RepoStatus) -> Repo {
+    Repo {
+      branch: branch.map(Into::into),
+      logs,
+      name: name.into(),
+      origin: origin.into(),
+      status,
+    }
+  }
+
+  /// Checks consistency with `Eq`, antisymmetry and transitivity over every combination.
+  fn assert_total_order<T: Ord + std::fmt::Debug>(values: &[T]) {
+    for a in values {
+      for b in values {
+        assert_eq!(a.cmp(b) == Ordering::Equal, a == b, "{a:?} vs {b:?}");
+        assert_eq!(a.cmp(b), b.cmp(a).reverse(), "{a:?} vs {b:?}");
+        for c in values {
+          if a <= b && b <= c {
+            assert!(a <= c, "{a:?} <= {b:?} <= {c:?}");
+          }
+        }
+      }
+    }
+  }
+
+  fn logs() -> Vec<Log> {
+    vec![
+      log(1000, "same", "abc", "Alice"),
+      log(1000, "same", "abc", "Bob"),
+      log(1000, "same", "def", "Alice"),
+      log(1000, "other", "abc", "Alice"),
+      log(500, "same", "abc", "Alice"),
+    ]
+  }
+
+  #[test]
+  fn test_log_ordering_is_total() {
+    assert_total_order(&logs());
+  }
+
+  #[test]
+  fn test_repo_ordering_is_total() {
+    let [newer, same_time, _, _, older] = <[Log; 5]>::try_from(logs()).unwrap();
+    let repos = [
+      repo("a", "git@x:a", None, vec![], RepoStatus::Checking),
+      repo("a", "git@x:a", None, vec![], RepoStatus::Failed),
+      repo("a", "git@x:a", Some("main"), vec![], RepoStatus::Checking),
+      repo("a", "git@x:b", None, vec![], RepoStatus::Checking),
+      repo("b", "git@x:a", None, vec![], RepoStatus::Checking),
+      repo("a", "git@x:a", None, vec![newer.clone()], RepoStatus::Finished),
+      repo(
+        "a",
+        "git@x:a",
+        None,
+        vec![newer.clone(), older.clone()],
+        RepoStatus::Finished,
+      ),
+      repo("b", "git@x:a", None, vec![newer], RepoStatus::Finished),
+      repo("a", "git@x:a", None, vec![same_time], RepoStatus::Finished),
+      repo("a", "git@x:a", None, vec![older], RepoStatus::Finished),
+    ];
+    assert_total_order(&repos);
+  }
+
+  #[test]
+  fn test_repo_ordering_newest_commit_first_then_unloaded_by_name() {
+    let mut repos = [
+      repo("unloaded-b", "git@x:ub", None, vec![], RepoStatus::Checking),
+      repo(
+        "older",
+        "git@x:o",
+        None,
+        vec![log(500, "m", "abc", "A")],
+        RepoStatus::Finished,
+      ),
+      repo("unloaded-a", "git@x:ua", None, vec![], RepoStatus::Checking),
+      repo(
+        "newer",
+        "git@x:n",
+        None,
+        vec![log(1000, "m", "def", "A")],
+        RepoStatus::Finished,
+      ),
+    ];
+    repos.sort();
+
+    let names: Vec<&str> = repos.iter().map(|repo| repo.name.as_str()).collect();
+    assert_eq!(names, ["newer", "older", "unloaded-a", "unloaded-b"]);
   }
 }

@@ -8,6 +8,8 @@
 - Attempt to restore the terminal on panic.
 - Fix possible panic when git is not on the PATH.
 - Fix typo in `dyd init` default manifest.
+- Fix possible inconsistency in repo, log ordering that could incite a
+  panic.
 - Update deps.
 - Use Rust 1.99.1.
 

@@ -1,8 +1,8 @@
 use crate::app::Event;
 use std::sync::mpsc;
 
-/// Tracks the repo updates of a refresh that the event loop has not yet seen
-/// finish, so a refresh ends on the same timeline as key presses.
+/// Counts a refresh's repo updates the event loop hasn't seen finish, so a
+/// refresh ends on the same timeline as key presses.
 #[derive(Debug, Default)]
 pub struct Refresh {
   running: usize,
