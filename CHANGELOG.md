@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.0.0
+
 - Ensure that only a single refresh occurs at a time. Redundant requests
   to refresh repos are dropped.
 - Fix possible panics in date parsing across leap day boundaries.
@@ -12,8 +14,8 @@
   panic.
 - Don't block the TUI while a difftool runs.
 - Look for the manifest at `./.config/dyd.toml`, then `./dyd.toml`, when
-  no manifest path is given. `dyd init` writes to `./.config/dyd.toml` by
-  default.
+  no manifest path is given. `dyd init` writes to `./.config/dyd.toml`
+  by default.
 - Update deps.
 - Use Rust 1.99.1.
 
