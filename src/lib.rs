@@ -39,7 +39,11 @@ pub fn clean(cache_path: PathBuf, verbose: bool) -> AppResult<()> {
       {
         println!("clean: {:?}", repo.path());
         log::info!("clean: {:?}", repo.path());
-        std::fs::remove_dir_all(repo.path())?;
+        if repo.file_type()?.is_dir() {
+          std::fs::remove_dir_all(repo.path())?;
+        } else {
+          std::fs::remove_file(repo.path())?;
+        }
       }
     }
     log::info!("clean: {cache_path:?}");
@@ -97,4 +101,19 @@ pub fn write_default_manifest(manifest_path: PathBuf) -> AppResult<()> {
   writeln!(file, "origin = \"git@github.com:synchronal/dyd\"")?;
   writeln!(file)?;
   Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+  #[test]
+  fn clean_verbose_removes_files_and_directories() -> super::AppResult<()> {
+    let cache_path = std::env::temp_dir().join(format!("dyd-clean-test-{}", std::process::id()));
+    std::fs::create_dir_all(cache_path.join("github.com/synchronal/dyd"))?;
+    std::fs::write(cache_path.join(".DS_Store"), "")?;
+
+    super::clean(cache_path.clone(), true)?;
+
+    assert!(!cache_path.exists());
+    Ok(())
+  }
 }
