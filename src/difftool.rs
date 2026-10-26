@@ -53,19 +53,28 @@ impl Difftool {
         }
       });
 
-    match Command::new(cmd)
+    let mut command = Command::new(cmd);
+    command
       .args(args)
       .env("DYD_PWD", cwd)
       .env("DIFF", diff)
       .env("REF_FROM", &log.sha)
       .env("REF_TO", ref_to)
       .env("ORIGIN", &repo.origin)
-      .current_dir(repo_path)
-      .output()
-    {
-      Ok(_) => (),
-      Err(err) => eprintln!("\rError opening difftool:\r\n{err:?}\r\ndifftool: {self}"),
-    };
+      .current_dir(repo_path);
+
+    // GUI difftools block until closed, so wait off the event loop. Log errors;
+    // writing to the terminal would corrupt the interface.
+    let difftool = self.to_string();
+    std::thread::spawn(move || match command.output() {
+      Ok(output) if output.status.success() => (),
+      Ok(output) => log::error!(
+        "difftool exited with {}: {difftool}, stderr: {}",
+        output.status,
+        String::from_utf8_lossy(&output.stderr)
+      ),
+      Err(err) => log::error!("failed to open difftool: {difftool}, reason: {err}"),
+    });
   }
 
   pub fn command_template(&self, repo: &Repo, from_sha: &str) -> String {
@@ -131,6 +140,31 @@ impl<'de> Deserialize<'de> for Difftool {
 
 #[cfg(test)]
 mod tests {
+  #[test]
+  fn difftool_open_does_not_wait_for_command() {
+    let root = std::env::temp_dir().join(format!("dyd-difftool-test-{}", std::process::id()));
+    std::fs::create_dir_all(root.join("repo")).unwrap();
+    let difftool = super::Difftool::Fallthrough("sleep 5".into());
+    let repo = crate::git::repo::Repo {
+      name: "test repo".into(),
+      origin: "/repo".into(),
+      ..Default::default()
+    };
+    let log = crate::git::repo::Log {
+      author: "Alice".into(),
+      commit_datetime: chrono::Utc::now(),
+      message: "message".into(),
+      sha: "abc1234".into(),
+    };
+
+    let start = std::time::Instant::now();
+    difftool.open(&root, &repo, &log);
+    let elapsed = start.elapsed();
+    std::fs::remove_dir_all(&root).unwrap();
+
+    assert!(elapsed < std::time::Duration::from_secs(2), "{elapsed:?}");
+  }
+
   #[test]
   fn difftool_git_command_template() {
     let difftool = super::Difftool::Git;
