@@ -5,6 +5,7 @@ pub use self::event::{Event, EventHandler};
 use crate::difftool::Difftool;
 use crate::git::repo::{Log, Repo, RepoStatus};
 use crate::manifest::Manifest;
+use crate::refresh::Refresh;
 use crate::semaphore::Semaphore;
 use crate::theme::ColorTheme;
 use crate::ui;
@@ -24,8 +25,8 @@ pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 #[derive(Debug, Default, PartialEq, Eq)]
 pub enum AppState {
   #[default]
-  Init,
-  Checking,
+  Idle,
+  RefreshRequested,
 }
 
 /// Selected pane
@@ -62,6 +63,7 @@ pub struct App {
   pub state: AppState,
   pub theme: ColorTheme,
   pub timezone_offset: chrono::offset::FixedOffset,
+  refresh: Refresh,
   semaphore: Arc<Semaphore>,
 }
 
@@ -94,6 +96,7 @@ impl App {
       repo_state,
       repos,
       root_path: manifest.root.unwrap(),
+      refresh: Refresh::default(),
       running: true,
       selected_pane: SelectedPane::default(),
       selected_repo_state,
@@ -105,9 +108,9 @@ impl App {
     }
   }
   pub fn tick(&mut self, sender: mpsc::Sender<Event>) -> AppResult<()> {
-    if self.state == AppState::Init {
+    if self.state == AppState::RefreshRequested {
       self.update(sender)?;
-      self.state = AppState::Checking;
+      self.state = AppState::Idle;
     }
     Ok(())
   }
@@ -133,15 +136,29 @@ impl App {
     ui::modal::render(self, frame);
   }
 
-  pub fn reset(&mut self) {
-    self.state = AppState::Init;
+  /// Pulls or clones every repo on the next tick, unless a refresh is already
+  /// requested or running.
+  pub fn request_refresh(&mut self) {
+    if self.state == AppState::Idle && !self.refresh.is_running() {
+      self.state = AppState::RefreshRequested;
+    }
   }
 
-  pub fn update(&self, sender: mpsc::Sender<Event>) -> AppResult<()> {
+  pub fn update(&mut self, sender: mpsc::Sender<Event>) -> AppResult<()> {
     for (id, repo) in &self.repos {
-      repo.update(id, &self.root_path, sender.clone(), Arc::clone(&self.semaphore))?;
+      repo.update(
+        id,
+        &self.root_path,
+        sender.clone(),
+        Arc::clone(&self.semaphore),
+        self.refresh.track(sender.clone()),
+      )?;
     }
     Ok(())
+  }
+
+  pub fn finish_repo_update(&mut self) {
+    self.refresh.finish();
   }
 
   pub fn update_repo_status(&mut self, id: &str, status: RepoStatus) -> AppResult<()> {

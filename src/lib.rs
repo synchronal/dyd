@@ -21,6 +21,7 @@ pub mod config;
 pub mod difftool;
 pub mod git;
 pub mod manifest;
+pub mod refresh;
 pub mod semaphore;
 pub mod terminal;
 pub mod theme;
@@ -50,6 +51,7 @@ pub fn clean(share_path: PathBuf, verbose: bool) -> AppResult<()> {
 pub fn diff(manifest: PathBuf, share_path: PathBuf, theme: ColorTheme) -> AppResult<()> {
   let manifest = Manifest::new(manifest, share_path)?;
   let mut app: App = App::from_manifest(manifest, theme);
+  app.request_refresh();
 
   let backend = CrosstermBackend::new(std::io::stderr());
   let terminal = Terminal::new(backend)?;
@@ -69,6 +71,7 @@ pub fn diff(manifest: PathBuf, share_path: PathBuf, theme: ColorTheme) -> AppRes
       Event::Resize(_, _) => {}
       Event::RepoStatusChange(id, state) => app.update_repo_status(&id, state)?,
       Event::RepoStatusComplete(id, logs) => app.update_repo_logs(&id, logs)?,
+      Event::RepoUpdateDone => app.finish_repo_update(),
     }
   }
 

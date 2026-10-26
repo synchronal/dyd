@@ -20,6 +20,8 @@ pub enum Event {
   RepoStatusChange(String, RepoStatus),
   /// The Repo git actions are complete
   RepoStatusComplete(String, Vec<Log>),
+  /// A repo update thread has exited, successfully or not.
+  RepoUpdateDone,
 }
 
 /// Terminal event handler.

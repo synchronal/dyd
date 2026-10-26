@@ -37,8 +37,8 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
     (SelectedPane::Diff, _, KeyCode::Char('d')) => open_git_difftool(app),
 
     // update
-    (SelectedPane::Diff, _, KeyCode::Char('r')) => app.reset(),
-    (SelectedPane::Repos, _, KeyCode::Char('r')) => app.reset(),
+    (SelectedPane::Diff, _, KeyCode::Char('r')) => app.request_refresh(),
+    (SelectedPane::Repos, _, KeyCode::Char('r')) => app.request_refresh(),
 
     // exit application on ESC, q, or Ctrl-D
     (_, SelectedModal::None, KeyCode::Esc) => app.running = false,
@@ -166,6 +166,7 @@ fn selected_repo(app: &App) -> Option<&Repo> {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::app::AppState;
   use crate::manifest::{Manifest, Remote};
   use crate::theme::{ColorTheme, Theme};
   use crossterm::event::KeyEvent;
@@ -219,6 +220,32 @@ mod tests {
       press(&mut app, code);
     }
     assert_eq!(app.selected_repo_state.selected(), Some(0));
+  }
+
+  #[test]
+  fn refresh_ignored_until_initial_refresh_finishes() {
+    let mut app = app(&["one"]);
+    assert_eq!(app.state, AppState::Idle);
+
+    app.request_refresh();
+    press(&mut app, KeyCode::Char('r'));
+    assert_eq!(app.state, AppState::RefreshRequested);
+
+    // What tick does, without spawning a real clone.
+    let (sender, _receiver) = std::sync::mpsc::channel();
+    app.state = AppState::Idle;
+    let task = app.refresh.track(sender);
+    press(&mut app, KeyCode::Char('r'));
+    assert_eq!(app.state, AppState::Idle);
+
+    // The update thread has exited, but the loop has not processed its done event.
+    drop(task);
+    press(&mut app, KeyCode::Char('r'));
+    assert_eq!(app.state, AppState::Idle);
+
+    app.finish_repo_update();
+    press(&mut app, KeyCode::Char('r'));
+    assert_eq!(app.state, AppState::RefreshRequested);
   }
 
   #[test]

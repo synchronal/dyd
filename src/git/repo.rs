@@ -1,6 +1,7 @@
 use crate::app::{AppResult, Event};
 use crate::git;
 use crate::manifest::Remote;
+use crate::refresh::RefreshTask;
 use crate::semaphore::Semaphore;
 
 use std::cmp::Ordering;
@@ -146,6 +147,7 @@ impl Repo {
     root_path: &Path,
     sender: mpsc::Sender<Event>,
     semaphore: Arc<Semaphore>,
+    task: RefreshTask,
   ) -> AppResult<()> {
     let path = self.path(root_path)?;
     let origin = self.origin.clone();
@@ -153,6 +155,7 @@ impl Repo {
     let id = id.to_string();
 
     std::thread::spawn(move || {
+      let _task = task;
       let _permit = semaphore.acquire();
 
       if path.is_dir() {
