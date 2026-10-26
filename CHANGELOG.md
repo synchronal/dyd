@@ -10,6 +10,7 @@
 - Fix typo in `dyd init` default manifest.
 - Fix possible inconsistency in repo, log ordering that could incite a
   panic.
+- Don't block the TUI while a difftool runs.
 - Update deps.
 - Use Rust 1.99.1.
 

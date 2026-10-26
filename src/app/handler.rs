@@ -16,29 +16,35 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
     }
 
     // Scroll through lists
-    (SelectedPane::Diff, _, KeyCode::Up | KeyCode::Char('k')) => decrement_selected_log(app, 1),
-    (SelectedPane::Diff, _, KeyCode::Down | KeyCode::Char('j')) => increment_selected_log(app, 1),
-    (SelectedPane::Diff, _, KeyCode::Char(' ') | KeyCode::Char('f')) => increment_selected_log(app, 10),
-    (SelectedPane::Diff, _, KeyCode::Char('b')) => decrement_selected_log(app, 10),
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Up | KeyCode::Char('k')) => decrement_selected_log(app, 1),
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Down | KeyCode::Char('j')) => increment_selected_log(app, 1),
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Char(' ') | KeyCode::Char('f')) => {
+      increment_selected_log(app, 10)
+    }
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Char('b')) => decrement_selected_log(app, 10),
 
-    (SelectedPane::Repos, _, KeyCode::Up | KeyCode::Char('k')) => decrement_repos(app, 1),
-    (SelectedPane::Repos, _, KeyCode::Down | KeyCode::Char('j')) => increment_repos(app, 1),
-    (SelectedPane::Repos, _, KeyCode::Char(' ') | KeyCode::Char('f')) => increment_repos(app, 10),
-    (SelectedPane::Repos, _, KeyCode::Char('b')) => decrement_repos(app, 10),
+    (SelectedPane::Repos, SelectedModal::None, KeyCode::Up | KeyCode::Char('k')) => decrement_repos(app, 1),
+    (SelectedPane::Repos, SelectedModal::None, KeyCode::Down | KeyCode::Char('j')) => increment_repos(app, 1),
+    (SelectedPane::Repos, SelectedModal::None, KeyCode::Char(' ') | KeyCode::Char('f')) => increment_repos(app, 10),
+    (SelectedPane::Repos, SelectedModal::None, KeyCode::Char('b')) => decrement_repos(app, 10),
 
     // navigate pane
-    (SelectedPane::Diff, _, KeyCode::Left | KeyCode::Char('h')) => (),
-    (SelectedPane::Repos, _, KeyCode::Left | KeyCode::Char('h')) => app.selected_pane = SelectedPane::Diff,
-    (SelectedPane::Diff, _, KeyCode::Right | KeyCode::Char('l')) => app.selected_pane = SelectedPane::Repos,
-    (SelectedPane::Diff, _, KeyCode::Tab) => app.selected_pane = SelectedPane::Repos,
-    (SelectedPane::Repos, _, KeyCode::Tab) => app.selected_pane = SelectedPane::Diff,
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Left | KeyCode::Char('h')) => (),
+    (SelectedPane::Repos, SelectedModal::None, KeyCode::Left | KeyCode::Char('h')) => {
+      app.selected_pane = SelectedPane::Diff
+    }
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Right | KeyCode::Char('l')) => {
+      app.selected_pane = SelectedPane::Repos
+    }
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Tab) => app.selected_pane = SelectedPane::Repos,
+    (SelectedPane::Repos, SelectedModal::None, KeyCode::Tab) => app.selected_pane = SelectedPane::Diff,
 
     // open diff
-    (SelectedPane::Diff, _, KeyCode::Char('d')) => open_git_difftool(app),
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Char('d')) => open_git_difftool(app),
 
     // update
-    (SelectedPane::Diff, _, KeyCode::Char('r')) => app.request_refresh(),
-    (SelectedPane::Repos, _, KeyCode::Char('r')) => app.request_refresh(),
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Char('r')) => app.request_refresh(),
+    (SelectedPane::Repos, SelectedModal::None, KeyCode::Char('r')) => app.request_refresh(),
 
     // exit application on ESC, q, or Ctrl-D
     (_, SelectedModal::None, KeyCode::Esc) => app.running = false,
@@ -246,6 +252,31 @@ mod tests {
     app.finish_repo_update();
     press(&mut app, KeyCode::Char('r'));
     assert_eq!(app.state, AppState::RefreshRequested);
+  }
+
+  #[test]
+  fn pane_keys_ignored_while_calendar_open() {
+    let mut app = app(&["one", "two", "three"]);
+    for pane in [SelectedPane::Repos, SelectedPane::Diff] {
+      app.selected_pane = pane;
+      press(&mut app, KeyCode::Char('s'));
+      for code in [
+        KeyCode::Char('f'),
+        KeyCode::Char(' '),
+        KeyCode::Char('b'),
+        KeyCode::Char('r'),
+        KeyCode::Tab,
+      ] {
+        press(&mut app, code);
+      }
+      assert_eq!(app.modal, SelectedModal::Calendar);
+      assert_eq!(app.repo_state.selected(), Some(0));
+      assert_eq!(app.state, AppState::Idle);
+
+      press(&mut app, KeyCode::Esc);
+      assert_eq!(app.modal, SelectedModal::None);
+    }
+    assert_eq!(app.selected_pane, SelectedPane::Diff);
   }
 
   #[test]
