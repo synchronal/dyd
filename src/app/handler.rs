@@ -40,7 +40,9 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
     (SelectedPane::Repos, SelectedModal::None, KeyCode::Tab) => app.selected_pane = SelectedPane::Diff,
 
     // open diff
-    (SelectedPane::Diff, SelectedModal::None, KeyCode::Char('d')) => open_git_difftool(app),
+    (SelectedPane::Diff, SelectedModal::None, KeyCode::Char('d')) if key_event.modifiers != KeyModifiers::CONTROL => {
+      open_git_difftool(app)
+    }
 
     // update
     (SelectedPane::Diff, SelectedModal::None, KeyCode::Char('r')) => app.request_refresh(),
@@ -277,6 +279,16 @@ mod tests {
       assert_eq!(app.modal, SelectedModal::None);
     }
     assert_eq!(app.selected_pane, SelectedPane::Diff);
+  }
+
+  #[test]
+  fn ctrl_d_quits_from_every_pane() {
+    for pane in [SelectedPane::Repos, SelectedPane::Diff] {
+      let mut app = app(&["one"]);
+      app.selected_pane = pane;
+      handle_key_events(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CONTROL), &mut app).unwrap();
+      assert!(!app.running);
+    }
   }
 
   #[test]
