@@ -29,12 +29,12 @@ pub mod time;
 pub mod ui;
 pub mod widget;
 
-pub fn clean(share_path: PathBuf, verbose: bool) -> AppResult<()> {
-  if share_path.exists() {
+pub fn clean(cache_path: PathBuf, verbose: bool) -> AppResult<()> {
+  if cache_path.exists() {
     if verbose {
-      for repo in share_path
+      for repo in cache_path
         .read_dir()
-        .expect("Expected .local/share/dyd to be a directory")
+        .expect("Expected .cache/dyd to be a directory")
         .flatten()
       {
         println!("clean: {:?}", repo.path());
@@ -42,14 +42,14 @@ pub fn clean(share_path: PathBuf, verbose: bool) -> AppResult<()> {
         std::fs::remove_dir_all(repo.path())?;
       }
     }
-    log::info!("clean: {share_path:?}");
-    std::fs::remove_dir_all(share_path)?;
+    log::info!("clean: {cache_path:?}");
+    std::fs::remove_dir_all(cache_path)?;
   }
   Ok(())
 }
 
-pub fn diff(manifest: PathBuf, share_path: PathBuf, theme: ColorTheme) -> AppResult<()> {
-  let manifest = Manifest::new(manifest, share_path)?;
+pub fn diff(manifest: PathBuf, cache_path: PathBuf, theme: ColorTheme) -> AppResult<()> {
+  let manifest = Manifest::new(manifest, cache_path)?;
   let mut app: App = App::from_manifest(manifest, theme);
   app.request_refresh();
 

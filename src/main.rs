@@ -18,15 +18,15 @@ fn main() -> AppResult<()> {
   let config = Config::load()?;
 
   let _ = setup_dyd_config_path()?;
-  let share_path = setup_dyd_share_path()?;
+  let cache_path = setup_dyd_cache_path()?;
   let state_path = setup_dyd_state_path()?;
   setup_logger(state_path)?;
 
   match command {
-    Command::Clean { verbose } => dyd::clean(share_path, verbose),
+    Command::Clean { verbose } => dyd::clean(cache_path, verbose),
     Command::Diff(args) => {
       let theme = args.theme.unwrap_or(config.theme.unwrap_or(Theme::Auto));
-      dyd::diff(args.manifest, share_path, theme.try_into()?)
+      dyd::diff(args.manifest, cache_path, theme.try_into()?)
     }
     Command::Init(args) => dyd::write_default_manifest(args.manifest),
   }
@@ -39,9 +39,9 @@ fn setup_dyd_config_path() -> AppResult<PathBuf> {
   Ok(path)
 }
 
-fn setup_dyd_share_path() -> AppResult<PathBuf> {
+fn setup_dyd_cache_path() -> AppResult<PathBuf> {
   let home = std::env::var("HOME").context("Unable to access HOME")?;
-  let path = Path::new(&home).join(".local/share/dyd");
+  let path = Path::new(&home).join(".cache/dyd");
   std::fs::create_dir_all(&path)?;
   Ok(path)
 }

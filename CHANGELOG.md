@@ -13,6 +13,13 @@
 - Update deps.
 - Use Rust 1.99.1.
 
+### Breaking changes
+
+- Cache repos in `~/.cache/dyd/` instead of `~/.local/share/dyd`. Repos
+  are cloned again on first run; remove the old directory by hand.
+- Check out repos at their origin's host and full path, so repos that
+  share a name no longer collide.
+
 ## 1.11.4
 
 - Update deps.

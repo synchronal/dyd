@@ -4,9 +4,11 @@ use crate::manifest::Remote;
 use crate::refresh::RefreshTask;
 use crate::semaphore::Semaphore;
 
+use gix::bstr::ByteSlice;
 use std::cmp::Ordering;
 use std::error::Error;
-use std::path::{Path, PathBuf};
+use std::ffi::OsString;
+use std::path::{Component, Path, PathBuf};
 use std::sync::Arc;
 use std::sync::mpsc;
 
@@ -136,6 +138,19 @@ impl TryFrom<gix::Commit<'_>> for Log {
   }
 }
 
+/// The named parts of `path`, or `None` if it has a part like `..` that could
+/// leave the directory it is joined to.
+fn normal_components(path: &str) -> Option<Vec<OsString>> {
+  Path::new(path)
+    .components()
+    .filter_map(|component| match component {
+      Component::Normal(part) => Some(Some(part.to_owned())),
+      Component::RootDir | Component::CurDir => None,
+      Component::ParentDir | Component::Prefix(_) => Some(None),
+    })
+    .collect()
+}
+
 impl Repo {
   pub fn update(
     &self,
@@ -194,11 +209,26 @@ impl Repo {
     Ok(())
   }
 
+  /// The checkout under `root`, at the origin's host and full path, so that
+  /// `github.com/a/utils` and `github.com/b/utils` do not share a directory.
   pub fn path(&self, root: &Path) -> AppResult<PathBuf> {
-    if let Some(path) = Path::new(&self.origin).file_name() {
-      Ok(root.join(path))
-    } else {
-      Err(format!("Unable to determine local path for {}", self.name).into())
+    let unknown = || format!("Unable to determine local path for {}", self.name);
+    let url = gix::url::parse(self.origin.as_str()).map_err(|_| unknown())?;
+
+    let host = match url.host() {
+      Some(host) => normal_components(host).filter(|parts| parts.len() == 1),
+      None => Some(vec![]),
+    };
+    let repo_path = normal_components(&url.path.to_str_lossy()).filter(|parts| !parts.is_empty());
+
+    match (host, repo_path) {
+      (Some(host), Some(repo_path)) => {
+        let mut path = root.to_path_buf();
+        path.extend(host);
+        path.extend(repo_path);
+        Ok(path)
+      }
+      _ => Err(unknown().into()),
     }
   }
 
@@ -320,6 +350,81 @@ mod tests {
       repo("a", "git@x:a", None, vec![older], RepoStatus::Finished),
     ];
     assert_total_order(&repos);
+  }
+
+  fn local_path(origin: &str) -> AppResult<PathBuf> {
+    repo("r", origin, None, vec![], RepoStatus::Checking).path(Path::new("/share"))
+  }
+
+  #[test]
+  fn test_path_includes_host_and_full_origin_path() -> AppResult<()> {
+    for (origin, expected) in [
+      (
+        "git@github.com:synchronal/dyd.git",
+        "/share/github.com/synchronal/dyd.git",
+      ),
+      (
+        "https://github.com/synchronal/dyd.git",
+        "/share/github.com/synchronal/dyd.git",
+      ),
+      (
+        "ssh://git@github.com:22/synchronal/dyd",
+        "/share/github.com/synchronal/dyd",
+      ),
+      ("/Users/me/src/dyd", "/share/Users/me/src/dyd"),
+    ] {
+      assert_eq!(local_path(origin)?, Path::new(expected), "{origin}");
+    }
+    Ok(())
+  }
+
+  #[test]
+  fn test_path_differs_for_same_repo_name() -> AppResult<()> {
+    assert_ne!(
+      local_path("git@github.com:a/utils.git")?,
+      local_path("git@github.com:b/utils.git")?
+    );
+    assert_ne!(
+      local_path("git@github.com:a/utils.git")?,
+      local_path("git@gitlab.com:a/utils.git")?
+    );
+    Ok(())
+  }
+
+  #[test]
+  fn test_path_rejects_origins_escaping_root() {
+    for origin in [
+      "git@github.com:../../etc",
+      "https://github.com/a/../../../x",
+      "https://github.com/",
+      // Percent-encoded `..` and `/`, which gix decodes.
+      "https://github.com/a/%2e%2e/%2e%2e/x",
+      "https://github.com/a/..%2f..%2fx",
+      "git@github.com:/../../x",
+      "ssh://git@github.com/~/../x",
+      "file:///../x",
+      "../../x",
+      // The host is `..` or `.`.
+      "ssh://../x/y",
+      "ssh://git@../x/y",
+      "https://../x/y",
+      "file://../x",
+      "..:x/y",
+      "git@..:x/y",
+      "git@.:x/y",
+    ] {
+      assert!(local_path(origin).is_err(), "{origin}");
+    }
+  }
+
+  #[test]
+  fn test_path_keeps_literal_percent_encoding_inside_root() -> AppResult<()> {
+    // scp-like paths are not percent-decoded, so this is a directory named `%2e%2e`.
+    assert_eq!(
+      local_path("git@github.com:a/%2e%2e/x")?,
+      Path::new("/share/github.com/a/%2e%2e/x")
+    );
+    Ok(())
   }
 
   #[test]
