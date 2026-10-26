@@ -94,7 +94,7 @@ pub fn write_default_manifest(manifest_path: PathBuf) -> AppResult<()> {
   writeln!(file)?;
   writeln!(file, "[remotes.dyd]")?;
   writeln!(file, "name = \"Daily diff\"")?;
-  writeln!(file, "origin = \"git@github.com:sychronal/dyd\"")?;
+  writeln!(file, "origin = \"git@github.com:synchronal/dyd\"")?;
   writeln!(file)?;
   Ok(())
 }

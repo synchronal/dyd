@@ -7,6 +7,7 @@
 - Fix possible panics in date parsing across leap day boundaries.
 - Attempt to restore the terminal on panic.
 - Fix possible panic when git is not on the PATH.
+- Fix typo in `dyd init` default manifest.
 - Update deps.
 - Use Rust 1.99.1.
 
