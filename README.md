@@ -51,7 +51,7 @@ Configure git with a GUI difftool:
 
 ## Usage
 
-Create a manifest file at `dyd.toml` with the following format:
+Create a manifest file at `.config/dyd.toml` following format:
 
 ``` toml
 since = "3 days ago"

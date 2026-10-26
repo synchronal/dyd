@@ -11,6 +11,9 @@
 - Fix possible inconsistency in repo, log ordering that could incite a
   panic.
 - Don't block the TUI while a difftool runs.
+- Look for the manifest at `./.config/dyd.toml`, then `./dyd.toml`, when
+  no manifest path is given. `dyd init` writes to `./.config/dyd.toml` by
+  default.
 - Update deps.
 - Use Rust 1.99.1.
 

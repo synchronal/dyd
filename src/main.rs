@@ -25,10 +25,11 @@ fn main() -> AppResult<()> {
   match command {
     Command::Clean { verbose } => dyd::clean(cache_path, verbose),
     Command::Diff(args) => {
+      let manifest_path = args.manifest_path();
       let theme = args.theme.unwrap_or(config.theme.unwrap_or(Theme::Auto));
-      dyd::diff(args.manifest, cache_path, theme.try_into()?)
+      dyd::diff(manifest_path, cache_path, theme.try_into()?)
     }
-    Command::Init(args) => dyd::write_default_manifest(args.manifest),
+    Command::Init(args) => dyd::write_default_manifest(args.init_manifest_path()),
   }
 }
 

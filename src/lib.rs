@@ -87,6 +87,10 @@ pub fn diff(manifest: PathBuf, cache_path: PathBuf, theme: ColorTheme) -> AppRes
 pub fn write_default_manifest(manifest_path: PathBuf) -> AppResult<()> {
   println!("Creating file: {:?}", manifest_path);
 
+  if let Some(parent) = manifest_path.parent() {
+    std::fs::create_dir_all(parent)?;
+  }
+
   let mut file = std::fs::OpenOptions::new()
     .create_new(true)
     .append(true)
@@ -105,6 +109,19 @@ pub fn write_default_manifest(manifest_path: PathBuf) -> AppResult<()> {
 
 #[cfg(test)]
 mod tests {
+  #[test]
+  fn write_default_manifest_creates_parent_directory() -> super::AppResult<()> {
+    let dir = std::env::temp_dir().join(format!("dyd-init-test-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    let manifest_path = dir.join(".config/dyd.toml");
+
+    super::write_default_manifest(manifest_path.clone())?;
+
+    assert!(manifest_path.exists());
+    std::fs::remove_dir_all(&dir)?;
+    Ok(())
+  }
+
   #[test]
   fn clean_verbose_removes_files_and_directories() -> super::AppResult<()> {
     let cache_path = std::env::temp_dir().join(format!("dyd-clean-test-{}", std::process::id()));
