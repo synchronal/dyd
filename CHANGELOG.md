@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.1.0
+
 - `difftool` may be globally overridden in `~/.config/dyd/dyd.toml`.
 
 ## 2.0.0
