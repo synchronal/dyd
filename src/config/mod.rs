@@ -1,8 +1,10 @@
+use crate::app::AppResult;
 use crate::cli::ManifestCliArgs;
 use crate::difftool::Difftool;
 use crate::manifest::{self, Manifest};
 use crate::theme::Theme;
-use anyhow::{Context, Result};
+use crate::time;
+use anyhow::Result;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
@@ -19,10 +21,10 @@ pub struct Config {
   pub theme: Theme,
 }
 
-impl TryFrom<(ManifestCliArgs, Manifest)> for Config {
-  type Error = anyhow::Error;
+impl TryFrom<(ManifestCliArgs, Manifest, PathBuf)> for Config {
+  type Error = Box<dyn std::error::Error>;
 
-  fn try_from((args, manifest): (ManifestCliArgs, Manifest)) -> Result<Self> {
+  fn try_from((args, manifest, cache_path): (ManifestCliArgs, Manifest, PathBuf)) -> AppResult<Self> {
     let mut config = Self {
       difftool: manifest.difftool,
       remotes: manifest
@@ -30,10 +32,8 @@ impl TryFrom<(ManifestCliArgs, Manifest)> for Config {
         .into_iter()
         .map(|(id, remote)| (id, remote.into()))
         .collect(),
-      root: manifest.root.context("manifest root is not set")?,
-      since: manifest
-        .since_datetime
-        .context("manifest since is not parsed")?,
+      root: cache_path,
+      since: time::parse_relative(&manifest.since, &chrono::Utc::now())?,
       theme: Theme::default(),
     };
     Overrides::load(&global_path()?)?.apply(&mut config);

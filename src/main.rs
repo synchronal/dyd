@@ -24,8 +24,8 @@ fn main() -> AppResult<()> {
   match command {
     Command::Clean { verbose } => dyd::clean(cache_path, verbose),
     Command::Diff(args) => {
-      let manifest = Manifest::new(args.manifest_path(), cache_path)?;
-      dyd::diff(Config::try_from((args, manifest))?)
+      let manifest = Manifest::new(args.manifest_path())?;
+      dyd::diff(Config::try_from((args, manifest, cache_path))?)
     }
     Command::Init(args) => dyd::write_default_manifest(args.init_manifest_path()),
   }
