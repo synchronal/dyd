@@ -7,9 +7,8 @@
 
 use crate::app::handler::handle_key_events;
 use crate::app::{App, AppResult, Event, EventHandler};
-use crate::manifest::Manifest;
+use crate::config::Config;
 use crate::terminal::Tui;
-use crate::theme::ColorTheme;
 use ratatui::Terminal;
 use ratatui::backend::CrosstermBackend;
 use std::io::Write;
@@ -52,9 +51,9 @@ pub fn clean(cache_path: PathBuf, verbose: bool) -> AppResult<()> {
   Ok(())
 }
 
-pub fn diff(manifest: PathBuf, cache_path: PathBuf, theme: ColorTheme) -> AppResult<()> {
-  let manifest = Manifest::new(manifest, cache_path)?;
-  let mut app: App = App::from_manifest(manifest, theme);
+pub fn diff(config: Config) -> AppResult<()> {
+  let theme = config.theme.clone().try_into()?;
+  let mut app: App = App::from_config(config, theme);
   app.request_refresh();
 
   let backend = CrosstermBackend::new(std::io::stderr());

@@ -120,6 +120,7 @@ Keymap:
 Dyd may be configured globally via a config file at
 `~/.config/dyd/dyd.toml`. This file supports the following values:
 
+- `difftool` - globally overrides `difftool`.
 - `theme` - (`auto`, `light`, `dark`) - the color theme to apply, if the
   default theme detection does not work.
 

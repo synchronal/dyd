@@ -175,12 +175,14 @@ fn selected_repo(app: &App) -> Option<&Repo> {
 mod tests {
   use super::*;
   use crate::app::AppState;
-  use crate::manifest::{Manifest, Remote};
+  use crate::config::{Config, Remote};
+  use crate::difftool::Difftool;
   use crate::theme::{ColorTheme, Theme};
   use crossterm::event::KeyEvent;
 
   fn app(remotes: &[&str]) -> App {
-    let manifest = Manifest {
+    let config = Config {
+      difftool: Difftool::Git,
       remotes: remotes
         .iter()
         .map(|id| {
@@ -192,11 +194,11 @@ mod tests {
           (id.to_string(), remote)
         })
         .collect(),
-      root: Some("/nonexistent".into()),
-      since_datetime: Some(chrono::Utc::now()),
-      ..Default::default()
+      root: "/nonexistent".into(),
+      since: chrono::Utc::now(),
+      theme: Theme::Dark,
     };
-    App::from_manifest(manifest, ColorTheme::try_from(Theme::Dark).unwrap())
+    App::from_config(config, ColorTheme::try_from(Theme::Dark).unwrap())
   }
 
   fn press(app: &mut App, code: KeyCode) {

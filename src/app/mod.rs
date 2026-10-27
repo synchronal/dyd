@@ -2,9 +2,9 @@ pub mod event;
 pub mod handler;
 
 pub use self::event::{Event, EventHandler};
+use crate::config::Config;
 use crate::difftool::Difftool;
 use crate::git::repo::{Log, Repo, RepoStatus};
-use crate::manifest::Manifest;
 use crate::refresh::Refresh;
 use crate::semaphore::Semaphore;
 use crate::theme::ColorTheme;
@@ -68,8 +68,8 @@ pub struct App {
 }
 
 impl App {
-  pub fn from_manifest(manifest: Manifest, theme: ColorTheme) -> Self {
-    let repos: IndexMap<String, Repo> = manifest
+  pub fn from_config(config: Config, theme: ColorTheme) -> Self {
+    let repos: IndexMap<String, Repo> = config
       .remotes
       .into_iter()
       .map(|(id, remote)| (id, remote.into()))
@@ -83,7 +83,7 @@ impl App {
     let mut selected_repo_state = TableState::default();
     selected_repo_state.select(Some(0));
 
-    let since = manifest.since_datetime.unwrap();
+    let since = config.since;
     let calendar_state = (&since).into();
 
     let offset_sec = Local::now().offset().local_minus_utc();
@@ -91,11 +91,11 @@ impl App {
 
     Self {
       calendar_state,
-      difftool: manifest.difftool,
+      difftool: config.difftool,
       modal: SelectedModal::default(),
       repo_state,
       repos,
-      root_path: manifest.root.unwrap(),
+      root_path: config.root,
       refresh: Refresh::default(),
       running: true,
       selected_pane: SelectedPane::default(),

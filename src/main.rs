@@ -1,10 +1,10 @@
 use dyd::app::AppResult;
 use dyd::cli::{CLI, Command};
 use dyd::config::Config;
+use dyd::manifest::Manifest;
 
 use anyhow::Context;
 
-use dyd::theme::Theme;
 use log4rs::append::rolling_file::RollingFileAppender;
 use log4rs::append::rolling_file::policy::compound::CompoundPolicy;
 use log4rs::append::rolling_file::policy::compound::roll::delete::DeleteRoller;
@@ -15,7 +15,6 @@ use std::path::{Path, PathBuf};
 fn main() -> AppResult<()> {
   let cli = CLI::new();
   let command = cli.command.unwrap_or(Command::Diff(cli.diff));
-  let config = Config::load()?;
 
   let _ = setup_dyd_config_path()?;
   let cache_path = setup_dyd_cache_path()?;
@@ -25,9 +24,8 @@ fn main() -> AppResult<()> {
   match command {
     Command::Clean { verbose } => dyd::clean(cache_path, verbose),
     Command::Diff(args) => {
-      let manifest_path = args.manifest_path();
-      let theme = args.theme.unwrap_or(config.theme.unwrap_or(Theme::Auto));
-      dyd::diff(manifest_path, cache_path, theme.try_into()?)
+      let manifest = Manifest::new(args.manifest_path(), cache_path)?;
+      dyd::diff(Config::try_from((args, manifest))?)
     }
     Command::Init(args) => dyd::write_default_manifest(args.init_manifest_path()),
   }

@@ -1,6 +1,6 @@
 use crate::app::{AppResult, Event};
+use crate::config::Remote;
 use crate::git;
-use crate::manifest::Remote;
 use crate::refresh::RefreshTask;
 use crate::semaphore::Semaphore;
 

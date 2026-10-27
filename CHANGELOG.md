@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `difftool` may be globally overridden in `~/.config/dyd/dyd.toml`.
+
 ## 2.0.0
 
 - Ensure that only a single refresh occurs at a time. Redundant requests
