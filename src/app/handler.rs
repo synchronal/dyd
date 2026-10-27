@@ -177,7 +177,7 @@ mod tests {
   use crate::app::AppState;
   use crate::config::{Config, Remote};
   use crate::difftool::Difftool;
-  use crate::theme::{ColorTheme, Theme};
+  use crate::theme::Theme;
   use crossterm::event::KeyEvent;
 
   fn app(remotes: &[&str]) -> App {
@@ -198,7 +198,7 @@ mod tests {
       since: chrono::Utc::now(),
       theme: Theme::Dark,
     };
-    App::from_config(config, ColorTheme::try_from(Theme::Dark).unwrap())
+    App::from_config(config).unwrap()
   }
 
   fn press(app: &mut App, code: KeyCode) {

@@ -52,8 +52,7 @@ pub fn clean(cache_path: PathBuf, verbose: bool) -> AppResult<()> {
 }
 
 pub fn diff(config: Config) -> AppResult<()> {
-  let theme = config.theme.clone().try_into()?;
-  let mut app: App = App::from_config(config, theme);
+  let mut app = App::from_config(config)?;
   app.request_refresh();
 
   let backend = CrosstermBackend::new(std::io::stderr());

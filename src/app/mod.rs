@@ -68,7 +68,7 @@ pub struct App {
 }
 
 impl App {
-  pub fn from_config(config: Config, theme: ColorTheme) -> Self {
+  pub fn from_config(config: Config) -> AppResult<Self> {
     let repos: IndexMap<String, Repo> = config
       .remotes
       .into_iter()
@@ -89,7 +89,7 @@ impl App {
     let offset_sec = Local::now().offset().local_minus_utc();
     let offset = chrono::offset::FixedOffset::east_opt(offset_sec).unwrap();
 
-    Self {
+    Ok(Self {
       calendar_state,
       difftool: config.difftool,
       modal: SelectedModal::default(),
@@ -103,9 +103,9 @@ impl App {
       semaphore: Arc::new(Semaphore::new(MAX_CONCURRENT_GIT_OPS)),
       since,
       state: AppState::default(),
-      theme,
+      theme: config.theme.try_into()?,
       timezone_offset: offset,
-    }
+    })
   }
   pub fn tick(&mut self, sender: mpsc::Sender<Event>) -> AppResult<()> {
     if self.state == AppState::RefreshRequested {
