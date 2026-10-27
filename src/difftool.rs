@@ -127,6 +127,10 @@ impl<'de> Deserialize<'de> for Difftool {
   {
     let s = String::deserialize(deserializer)?;
 
+    if s.is_empty() {
+      return Err(serde::de::Error::custom("difftool must not be empty"));
+    }
+
     let deserialized = if s == *"git" {
       Self::Git
     } else if s == *"github" {

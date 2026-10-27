@@ -2,7 +2,7 @@ use crate::cli::ManifestCliArgs;
 use crate::difftool::Difftool;
 use crate::manifest::{self, Manifest};
 use crate::theme::Theme;
-use anyhow::{Context, Result, bail};
+use anyhow::{Context, Result};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
@@ -44,7 +44,7 @@ impl TryFrom<(ManifestCliArgs, Manifest)> for Config {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 pub struct Remote {
   pub branch: Option<String>,
   pub name: String,
@@ -79,13 +79,7 @@ impl Overrides {
   }
 
   fn parse(contents: &str) -> Result<Self> {
-    let overrides: Overrides = toml::from_str(contents)?;
-    if let Some(Difftool::Fallthrough(difftool)) = &overrides.difftool
-      && difftool.is_empty()
-    {
-      bail!("When difftool is present in config, it must have length > 0");
-    }
-    Ok(overrides)
+    Ok(toml::from_str(contents)?)
   }
 
   fn apply(self, config: &mut Config) {
